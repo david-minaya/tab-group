@@ -23,10 +23,15 @@ module.exports = {
     '@typescript-eslint'
   ],
   rules: {
-    'space-before-function-paren': 'off',
-    semi: [
+    'space-before-function-paren': [
+      'off'
+    ],
+    'semi': [
       'error',
       'always'
+    ],
+    'no-unused-vars': [
+      'warn'
     ]
   }
 }
