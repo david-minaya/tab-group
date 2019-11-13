@@ -1,7 +1,25 @@
 {
-  "name": "Getting Started Example*",
+  "name": "Tab Group",
   "version": "1.0",
-  "description": "Build an Extension!",
-  "manifest_version": 2
+  "description": "Group several tabs within only one tab",
+  "manifest_version": 2,
+  "permissions": [
+    "activeTab",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>",
+    "storage"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_end"
+    }
+  ]
 }
  

@@ -1,0 +1,15 @@
+.tab {
+  width: 150px;
+  height: var(--tab-bar-height);
+  background-color: aliceblue;
+  display: inline-block;
+  border-right: 1px solid black;
+}
+
+.tab2 {
+  width: 150px;
+  height: var(--tab-bar-height);
+  background-color: red;
+  display: inline-block;
+  border-right: 1px solid black;
+}

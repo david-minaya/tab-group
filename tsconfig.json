@@ -3,6 +3,7 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": true,
+    "types": ["@types/chrome", "node"],
     "module": "commonjs",
     "target": "es6",
     "jsx": "react"

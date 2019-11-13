@@ -31,6 +31,18 @@ module.exports = {
       'always'
     ],
     'no-unused-vars': [
+      'off'
+    ],
+    'no-useless-constructor': [
+      'off'
+    ],
+    'padded-blocks': [
+      'off'
+    ],
+    'spaced-comment': [
+      'off'
+    ],
+    'indent': [
       'warn'
     ]
   }

@@ -1,0 +1,4 @@
+.tab-bar {
+  height: var(--tab-bar-height);
+  background-color: lightgray;
+}
