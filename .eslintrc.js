@@ -59,6 +59,9 @@ module.exports = {
     ],
     'space-infix-ops': [
       'off'
+    ],
+    'no-multiple-empty-lines': [
+      'off'
     ]
   }
 }
