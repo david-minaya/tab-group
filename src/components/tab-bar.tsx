@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import * as React from 'react';
 import { Tab } from './tab';
 import '../styles/tab-bar.css';
@@ -15,9 +16,9 @@ export class TabBar extends React.Component<{}, state> {
       tabs: []
     };
 
-    chrome.storage.local.get('tabs', (result) => {
-      this.setState({ tabs: result.tabs });
-    })
+    chrome.storage.local.get('tabsGroup', (result) => {
+      this.setState({ tabs: result.tabsGroup.tabs });
+    });
   }
 
   render() {

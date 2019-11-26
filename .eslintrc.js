@@ -44,6 +44,21 @@ module.exports = {
     ],
     'indent': [
       'warn'
+    ],
+    'no-trailing-spaces': [
+      'off'
+    ],
+    'object-curly-spacing': [
+      'off'
+    ],
+    'key-spacing': [
+      'off'
+    ],
+    'eol-last': [
+      'warn'
+    ],
+    'space-infix-ops': [
+      'off'
     ]
   }
 }

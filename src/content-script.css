@@ -3,9 +3,10 @@
 }
 
 .tab-group {
+  all: initial;
   width: 100vw;
   position: fixed;
   bottom: 0px;
   background-color: red;
-  z-index: 1000;
+  z-index: 5000;
 }
