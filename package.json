@@ -10,6 +10,7 @@
     "build": "webpack"
   },
   "dependencies": {
+    "office-ui-fabric-react": "^7.65.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0"
   },

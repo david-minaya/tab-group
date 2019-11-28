@@ -1,0 +1,19 @@
+.popup {
+  padding: 16px;
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 600;
+  color: black;
+}
+
+.text-field {
+  width: 250px;
+  margin-top: 20px;
+}
+
+.button {
+  display: block;
+  margin: 16px 0px 0px auto;
+}
