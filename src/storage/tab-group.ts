@@ -2,12 +2,14 @@ import Tab from './tab';
 
 export default class TabGroup {
 
-  id: Number;
-  tabId: Number;
-  name: String;
+  id: string;
+  tabId: number;
+  name: string;
   tabs: Tab[];
 
-  constructor() {
-
+  constructor(name: string, tabId: number, tabs: Tab[]) {
+    this.name = name;
+    this.tabId = tabId;
+    this.tabs = tabs;
   }
 }

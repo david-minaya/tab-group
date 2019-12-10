@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 import * as React from 'react';
 import '../styles/tab.css';
+import { MessageType } from '../enums/message-type';
+import Storage from '../storage/storage';
 
 interface props {
   tab: any
@@ -8,21 +10,12 @@ interface props {
 
 export class Tab extends React.Component<props> {
 
-  constructor(props: any) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
+  storage: Storage = new Storage();
 
-  handleClick() {
-    chrome.storage.local.get('tabsGroup', (response) => {
-      const tabsGroup = response.tabsGroup;
-      const tabs: any[] = tabsGroup.tabs;
-      const tab = tabs.find(tab => tab.url === this.props.tab.url);
-      tabs.map(tab => { tab.isSelected = false; return tab; });
-      tab.isSelected = true;
-      chrome.storage.local.set({ tabsGroup });
-      chrome.runtime.sendMessage({ id: 2, tab: this.props.tab });
-    });
+  private handleClick = async () => {
+    const tab = this.props.tab;
+    this.storage.selectTab(tab);
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab: tab } });
   }
 
   render() {
