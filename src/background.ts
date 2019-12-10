@@ -1,40 +1,28 @@
 /* eslint-disable no-undef */
-chrome.runtime.onInstalled.addListener(function () {
+import { MessageType } from './enums/message-type';
+import Storage from './storage/storage';
 
-  const tabsGroup = {
-    id: 1,
-    tabId: 0,
-    tabs: [
-      { name: 'Google Translate', url: 'https://translate.google.com.do/', isSelected: false },
-      { name: 'YouTube', url: 'https://www.youtube.com/', isSelected: false },
-      { name: 'Medium', url: 'https://medium.com/', isSelected: false }
-    ]
-  };
+interface Message {
+  type: number,
+  arg: any
+}
 
-  chrome.storage.local.set({ tabsGroup });
-
-  chrome.tabs.create({url: 'https://www.google.com'}, tab => {
-    chrome.storage.local.get('tabsGroup', result => {
-      const tabGroup = result.tabsGroup;
-      tabGroup.tabId = tab.id;
-      chrome.storage.local.set({ tabsGroup: tabGroup });
-    });
-    chrome.tabs.executeScript(tab.id, { file: 'content-script.js'});
-  });
-});
-
-chrome.runtime.onMessage.addListener((message, sender, response) => {
-  if (message.id === 2) {
-    chrome.tabs.update({ url: message.tab.url });
+chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
+  switch (message.type) {
+    case MessageType.CREATE_TAB:
+      response(sender.tab.id);
+      break;
+    case MessageType.NAVIGATE:
+      chrome.tabs.update({ url: message.arg.tab.url });
+      break;
   }
 });
 
-chrome.webNavigation.onCommitted.addListener(details => {
+chrome.webNavigation.onCommitted.addListener(async details => {
   if (details.frameId !== 0) return;
-  chrome.storage.local.get('tabsGroup', result => {
-    const tabGroup = result.tabsGroup;
-    if (details.tabId === tabGroup.tabId) {
-      chrome.tabs.executeScript(details.tabId, { file: 'content-script.js'});
-    }
-  });
+  const storage = new Storage();
+  const tabGroup = await storage.getTabGroupByTabId(details.tabId);
+  if (tabGroup) {
+    chrome.tabs.executeScript(tabGroup.tabId, { file: 'content-script.js'});
+  }
 });

@@ -1,10 +1,13 @@
 export default class Tab {
 
-  id: Number;
-  title: String;
-  url: String;
+  id: string;
+  tabGroupId: string;
+  name: string;
+  url: string;
+  isSelected: boolean
 
-  constructor() {
-
+  constructor(name: string, url: string) {
+    this.name = name;
+    this.url = url;
   }
 }

@@ -10,13 +10,16 @@
     "build": "webpack"
   },
   "dependencies": {
+    "office-ui-fabric-react": "^7.65.0",
     "react": "^16.11.0",
-    "react-dom": "^16.11.0"
+    "react-dom": "^16.11.0",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@types/chrome": "0.0.91",
     "@types/react": "^16.9.9",
     "@types/react-dom": "^16.9.2",
+    "@types/uuid": "^3.4.6",
     "@typescript-eslint/eslint-plugin": "^2.5.0",
     "@typescript-eslint/parser": "^2.5.0",
     "copy-webpack-plugin": "^5.0.4",

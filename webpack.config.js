@@ -1,12 +1,14 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  mode: 'production',
-  // devtool: 'eval-source-map',
+  mode: 'development',
+  devtool: 'eval-source-map',
   entry: {
     background: './src/background.ts',
-    'content-script': './src/content-script.tsx'
+    'content-script': './src/content-script.tsx',
+    'popup-root': './src/popup-root.tsx'
   },
   output: {
     filename: '[name].js'
@@ -20,7 +22,11 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin([
       './src/manifest.json'
-    ])
+    ]),
+    new HtmlWebpackPlugin({
+      filename: 'popup.html',
+      chunks: ['popup-root']
+    })
   ],
   module: {
     rules: [

@@ -2,22 +2,32 @@
 import * as React from 'react';
 import { Tab } from './tab';
 import '../styles/tab-bar.css';
+import { MessageType } from '../enums/message-type';
+import Storage from '../storage/storage';
+import TabGroup from '../storage/tab-group';
 
-interface state {
-  tabs: any
-}
+export class TabBar extends React.Component {
 
-export class TabBar extends React.Component<{}, state> {
+  state: { tabGroup: TabGroup | any }
+  storage: Storage
 
   constructor(props: any) {
     super(props);
+    this.state = { tabGroup: { tabs: [] } };
+    this.storage = new Storage();
+  }
 
-    this.state = {
-      tabs: []
-    };
+  componentDidMount = async () => {
+    const tabId = await this.getTabId();
+    const tabGroup = await this.storage.getTabGroupByTabId(tabId);
+    this.setState({ tabGroup });
+  }
 
-    chrome.storage.local.get('tabsGroup', (result) => {
-      this.setState({ tabs: result.tabsGroup.tabs });
+  private getTabId(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage({ type: MessageType.CREATE_TAB }, tabId => {
+        resolve(tabId);
+      });
     });
   }
 
@@ -25,7 +35,7 @@ export class TabBar extends React.Component<{}, state> {
     return (
       <div className='tab-bar'>
         {
-          this.state.tabs.map((tab: any) => {
+          this.state.tabGroup.tabs.map((tab: any) => {
             return (<Tab tab={tab} />);
           })
         }
