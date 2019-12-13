@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import * as React from 'react';
 import { Tab } from './tab';
 import '../styles/tab-bar.css';

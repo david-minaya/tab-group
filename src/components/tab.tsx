@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import * as React from 'react';
 import '../styles/tab.css';
 import { MessageType } from '../enums/message-type';

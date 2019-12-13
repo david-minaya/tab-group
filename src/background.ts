@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { MessageType } from './enums/message-type';
 import Storage from './storage/storage';
 

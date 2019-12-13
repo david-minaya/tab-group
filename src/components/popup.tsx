@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import * as React from 'react';
 import '../styles/popup.css';
 import { TextField, PrimaryButton } from 'office-ui-fabric-react';
