@@ -25,4 +25,10 @@ export default class LocalStorage implements StorageInterface {
       });
     });
   }
+
+  clear(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.storage.clear(() => resolve());
+    });
+  }
 }

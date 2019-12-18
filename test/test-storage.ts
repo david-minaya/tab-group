@@ -21,4 +21,11 @@ export default class TestStorage implements StorageInterface {
       resolve();
     });
   }
+
+  clear(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.tabsGroup = [];
+      resolve();
+    });
+  }
 }
