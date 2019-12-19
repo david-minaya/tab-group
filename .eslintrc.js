@@ -22,6 +22,10 @@ module.exports = {
     'react',
     '@typescript-eslint'
   ],
+  env: {
+    mocha: true,
+    webextensions: true
+  },
   rules: {
     'space-before-function-paren': [
       'off'

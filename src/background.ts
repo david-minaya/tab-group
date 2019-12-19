@@ -1,5 +1,5 @@
-/* eslint-disable no-undef */
 import { MessageType } from './enums/message-type';
+import LocalStorage from './storage/local-storage';
 import Storage from './storage/storage';
 
 interface Message {
@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
 
 chrome.webNavigation.onCommitted.addListener(async details => {
   if (details.frameId !== 0) return;
-  const storage = new Storage();
+  const storage = new Storage(new LocalStorage());
   const tabGroup = await storage.getTabGroupByTabId(details.tabId);
   if (tabGroup) {
     chrome.tabs.executeScript(tabGroup.tabId, { file: 'content-script.js'});

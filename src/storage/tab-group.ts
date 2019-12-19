@@ -7,7 +7,8 @@ export default class TabGroup {
   name: string;
   tabs: Tab[];
 
-  constructor(name: string, tabId: number, tabs: Tab[]) {
+  constructor(name: string, tabId: number, tabs: Tab[], id?: string) {
+    this.id = id;
     this.name = name;
     this.tabId = tabId;
     this.tabs = tabs;

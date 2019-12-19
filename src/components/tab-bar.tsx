@@ -1,10 +1,10 @@
-/* eslint-disable no-undef */
 import * as React from 'react';
 import { Tab } from './tab';
 import '../styles/tab-bar.css';
 import { MessageType } from '../enums/message-type';
 import Storage from '../storage/storage';
 import TabGroup from '../storage/tab-group';
+import LocalStorage from '../storage/local-storage';
 
 export class TabBar extends React.Component {
 
@@ -14,7 +14,7 @@ export class TabBar extends React.Component {
   constructor(props: any) {
     super(props);
     this.state = { tabGroup: { tabs: [] } };
-    this.storage = new Storage();
+    this.storage = new Storage(new LocalStorage());
   }
 
   componentDidMount = async () => {

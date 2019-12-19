@@ -1,8 +1,8 @@
-/* eslint-disable no-undef */
 import * as React from 'react';
 import '../styles/tab.css';
 import { MessageType } from '../enums/message-type';
 import Storage from '../storage/storage';
+import LocalStorage from '../storage/local-storage';
 
 interface props {
   tab: any
@@ -10,7 +10,7 @@ interface props {
 
 export class Tab extends React.Component<props> {
 
-  storage: Storage = new Storage();
+  storage: Storage = new Storage(new LocalStorage());
 
   private handleClick = async () => {
     const tab = this.props.tab;

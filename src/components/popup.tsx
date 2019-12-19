@@ -1,10 +1,10 @@
-/* eslint-disable no-undef */
 import * as React from 'react';
 import '../styles/popup.css';
 import { TextField, PrimaryButton } from 'office-ui-fabric-react';
 import Storage from '../storage/storage';
 import TabGroup from '../storage/tab-group';
 import Tab from '../storage/tab';
+import LocalStorage from '../storage/local-storage';
 
 export class Popup extends React.Component {
 
@@ -14,7 +14,7 @@ export class Popup extends React.Component {
   constructor(props: any) {
     super(props);
     this.state = { name: '' };
-    this.storage = new Storage();
+    this.storage = new Storage(new LocalStorage());
   }
 
   componentDidMount() {
