@@ -25,7 +25,7 @@ export class TabBar extends React.Component {
 
   private getTabId(): Promise<number> {
     return new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage({ type: MessageType.CREATE_TAB }, tabId => {
+      chrome.runtime.sendMessage({ type: MessageType.GET_TAB_ID }, tabId => {
         resolve(tabId);
       });
     });
