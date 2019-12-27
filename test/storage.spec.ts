@@ -71,7 +71,7 @@ it('get tab group by browser tab id', async () => {
 });
 
 it('return true if found one tab group with the id of the browser tab', async () => {
-  const isBrowserTabAssigned = await storage.isBrowserTabAssigned(1);
+  const isBrowserTabAssigned = await storage.isBrowserTabAttached(1);
   expect(isBrowserTabAssigned).to.be.true;
 });
 
@@ -88,6 +88,12 @@ it('delete all the tabs group', async () => {
   await storage.clear();
   const tabsGroup = await storage.getTabsGroup();
   expect(tabsGroup).to.be.empty;
+});
+
+it('detach browser tab of a tab group', async () => {
+  await storage.detachBrowserTab(1);
+  const isAttach = await storage.isBrowserTabAttached(1);
+  expect(isAttach).to.be.false;
 });
 
 afterEach(async () => {

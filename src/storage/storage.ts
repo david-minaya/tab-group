@@ -35,7 +35,7 @@ export default class Storage {
     return tabGroup;
   }
 
-  async isBrowserTabAssigned(browserTabId: number) {
+  async isBrowserTabAttached(browserTabId: number) {
     const tabsGroups = await this.getTabsGroup();
     const isAssigned = tabsGroups.some(tabGroup => tabGroup.tabId === browserTabId);
     return isAssigned;
@@ -46,6 +46,13 @@ export default class Storage {
     const tabGroup = tabsGroup.find(tabGroup => tabGroup.id === tab.tabGroupId);
     const tabFound = tabGroup.tabs.find(currentTab => currentTab.id === tab.id);
     tabFound.isSelected = true;
+    await this.setTabsGroup(tabsGroup);
+  }
+
+  async detachBrowserTab(browserTabId: number) {
+    const tabsGroup = await this.getTabsGroup();
+    const tabGroup = tabsGroup.find(tabGroup => tabGroup.tabId === browserTabId);
+    tabGroup.tabId = undefined;
     await this.setTabsGroup(tabsGroup);
   }
 

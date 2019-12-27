@@ -43,9 +43,9 @@ export class Popup extends React.Component {
   }
 
   private async canCreateTabGroup(browserTab: chrome.tabs.Tab): Promise<boolean> {
-    const isNotAssigned = !await this.storage.isBrowserTabAssigned(browserTab.id);
+    const isAttached = !await this.storage.isBrowserTabAttached(browserTab.id);
     const isValidName = this.state.name !== '';
-    return isNotAssigned && isValidName;
+    return isAttached && isValidName;
   }
 
   private async createTabGroup(browserTab: chrome.tabs.Tab) {

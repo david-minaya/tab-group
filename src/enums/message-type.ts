@@ -1,4 +1,4 @@
 export enum MessageType {
-  CREATE_TAB,
+  GET_TAB_ID,
   NAVIGATE
 };
