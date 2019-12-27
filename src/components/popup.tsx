@@ -73,12 +73,17 @@ export class Popup extends React.Component {
     });
   }
 
+  handleOpenPageButtonClick = () => {
+    window.open(chrome.runtime.getURL('tab-group-page.html'));
+  }
+
   render() {
     return (
       <div className='popup'>
         <div className='title'>Crear nuevo grupo de pestañas</div>
         <TextField className='text-field' placeholder='Nombre' value={this.state.name} onChange={this.handleInputChange}/>
         <PrimaryButton className='button' text='Crear grupo' onClick={this.handleButtonClick}/>
+        <PrimaryButton className='button' text='Open page' onClick={this.handleOpenPageButtonClick}/>
       </div>
     );
   }

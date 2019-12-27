@@ -8,7 +8,8 @@ module.exports = {
   entry: {
     background: './src/background.ts',
     'content-script': './src/content-script.tsx',
-    'popup-root': './src/popup-root.tsx'
+    'popup-root': './src/popup-root.tsx',
+    'tab-group-page-root': './src/tab-group-page-root.tsx'
   },
   output: {
     filename: '[name].js'
@@ -26,6 +27,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'popup.html',
       chunks: ['popup-root']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'tab-group-page.html',
+      chunks: ['tab-group-page-root']
     })
   ],
   module: {
