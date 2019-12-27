@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { TabGroupPage } from './components/tab-group-page';
+import { TabGroupPage } from './components/tab-group-page/tab-group-page';
 
 const root = document.createElement('div');
 document.body.prepend(root);

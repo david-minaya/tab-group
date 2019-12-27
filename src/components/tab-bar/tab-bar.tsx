@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Tab } from './tab';
-import '../styles/tab-bar.css';
-import { MessageType } from '../enums/message-type';
-import Storage from '../storage/storage';
-import TabGroup from '../storage/tab-group';
-import LocalStorage from '../storage/local-storage';
+import '../../styles/tab-bar/tab-bar.css';
+import { MessageType } from '../../enums/message-type';
+import Storage from '../../storage/storage';
+import TabGroup from '../../storage/tab-group';
+import LocalStorage from '../../storage/local-storage';
 
 export class TabBar extends React.Component {
 
