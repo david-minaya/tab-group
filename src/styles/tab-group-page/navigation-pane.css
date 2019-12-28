@@ -1,0 +1,10 @@
+.navigation-pane {
+    width: 25%;
+    height: 100%;
+    padding: 25px;
+    border-right: 1px solid lightgray;
+}
+
+.title {
+    font-size: 28px;
+}

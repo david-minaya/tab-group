@@ -1,0 +1,12 @@
+body {
+    margin: 0px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.tab-group-page {
+    height: 100vh;
+    display: flex;
+}
