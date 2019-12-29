@@ -1,4 +1,4 @@
-import TabGroup from './tab-group';
+import { TabGroup } from './tab-group';
 
 export interface StorageInterface {
   getTabsGroup(key: string): Promise<TabGroup[]>;

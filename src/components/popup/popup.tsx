@@ -1,10 +1,7 @@
 import * as React from 'react';
 import '../../styles/popup/popup.css';
 import { TextField, PrimaryButton } from 'office-ui-fabric-react';
-import Storage from '../../storage/storage';
-import TabGroup from '../../storage/tab-group';
-import Tab from '../../storage/tab';
-import LocalStorage from '../../storage/local-storage';
+import { Storage, LocalStorage, TabGroup, Tab } from '../../storage';
 
 export class Popup extends React.Component {
 

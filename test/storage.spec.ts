@@ -1,9 +1,7 @@
 /*eslint-disable no-unused-expressions*/
 import { expect } from 'chai';
 import TestStorage from './test-storage';
-import Storage from '../src/storage/storage';
-import TabGroup from '../src/storage/tab-group';
-import Tab from '../src/storage/tab';
+import { Storage, TabGroup, Tab } from '../src/storage';
 
 const storage = new Storage(new TestStorage());
 

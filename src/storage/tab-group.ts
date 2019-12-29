@@ -1,6 +1,6 @@
-import Tab from './tab';
+import { Tab } from './tab';
 
-export default class TabGroup {
+export class TabGroup {
 
   id: string;
   tabId: number;

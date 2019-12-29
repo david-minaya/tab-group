@@ -1,9 +1,9 @@
-import TabGroup from './tab-group';
 import * as uuid from 'uuid/v4';
-import Tab from './tab';
+import { TabGroup } from './tab-group';
+import { Tab } from './tab';
 import { StorageInterface } from './storage-interface';
 
-export default class Storage {
+export class Storage {
   
   storage: StorageInterface;
 

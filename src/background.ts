@@ -1,6 +1,5 @@
 import { MessageType } from './enums/message-type';
-import LocalStorage from './storage/local-storage';
-import Storage from './storage/storage';
+import { Storage, LocalStorage } from './storage';
 
 interface Message {
   type: number,
