@@ -1,0 +1,22 @@
+.tab {
+  width: 140px;
+  height: 100px;
+  margin-right: 16px;
+  background-color: rgb(236, 236, 236);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.tab .title {
+  height: 60px;
+  font-size: 20px;
+  overflow-y: hidden;
+}
+
+.tab a {
+  width: 100%;
+  display: inline-block;
+  margin-top: 4px;
+  color: rgb(83, 83, 255);
+  overflow: hidden;
+}
