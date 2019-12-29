@@ -1,9 +1,10 @@
 .main-pane {
     width: 75%;
     height: 100%;
+    overflow-y: auto;
 }
 
 .tab-group-list {
     width: 75%;
-    margin: 54px auto 0px auto;
+    margin: 54px auto;
 }
