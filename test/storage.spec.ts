@@ -88,6 +88,13 @@ it('delete all the tabs group', async () => {
   expect(tabsGroup).to.be.empty;
 });
 
+it('attach browser tab', async () => {
+  await storage.detachBrowserTab(1);
+  await storage.attachBrowserTab('1', 5);
+  const isAttach = await storage.isBrowserTabAttached(5);
+  expect(isAttach).to.be.true;
+});
+
 it('detach browser tab of a tab group', async () => {
   await storage.detachBrowserTab(1);
   const isAttach = await storage.isBrowserTabAttached(1);

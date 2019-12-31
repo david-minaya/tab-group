@@ -7,9 +7,29 @@ import * as storage from '../../storage';
 export default class TabGroup extends React.Component {
 
   props: { tabGroup: storage.TabGroup }
+  storage: storage.Storage
 
-  handleClick = () => {
-    console.log('TabGroup -> handleClick');
+  constructor(props: { tabGroup: storage.TabGroup }) {
+    super(props);
+    this.storage = new storage.Storage(new storage.LocalStorage());
+  }
+
+  handleClick = async () => {
+    const browserTabId = await this.createTab();
+    await this.storage.attachBrowserTab(this.props.tabGroup.id, browserTabId);
+    // The tab bar is inserted in the new tab in the background script. 
+    // This script listen when a tab is loading the page, and if the id 
+    // of that tab is attached to one tab group, the tab bar is inserted. 
+    // See the onCommitted event in the background.js file.
+  }
+
+  createTab(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const url = this.props.tabGroup.tabs[0].url;
+      chrome.tabs.create({ url: url }, tab => {
+        resolve(tab.id);
+      });
+    });
   }
 
   render() {

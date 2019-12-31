@@ -49,6 +49,12 @@ export class Storage {
     await this.updateTabGroup(tabGroup);
   }
 
+  async attachBrowserTab(tabId: string, browserTabId: number) {
+    const tabGroup = await this.getTabGroup(tabId);
+    tabGroup.tabId = browserTabId;
+    await this.updateTabGroup(tabGroup);
+  }
+
   async detachBrowserTab(browserTabId: number) {
     const tabGroup = await this.getTabGroupByTabId(browserTabId);
     tabGroup.tabId = undefined;

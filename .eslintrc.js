@@ -66,6 +66,9 @@ module.exports = {
     ],
     'no-multiple-empty-lines': [
       'off'
+    ],
+    'prefer-const': [
+      'warn'
     ]
   }
 }
