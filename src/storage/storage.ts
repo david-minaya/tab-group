@@ -13,7 +13,7 @@ export class Storage {
 
   async addTabGroup(tabGroup: TabGroup) {
     this.addTabGroupId(tabGroup);
-    this.addTabId(tabGroup.tabs[0]);
+    this.settingDefaultTab(tabGroup.tabs[0]);
     const tabsGroup = await this.getTabsGroup();
     tabsGroup.push(tabGroup);
     await this.storage.setTabsGroup(tabsGroup);
@@ -72,9 +72,10 @@ export class Storage {
     tabGroup.tabs[0].tabGroupId = tabGroup.id;
   }
 
-  private addTabId(tab: Tab) {
-    if (tab && !tab.id) {
-      tab.id = uuid();
+  private settingDefaultTab(tab: Tab) {
+    if (tab) {
+      tab.id = !tab.id ? uuid() : tab.id;
+      tab.isSelected = true;
     }
   }
 
