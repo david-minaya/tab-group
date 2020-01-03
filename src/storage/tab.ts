@@ -1,4 +1,4 @@
-export default class Tab {
+export class Tab {
 
   id: string;
   tabGroupId: string;

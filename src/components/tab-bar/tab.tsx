@@ -1,8 +1,7 @@
 import * as React from 'react';
-import '../styles/tab.css';
-import { MessageType } from '../enums/message-type';
-import Storage from '../storage/storage';
-import LocalStorage from '../storage/local-storage';
+import '../../styles/tab-bar/tab.css';
+import { MessageType } from '../../enums/message-type';
+import { Storage, LocalStorage} from '../../storage';
 
 interface props {
   tab: any

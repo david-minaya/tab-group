@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { Popup } from './components/popup/popup';
+import { Index } from './components/index/index';
 
 const root = document.createElement('div');
 document.body.prepend(root);
-ReactDom.render(<Popup/>, root);
+ReactDom.render(<Index/>, root);

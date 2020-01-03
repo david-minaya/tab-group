@@ -1,9 +1,7 @@
 /*eslint-disable no-unused-expressions*/
 import { expect } from 'chai';
 import TestStorage from './test-storage';
-import Storage from '../src/storage/storage';
-import TabGroup from '../src/storage/tab-group';
-import Tab from '../src/storage/tab';
+import { Storage, TabGroup, Tab } from '../src/storage';
 
 const storage = new Storage(new TestStorage());
 
@@ -88,6 +86,13 @@ it('delete all the tabs group', async () => {
   await storage.clear();
   const tabsGroup = await storage.getTabsGroup();
   expect(tabsGroup).to.be.empty;
+});
+
+it('attach browser tab', async () => {
+  await storage.detachBrowserTab(1);
+  await storage.attachBrowserTab('1', 5);
+  const isAttach = await storage.isBrowserTabAttached(5);
+  expect(isAttach).to.be.true;
 });
 
 it('detach browser tab of a tab group', async () => {

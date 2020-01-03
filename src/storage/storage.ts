@@ -1,9 +1,9 @@
-import TabGroup from './tab-group';
 import * as uuid from 'uuid/v4';
-import Tab from './tab';
+import { TabGroup } from './tab-group';
+import { Tab } from './tab';
 import { StorageInterface } from './storage-interface';
 
-export default class Storage {
+export class Storage {
   
   storage: StorageInterface;
 
@@ -13,10 +13,10 @@ export default class Storage {
 
   async addTabGroup(tabGroup: TabGroup) {
     this.addTabGroupId(tabGroup);
-    this.addTabId(tabGroup.tabs[0]);
+    this.settingDefaultTab(tabGroup.tabs[0]);
     const tabsGroup = await this.getTabsGroup();
     tabsGroup.push(tabGroup);
-    await this.setTabsGroup(tabsGroup);
+    await this.storage.setTabsGroup(tabsGroup);
   }
 
   async getTabsGroup(): Promise<TabGroup[]> {
@@ -46,14 +46,19 @@ export default class Storage {
     const tabGroup = tabsGroup.find(tabGroup => tabGroup.id === tab.tabGroupId);
     const tabFound = tabGroup.tabs.find(currentTab => currentTab.id === tab.id);
     tabFound.isSelected = true;
-    await this.setTabsGroup(tabsGroup);
+    await this.updateTabGroup(tabGroup);
+  }
+
+  async attachBrowserTab(tabId: string, browserTabId: number) {
+    const tabGroup = await this.getTabGroup(tabId);
+    tabGroup.tabId = browserTabId;
+    await this.updateTabGroup(tabGroup);
   }
 
   async detachBrowserTab(browserTabId: number) {
-    const tabsGroup = await this.getTabsGroup();
-    const tabGroup = tabsGroup.find(tabGroup => tabGroup.tabId === browserTabId);
+    const tabGroup = await this.getTabGroupByTabId(browserTabId);
     tabGroup.tabId = undefined;
-    await this.setTabsGroup(tabsGroup);
+    await this.updateTabGroup(tabGroup);
   }
 
   async clear() {
@@ -67,13 +72,17 @@ export default class Storage {
     tabGroup.tabs[0].tabGroupId = tabGroup.id;
   }
 
-  private addTabId(tab: Tab) {
-    if (tab && !tab.id) {
-      tab.id = uuid();
+  private settingDefaultTab(tab: Tab) {
+    if (tab) {
+      tab.id = !tab.id ? uuid() : tab.id;
+      tab.isSelected = true;
     }
   }
 
-  private setTabsGroup(tabsGroup: TabGroup[]): Promise<void> {
-    return this.storage.setTabsGroup(tabsGroup);
+  private async updateTabGroup(updatedTabGroup: TabGroup) {
+    const tabsGroup = await this.getTabsGroup();
+    const index = tabsGroup.findIndex(tabGroup => tabGroup.id === updatedTabGroup.id);
+    tabsGroup[index] = updatedTabGroup;
+    await this.storage.setTabsGroup(tabsGroup);
   }
 }

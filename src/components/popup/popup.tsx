@@ -1,10 +1,7 @@
 import * as React from 'react';
-import '../styles/popup.css';
+import '../../styles/popup/popup.css';
 import { TextField, PrimaryButton } from 'office-ui-fabric-react';
-import Storage from '../storage/storage';
-import TabGroup from '../storage/tab-group';
-import Tab from '../storage/tab';
-import LocalStorage from '../storage/local-storage';
+import { Storage, LocalStorage, TabGroup, Tab } from '../../storage';
 
 export class Popup extends React.Component {
 
@@ -73,12 +70,17 @@ export class Popup extends React.Component {
     });
   }
 
+  handleOpenPageButtonClick = () => {
+    window.open(chrome.runtime.getURL('index.html'));
+  }
+
   render() {
     return (
       <div className='popup'>
         <div className='title'>Crear nuevo grupo de pestañas</div>
         <TextField className='text-field' placeholder='Nombre' value={this.state.name} onChange={this.handleInputChange}/>
         <PrimaryButton className='button' text='Crear grupo' onClick={this.handleButtonClick}/>
+        <PrimaryButton className='button' text='Open page' onClick={this.handleOpenPageButtonClick}/>
       </div>
     );
   }

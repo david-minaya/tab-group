@@ -1,5 +1,4 @@
-import { StorageInterface } from '../src/storage/storage-interface';
-import TabGroup from '../src/storage/tab-group';
+import { TabGroup, StorageInterface } from '../src/storage';
 
 export default class TestStorage implements StorageInterface {
 

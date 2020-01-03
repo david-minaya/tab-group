@@ -1,7 +1,7 @@
 import { StorageInterface } from './storage-interface';
-import TabGroup from './tab-group';
+import { TabGroup } from './tab-group';
 
-export default class LocalStorage implements StorageInterface {
+export class LocalStorage implements StorageInterface {
 
   storage: chrome.storage.LocalStorageArea;
 

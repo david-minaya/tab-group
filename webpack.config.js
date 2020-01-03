@@ -8,7 +8,8 @@ module.exports = {
   entry: {
     background: './src/background.ts',
     'content-script': './src/content-script.tsx',
-    'popup-root': './src/popup-root.tsx'
+    'popup-root': './src/popup-root.tsx',
+    'index-root': './src/index-root.tsx'
   },
   output: {
     filename: '[name].js'
@@ -26,6 +27,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'popup.html',
       chunks: ['popup-root']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      chunks: ['index-root'],
+      title: 'Index'
     })
   ],
   module: {
