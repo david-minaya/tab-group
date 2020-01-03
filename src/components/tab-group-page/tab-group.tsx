@@ -25,11 +25,15 @@ export default class TabGroup extends React.Component {
 
   createTab(): Promise<number> {
     return new Promise((resolve, reject) => {
-      const url = this.props.tabGroup.tabs[0].url;
-      chrome.tabs.create({ url: url }, tab => {
-        resolve(tab.id);
+      const { url } = this.getSelectedTab();
+      chrome.tabs.create({ url }, ({ id }) => {
+        resolve(id);
       });
     });
+  }
+
+  getSelectedTab() {
+    return this.props.tabGroup.tabs.find(tab => tab.isSelected);
   }
 
   render() {
@@ -42,7 +46,7 @@ export default class TabGroup extends React.Component {
         <div className='tab-list'>
           {
             this.props.tabGroup.tabs.map(tab => {
-              return <Tab key={tab.id} tab={tab}/>;
+              return <Tab key={tab.id} tab={tab} />;
             })
           }
         </div>
