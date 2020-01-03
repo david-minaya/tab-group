@@ -1,5 +1,5 @@
 import * as React from 'react';
-import '../../styles/tab-group-page/main-pane.css';
+import '../../styles/index/main-pane.css';
 import TabGroup from './tab-group';
 import * as storage from '../../storage';
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import '../../styles/tab-group-page/tab-group.css';
+import '../../styles/index/tab-group.css';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import Tab from './tab';
 import * as storage from '../../storage';

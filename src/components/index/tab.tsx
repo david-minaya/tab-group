@@ -1,5 +1,5 @@
 import * as React from 'react';
-import '../../styles/tab-group-page/tab.css';
+import '../../styles/index/tab.css';
 import * as storage from '../../storage';
 
 export default function Tab({ tab }: { tab: storage.Tab }) {

@@ -71,7 +71,7 @@ export class Popup extends React.Component {
   }
 
   handleOpenPageButtonClick = () => {
-    window.open(chrome.runtime.getURL('tab-group-page.html'));
+    window.open(chrome.runtime.getURL('index.html'));
   }
 
   render() {
