@@ -3,6 +3,7 @@ import { Tab } from './tab';
 import '../../styles/tab-bar/tab-bar.css';
 import { MessageType } from '../../enums/message-type';
 import { Storage, LocalStorage, TabGroup } from '../../storage';
+import { IconButton } from 'office-ui-fabric-react';
 
 export class TabBar extends React.Component {
 
@@ -32,11 +33,16 @@ export class TabBar extends React.Component {
   render() {
     return (
       <div className='tab-bar'>
-        {
-          this.state.tabGroup.tabs.map((tab: any) => {
-            return (<Tab tab={tab} />);
-          })
-        }
+        <div className='main-pane'>
+          <div className='tabs-list'>
+            {
+              this.state.tabGroup.tabs.map((tab: any) => {
+                return <Tab tab={tab} />;
+              })
+            }
+            <IconButton iconProps={({ iconName: 'add'})} className='add-option'/>
+          </div>
+        </div>
       </div>
     );
   }

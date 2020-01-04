@@ -11,19 +11,17 @@ export class Tab extends React.Component<props> {
 
   storage: Storage = new Storage(new LocalStorage());
 
-  private handleClick = async () => {
+  handleClick = async () => {
     const tab = this.props.tab;
     this.storage.selectTab(tab);
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab: tab } });
   }
 
   render() {
-    let div = {};
-    if (!this.props.tab.isSelected) {
-      div = (<div className='tab' onClick={this.handleClick}>{this.props.tab.name}</div>);
+    if (this.props.tab.isSelected) {
+      return <div className='tab selected-tab' onClick={this.handleClick}>{this.props.tab.name}</div>;
     } else {
-      div = (<div className='tab2' onClick={this.handleClick}>{this.props.tab.name}</div>);
+      return <div className='tab' onClick={this.handleClick}>{this.props.tab.name}</div>;
     }
-    return div;
   }
 }

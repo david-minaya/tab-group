@@ -1,15 +1,11 @@
 .tab {
   width: 150px;
   height: var(--tab-bar-height);
-  background-color: aliceblue;
   display: inline-block;
-  border-right: 1px solid black;
+  border-radius: 4px 0px 0px 4px;
+  padding: 6px;
 }
 
-.tab2 {
-  width: 150px;
-  height: var(--tab-bar-height);
-  background-color: red;
-  display: inline-block;
-  border-right: 1px solid black;
+.selected-tab {
+  border-bottom: 2px solid blue;
 }
