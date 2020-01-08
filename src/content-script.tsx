@@ -1,13 +1,6 @@
-import * as React from 'react';
-import * as ReactDom from 'react-dom';
-import { TabBar } from './components/tab-bar/tab-bar';
 import './content-script.css';
-import { initializeIcons } from '@uifabric/icons';
-initializeIcons();
 
-const body = document.body;
-const tabGroup = document.createElement('div');
-tabGroup.classList.add('tab-group');
-
-body.appendChild(tabGroup);
-ReactDom.render(<TabBar/>, tabGroup);
+const iframe = document.createElement('iframe');
+iframe.classList.add('iframe');
+document.body.append(iframe);
+iframe.src = chrome.runtime.getURL('tab-bar-page.html');

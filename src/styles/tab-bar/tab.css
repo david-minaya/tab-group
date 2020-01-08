@@ -4,6 +4,7 @@
   display: inline-block;
   border-radius: 4px 0px 0px 4px;
   padding: 6px;
+  overflow-y: hidden;
 }
 
 .selected-tab {

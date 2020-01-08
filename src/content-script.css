@@ -1,11 +1,8 @@
-:root {
-  --tab-bar-height: 32px;
-}
-
-.tab-group {
-  all: initial;
+.iframe {
+  height: 56px;
   width: 100vw;
   position: fixed;
   bottom: 0px;
   z-index: 5000;
+  border: none;
 }

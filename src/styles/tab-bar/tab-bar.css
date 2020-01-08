@@ -1,10 +1,12 @@
 .tab-bar {
+  --tab-bar-height: 32px;
   display: flex;
   height: var(--tab-bar-height);
   background-color: white;
   margin: 12px 28px 12px 12px;
   border-radius: 4px;
   box-shadow: 0px 1px 3px gray;
+  overflow-y: hidden;
 }
 
 .add-option {
