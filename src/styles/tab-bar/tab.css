@@ -1,10 +1,14 @@
 .tab {
+  display: inline-block;
   width: 150px;
   height: var(--tab-bar-height);
-  display: inline-block;
-  border-radius: 4px 0px 0px 4px;
   padding: 6px;
   overflow-y: hidden;
+  cursor: default;
+}
+
+.tab:hover {
+  background-color: lightgray;
 }
 
 .selected-tab {

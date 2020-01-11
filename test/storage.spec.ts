@@ -75,7 +75,7 @@ it('return true if found one tab group with the id of the browser tab', async ()
 
 it('select the tab passed as argument', async () => {
   const { tabs } = await storage.getTabGroup('1');
-  await storage.selectTab(tabs[0]);
+  await storage.selectTab(tabs[0], true);
   {
     const { tabs } = await storage.getTabGroup('1');
     expect(tabs[0].isSelected).to.be.true;

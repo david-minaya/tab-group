@@ -3,10 +3,18 @@
   display: flex;
   height: var(--tab-bar-height);
   background-color: white;
-  margin: 12px 28px 12px 12px;
+  margin: 12px 27px 12px 12px;
   border-radius: 4px;
   box-shadow: 0px 1px 3px gray;
   overflow-y: hidden;
+}
+
+.tabs-list div:first-child {
+  border-radius: 4px 0px 0px 4px;
+}
+
+.main-pane {
+  display: flex;
 }
 
 .add-option {
@@ -15,4 +23,8 @@
   font-size: var(--tab-bar-height);
   color: black;
   margin-left: 8px;
+}
+
+* {
+  box-sizing: border-box;
 }

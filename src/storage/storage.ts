@@ -19,6 +19,14 @@ export class Storage {
     await this.storage.setTabsGroup(tabsGroup);
   }
 
+  async addTab(tab: Tab) {
+    this.settingDefaultTab(tab);
+    const tabGroup = await this.getTabGroup(tab.tabGroupId);
+    tabGroup.tabs.push(tab);
+    await this.updateTabGroup(tabGroup);
+
+  }
+
   async getTabsGroup(): Promise<TabGroup[]> {
     return this.storage.getTabsGroup('tabsGroup');
   }
@@ -41,11 +49,11 @@ export class Storage {
     return isAssigned;
   }
 
-  async selectTab(tab: Tab) {
+  async selectTab(tab: Tab, select: boolean) {
     const tabsGroup = await this.getTabsGroup();
     const tabGroup = tabsGroup.find(tabGroup => tabGroup.id === tab.tabGroupId);
     const tabFound = tabGroup.tabs.find(currentTab => currentTab.id === tab.id);
-    tabFound.isSelected = true;
+    tabFound.isSelected = select;
     await this.updateTabGroup(tabGroup);
   }
 

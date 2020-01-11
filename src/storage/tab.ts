@@ -6,8 +6,9 @@ export class Tab {
   url: string;
   isSelected: boolean
 
-  constructor(name: string, url: string) {
+  constructor(name: string, url: string, tabGroupId?: string) {
     this.name = name;
     this.url = url;
+    this.tabGroupId = tabGroupId;
   }
 }

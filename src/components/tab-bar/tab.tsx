@@ -1,20 +1,22 @@
 import * as React from 'react';
 import '../../styles/tab-bar/tab.css';
 import { MessageType } from '../../enums/message-type';
-import { Storage, LocalStorage} from '../../storage';
+import * as storage from '../../storage';
 
 interface props {
-  tab: any
+  tab: storage.Tab,
+  onUnselectTab: () => void
 }
 
 export class Tab extends React.Component<props> {
 
-  storage: Storage = new Storage(new LocalStorage());
+  storage = new storage.Storage(new storage.LocalStorage());
 
   handleClick = async () => {
+    await this.props.onUnselectTab();
     const tab = this.props.tab;
-    this.storage.selectTab(tab);
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab: tab } });
+    await this.storage.selectTab(tab, true);
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
   }
 
   render() {
