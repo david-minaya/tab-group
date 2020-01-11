@@ -1,15 +1,16 @@
 .tab {
+  display: inline-block;
   width: 150px;
   height: var(--tab-bar-height);
-  background-color: aliceblue;
-  display: inline-block;
-  border-right: 1px solid black;
+  padding: 6px;
+  overflow-y: hidden;
+  cursor: default;
 }
 
-.tab2 {
-  width: 150px;
-  height: var(--tab-bar-height);
-  background-color: red;
-  display: inline-block;
-  border-right: 1px solid black;
+.tab:hover {
+  background-color: lightgray;
+}
+
+.selected-tab {
+  border-bottom: 2px solid blue;
 }

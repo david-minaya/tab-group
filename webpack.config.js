@@ -9,7 +9,8 @@ module.exports = {
     background: './src/background.ts',
     'content-script': './src/content-script.tsx',
     'popup-root': './src/popup-root.tsx',
-    'index-root': './src/index-root.tsx'
+    'index-root': './src/index-root.tsx',
+    'tab-bar-page': './src/tab-bar-page.tsx'
   },
   output: {
     filename: '[name].js'
@@ -32,6 +33,10 @@ module.exports = {
       filename: 'index.html',
       chunks: ['index-root'],
       title: 'Index'
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'tab-bar-page.html',
+      chunks: ['tab-bar-page']
     })
   ],
   module: {

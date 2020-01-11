@@ -23,7 +23,7 @@ chrome.webNavigation.onCommitted.addListener(async details => {
   if (details.frameId !== 0) return;
   const tabGroup = await storage.getTabGroupByTabId(details.tabId);
   if (tabGroup) {
-    chrome.tabs.executeScript(tabGroup.tabId, { file: 'content-script.js'});
+    chrome.tabs.executeScript(tabGroup.tabId, { file: 'content-script.js' });
   }
 });
 
