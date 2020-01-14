@@ -1,56 +1,48 @@
 import * as React from 'react';
 import '../../styles/index/tab-group.css';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import Tab from './tab';
-import * as storage from '../../storage';
+import { Tab } from './tab';
+import * as Storage from '../../storage';
 
-export default class TabGroup extends React.Component {
+export function TabGroup({ tabGroup }: { tabGroup: Storage.TabGroup }) {
 
-  props: { tabGroup: storage.TabGroup }
-  storage: storage.Storage
+  const storage = new Storage.Storage(new Storage.LocalStorage());
 
-  constructor(props: { tabGroup: storage.TabGroup }) {
-    super(props);
-    this.storage = new storage.Storage(new storage.LocalStorage());
-  }
-
-  handleClick = async () => {
-    const browserTabId = await this.createTab();
-    await this.storage.attachBrowserTab(this.props.tabGroup.id, browserTabId);
+  async function handleClick() {
+    const browserTabId = await createTab();
+    await storage.attachBrowserTab(tabGroup.id, browserTabId);
     // The tab bar is inserted in the new tab in the background script. 
     // This script listen when a tab is loading the page, and if the id 
     // of that tab is attached to one tab group, the tab bar is inserted. 
     // See the onCommitted event in the background.js file.
   }
 
-  createTab(): Promise<number> {
+  async function createTab(): Promise<number> {
+    const { url } = await getSelectedTab();
     return new Promise((resolve, reject) => {
-      const { url } = this.getSelectedTab();
       chrome.tabs.create({ url }, ({ id }) => {
         resolve(id);
       });
     });
   }
 
-  getSelectedTab() {
-    return this.props.tabGroup.tabs.find(tab => tab.isSelected);
+  async function getSelectedTab() {
+    return tabGroup.tabs.find(tab => tab.isSelected);
   }
 
-  render() {
-    return (
-      <div className='tab-group'>
-        <div className='top-bar'>
-          <div className='title'>{this.props.tabGroup.name}</div>
-          <Icon iconName='OpenInNewTab' className='open-option' onClick={this.handleClick}></Icon>
-        </div>
-        <div className='tab-list'>
-          {
-            this.props.tabGroup.tabs.map(tab => {
-              return <Tab key={tab.id} tab={tab} />;
-            })
-          }
-        </div>
+  return (
+    <div className='tab-group'>
+      <div className='top-bar'>
+        <div className='title'>{tabGroup.name}</div>
+        <Icon iconName='OpenInNewTab' className='open-option' onClick={handleClick}></Icon>
       </div>
-    );
-  }
+      <div className='tab-list'>
+        {
+          tabGroup.tabs.map(tab => {
+            return <Tab key={tab.id} tab={tab} />;
+          })
+        }
+      </div>
+    </div>
+  );
 }

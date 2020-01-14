@@ -2,25 +2,19 @@ import * as React from 'react';
 import { Tab } from './tab';
 import '../../styles/tab-bar/tab-bar.css';
 import { MessageType } from '../../enums/message-type';
-import * as storage from '../../storage';
+import * as Storage from '../../storage';
 import { IconButton } from 'office-ui-fabric-react';
 
-export class TabBar extends React.Component {
+export function TabBar() {
 
-  state: { tabGroup: storage.TabGroup }
-  storage: storage.Storage
+  const [tabGroup, setTabGroup] = React.useState(Storage.TabGroup.emptyTabGroup);
+  const storage = new Storage.Storage(new Storage.LocalStorage());
 
-  constructor(props: any) {
-    super(props);
-    this.state = { tabGroup: storage.TabGroup.emptyTabGroup };
-    this.storage = new storage.Storage(new storage.LocalStorage());
-  }
+  React.useEffect(() => {
+    updateTabGroup();
+  });
 
-  componentDidMount = async () => {
-    await this.updateTabGroup();
-  }
-
-  getTabId(): Promise<number> {
+  function getTabId(): Promise<number> {
     return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage({ type: MessageType.GET_TAB_ID }, tabId => {
         resolve(tabId);
@@ -28,44 +22,42 @@ export class TabBar extends React.Component {
     });
   }
 
-  handleAddOptionClick = async () => {
-    const tab = new storage.Tab('Nueva pestaña', 'https://www.google.com', this.state.tabGroup.id);
-    const selectedTab = this.getSelectedOffice();
-    await this.storage.addTab(tab);
-    await this.storage.selectTab(selectedTab, false);
-    await this.updateTabGroup();
+  async function handleAddOptionClick() {
+    const tab = new Storage.Tab('Nueva pestaña', 'https://www.google.com', tabGroup.id);
+    const selectedTab = getSelectedOffice();
+    await storage.addTab(tab);
+    await storage.selectTab(selectedTab, false);
+    await updateTabGroup();
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
   }
 
-  handleUnselectTab = async () => {
-    const tab = this.getSelectedOffice();
-    await this.storage.selectTab(tab, false);
+  async function handleUnselectTab() {
+    const tab = getSelectedOffice();
+    await storage.selectTab(tab, false);
   }
 
-  getSelectedOffice() {
-    return this.state.tabGroup.tabs.find(tab => tab.isSelected);
+  function getSelectedOffice() {
+    return tabGroup.tabs.find(tab => tab.isSelected);
   }
 
-  async updateTabGroup() {
-    const tabId = await this.getTabId();
-    const tabGroup = await this.storage.getTabGroupByTabId(tabId);
-    this.setState({ tabGroup });
+  async function updateTabGroup() {
+    const tabId = await getTabId();
+    const tabGroup = await storage.getTabGroupByTabId(tabId);
+    setTabGroup(tabGroup);
   }
 
-  render() {
-    return (
-      <div className='tab-bar'>
-        <div className='main-pane'>
-          <div className='tabs-list'>
-            {
-              this.state.tabGroup.tabs.map(tab => {
-                return <Tab key={tab.id} tab={tab} onUnselectTab={this.handleUnselectTab}/>;
-              })
-            }
-          </div>
-          <IconButton iconProps={({ iconName: 'add' })} className='add-option' onClick={this.handleAddOptionClick} />
+  return (
+    <div className='tab-bar'>
+      <div className='main-pane'>
+        <div className='tabs-list'>
+          {
+            tabGroup.tabs.map(tab => {
+              return <Tab key={tab.id} tab={tab} onUnselectTab={handleUnselectTab} />;
+            })
+          }
         </div>
+        <IconButton iconProps={({ iconName: 'add' })} className='add-option' onClick={handleAddOptionClick} />
       </div>
-    );
-  }
+    </div>
+  );
 }
