@@ -27,14 +27,14 @@ export function Popup() {
 
   async function handleButtonClick() {
     const browserTab = await getBrowserTab();
-    if (!canCreateTabGroup(browserTab)) return;
+    if (!await canCreateTabGroup(browserTab)) return;
     await createTabGroup(browserTab);
   }
 
   async function canCreateTabGroup(browserTab: chrome.tabs.Tab): Promise<boolean> {
-    const isAttached = !await storage.isBrowserTabAttached(browserTab.id);
+    const isNotAttached = !await storage.isBrowserTabAttached(browserTab.id);
     const isValidName = name !== '';
-    return isAttached && isValidName;
+    return isNotAttached && isValidName;
   }
 
   async function createTabGroup(browserTab: chrome.tabs.Tab) {
