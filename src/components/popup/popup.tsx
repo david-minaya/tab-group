@@ -40,13 +40,13 @@ export function Popup() {
   async function createTabGroup(browserTab: chrome.tabs.Tab) {
     const isValidUrl = browserTab.url !== 'edge://newtab/';
     const url = isValidUrl ? browserTab.url : 'https://www.google.com.do';
-    const tab = new Tab(browserTab.title, url);
+    const tab = new Tab(undefined, browserTab.title, url);
     const tabGroup = new TabGroup(name, browserTab.id, [tab]);
     await storage.addTabGroup(tabGroup);
     insertTabBar(isValidUrl, url);
   }
 
-  async function insertTabBar(isValidUrl: boolean, url: string) {
+  function insertTabBar(isValidUrl: boolean, url: string) {
     if (isValidUrl) {
       chrome.tabs.executeScript({ file: 'content-script.js' });
     } else {
@@ -55,14 +55,14 @@ export function Popup() {
     window.close();
   }
 
-  async function getBrowserTab(): Promise<chrome.tabs.Tab> {
+  function getBrowserTab(): Promise<chrome.tabs.Tab> {
     return new Promise((resolve, reject) => {
       const queryInfo = { windowId: chrome.windows.WINDOW_ID_CURRENT, highlighted: true };
       chrome.tabs.query(queryInfo, ([tab]) => resolve(tab));
     });
   }
 
-  async function handleOpenPageButtonClick() {
+  function handleOpenPageButtonClick() {
     window.open(chrome.runtime.getURL('index.html'));
   }
 
