@@ -4,7 +4,7 @@ import '../../styles/tab-bar/tab-bar.css';
 import { MessageType } from '../../enums/message-type';
 import * as Storage from '../../storage';
 import { IconButton } from 'office-ui-fabric-react';
-import { Message } from '../../../message';
+import { Message } from '../../message';
 
 export function TabBar() {
 

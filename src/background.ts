@@ -1,5 +1,5 @@
 import { MessageType } from './enums/message-type';
-import { Message } from '../message';
+import { Message } from './message';
 import { Storage, LocalStorage, TabGroup, Tab } from './storage';
 
 const storage = new Storage(new LocalStorage());

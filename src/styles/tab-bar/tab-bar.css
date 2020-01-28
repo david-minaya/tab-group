@@ -1,7 +1,7 @@
 .tab-bar {
-  --tab-bar-height: 32px;
+  --height: 32px;
   display: flex;
-  height: var(--tab-bar-height);
+  height: var(--height);
   background-color: white;
   margin: 12px 27px 12px 12px;
   border-radius: 4px;
@@ -18,9 +18,9 @@
 }
 
 .add-option {
-  width: var(--tab-bar-height);
-  height: var(--tab-bar-height);
-  font-size: var(--tab-bar-height);
+  width: var(--height);
+  height: var(--height);
+  font-size: var(--height);
   color: black;
   margin-left: 8px;
 }
