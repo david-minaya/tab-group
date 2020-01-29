@@ -24,7 +24,7 @@ export function Tab({ tab, onUnselectTab }: props) {
 
   return (
     <div className={className} onClick={handleClick}>
-      <img className='favicon' src='https://cdn.sstatic.net/Sites/es/img/favicon.ico?v=a8def514be8a' />
+      <img className='favicon' src={tab.favIconUrl} />
       <div className='title'>{tab.name}</div>
       <Icon iconName='cancel' className='close' />
     </div>

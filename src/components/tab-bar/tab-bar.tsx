@@ -28,7 +28,10 @@ export function TabBar() {
   }
 
   async function handleAddOptionClick() {
-    const tab = new Storage.Tab(undefined, 'Nueva pestaña', 'https://www.google.com', tabGroup.id);
+    const tab = new Storage.Tab(
+      undefined, 'Nueva pestaña', 'https://www.google.com', 
+      tabGroup.id, true, 'https://www.google.com/favicon.ico'
+    );
     const selectedTab = getSelectedTab();
     await storage.addTab(tab);
     await storage.selectTab(selectedTab, false);
@@ -51,6 +54,7 @@ export function TabBar() {
     const tab = tabGroup.tabs.find(tab => tab.isSelected);
     tab.name = arg.title;
     tab.url = arg.url;
+    tab.favIconUrl = arg.favIconUrl;
     await storage.updateTab(tab);
     setTabGroup(tabGroup);
   }
