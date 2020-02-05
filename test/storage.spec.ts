@@ -109,6 +109,26 @@ it('update tab', async () => {
   expect(updatedTab).to.be.equal(tab);
 });
 
+it('delete tab', async() => {
+  
+  const tabs = [
+    new Tab('id1', 'tab 1', 'url 1'),
+    new Tab('id2', 'tab 2', 'url 2')
+  ];
+
+  const tabGroup = new TabGroup('Group 4', 4, tabs, '4');
+  const tab = tabs[0];
+
+  await storage.addTabGroup(tabGroup);
+  await storage.deleteTab(tab);
+
+  const storedTabGroup = await storage.getTabGroup(tabGroup.id);
+  const [storedTab] = storedTabGroup.tabs;
+  const expectedTab = new Tab('id2', 'tab 2', 'url 2');
+
+  expect(storedTab).to.be.include(expectedTab);
+});
+
 afterEach(async () => {
   await storage.clear();
 });

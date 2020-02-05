@@ -77,6 +77,13 @@ export class Storage {
     await this.updateTabGroup(tabGroup);
   }
 
+  async deleteTab(tab: Tab) {
+    const tabGroup = await this.getTabGroup(tab.tabGroupId);
+    const index = tabGroup.tabs.findIndex(currentTab => currentTab.id === tab.id);
+    tabGroup.tabs.splice(index, 1);
+    await this.updateTabGroup(tabGroup);
+  }
+
   async clear() {
     await this.storage.clear();
   }
