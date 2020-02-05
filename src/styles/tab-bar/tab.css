@@ -1,16 +1,47 @@
 .tab {
-  display: inline-block;
-  width: 150px;
-  height: var(--tab-bar-height);
-  padding: 6px;
-  overflow-y: hidden;
+  display: inline-grid;
+  width: 180px;
+  height: var(--height);
+  grid-template-columns: var(--height) auto var(--height);
+  align-items: center;
+  justify-items: center;
   cursor: default;
+  padding: 0px 4px;
+  border-bottom: 2px solid transparent;
 }
 
 .tab:hover {
-  background-color: lightgray;
+  background-color: #F5F5F5;
 }
 
 .selected-tab {
   border-bottom: 2px solid blue;
+}
+
+.favicon {
+  width: 16px;
+  height: 16px;
+  background-color: aliceblue;
+}
+
+.title {
+  width: 108px;
+  height: 16px;
+  overflow: hidden;
+  justify-self: flex-start;
+  margin-left: 2px;
+}
+
+.close {
+  width: 20px;
+  font-size: 14px;
+  text-align: center;
+  line-height: 20px;
+  color: black;
+  border-radius: 2px;
+}
+
+.close:hover {
+  color: blue;
+  background-color: #DDDDDD;
 }

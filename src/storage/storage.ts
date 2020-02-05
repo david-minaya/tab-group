@@ -27,7 +27,7 @@ export class Storage {
 
   }
 
-  async getTabsGroup(): Promise<TabGroup[]> {
+  getTabsGroup(): Promise<TabGroup[]> {
     return this.storage.getTabsGroup('tabsGroup');
   }
 
@@ -49,6 +49,14 @@ export class Storage {
     return isAssigned;
   }
 
+  async updateTab(updatedTab: Tab) {
+    const tabGroup = await this.getTabGroup(updatedTab.tabGroupId);
+    const tabs = tabGroup.tabs;
+    const index = tabs.findIndex(tab => tab.id === updatedTab.id);
+    tabs[index] = updatedTab;
+    await this.updateTabGroup(tabGroup);
+  }
+
   async selectTab(tab: Tab, select: boolean) {
     const tabsGroup = await this.getTabsGroup();
     const tabGroup = tabsGroup.find(tabGroup => tabGroup.id === tab.tabGroupId);
@@ -66,6 +74,13 @@ export class Storage {
   async detachBrowserTab(browserTabId: number) {
     const tabGroup = await this.getTabGroupByTabId(browserTabId);
     tabGroup.tabId = undefined;
+    await this.updateTabGroup(tabGroup);
+  }
+
+  async deleteTab(tab: Tab) {
+    const tabGroup = await this.getTabGroup(tab.tabGroupId);
+    const index = tabGroup.tabs.findIndex(currentTab => currentTab.id === tab.id);
+    tabGroup.tabs.splice(index, 1);
     await this.updateTabGroup(tabGroup);
   }
 

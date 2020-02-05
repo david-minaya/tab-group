@@ -4,11 +4,18 @@ export class Tab {
   tabGroupId: string;
   name: string;
   url: string;
-  isSelected: boolean
+  isSelected: boolean;
+  favIconUrl: string;
 
-  constructor(name: string, url: string, tabGroupId?: string) {
+  constructor(
+    id?: string, name?: string, url?: string, 
+    tabGroupId?: string, isSelected?: boolean, favIconUrl?: string
+  ) {
+    this.id = id;
     this.name = name;
     this.url = url;
     this.tabGroupId = tabGroupId;
+    this.isSelected = isSelected;
+    this.favIconUrl = favIconUrl;
   }
 }
