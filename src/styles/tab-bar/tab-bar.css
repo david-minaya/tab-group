@@ -17,12 +17,21 @@
   display: flex;
 }
 
-.add-option {
-  width: var(--height);
-  height: var(--height);
-  font-size: var(--height);
+
+.icon {
+  width: 24px;
+  font-size: 15px;
+  text-align: center;
+  line-height: 24px;
+  cursor: default;
   color: black;
-  margin-left: 8px;
+  border-radius: 2px;
+  margin: 0px 8px;
+}
+
+.icon:hover {
+  color: blue;
+  background-color: #DDDDDD;
 }
 
 * {

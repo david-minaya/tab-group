@@ -3,7 +3,7 @@ import { Tab } from './tab';
 import '../../styles/tab-bar/tab-bar.css';
 import { MessageType } from '../../enums/message-type';
 import * as Storage from '../../storage';
-import { IconButton } from 'office-ui-fabric-react';
+import { Icon } from 'office-ui-fabric-react';
 import { Message } from '../../message';
 
 export function TabBar() {
@@ -27,14 +27,13 @@ export function TabBar() {
     });
   }
 
-  async function handleAddOptionClick() {
+  async function handleAddTab() {
     const tab = new Storage.Tab(
       undefined, 'Nueva pestaña', 'https://www.google.com',
       tabGroup.id, true, 'https://www.google.com/favicon.ico'
     );
-    const selectedTab = getSelectedTab();
     await storage.addTab(tab);
-    await storage.selectTab(selectedTab, false);
+    await handleUnselectTab();
     await updateTabGroup();
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
   }
@@ -124,7 +123,7 @@ export function TabBar() {
             })
           }
         </div>
-        <IconButton iconProps={({ iconName: 'add' })} className='add-option' onClick={handleAddOptionClick} />
+        <Icon iconName='add' className='icon' onClick={handleAddTab}/>
       </div>
     </div>
   );
