@@ -38,6 +38,12 @@ export function TabBar() {
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
   }
 
+  async function handleCloseTabBar() {
+    await storage.detachBrowserTab(tabGroup.tabId);
+    const tab = getSelectedTab();
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
+  }
+
   async function handleUnselectTab() {
     const tab = getSelectedTab();
     await storage.selectTab(tab, false);
@@ -124,6 +130,9 @@ export function TabBar() {
           }
         </div>
         <Icon iconName='add' className='icon' onClick={handleAddTab}/>
+      </div>
+      <div className='options'>
+        <Icon iconName='cancel' className='icon' onClick={handleCloseTabBar}/>
       </div>
     </div>
   );
