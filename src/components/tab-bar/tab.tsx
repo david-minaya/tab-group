@@ -29,8 +29,8 @@ export function Tab({ tab, onUnselectTab, onCloseTab }: props) {
 
   return (
     <div className={className} onClick={handleTabClick}>
-      <img className='favicon' src={tab.favIconUrl} />
-      <div className='title'>{tab.name}</div>
+      <img className='favicon' title={tab.name} src={tab.favIconUrl} />
+      <div className='title' title={tab.name}>{tab.name}</div>
       <Icon iconName='cancel' className='close' onClick={handleCloseTab} />
     </div>
   );
