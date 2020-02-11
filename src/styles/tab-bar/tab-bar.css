@@ -1,28 +1,51 @@
 .tab-bar {
   --height: 32px;
-  display: flex;
+  display: grid;
   height: var(--height);
   background-color: white;
+  grid-template-columns: calc(100% - 36px) 36px;
   margin: 12px 27px 12px 12px;
   border-radius: 4px;
   box-shadow: 0px 1px 3px gray;
-  overflow-y: hidden;
+}
+
+.main-pane {
+  display: flex;
+  align-items: center;
+}
+
+.tabs-list {
+  max-width: calc(100% - 32px);
+  display: flex;
+  overflow: hidden;
 }
 
 .tabs-list div:first-child {
   border-radius: 4px 0px 0px 4px;
 }
 
-.main-pane {
+.options {
+  width: 32px;
   display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 4px;
 }
 
-.add-option {
-  width: var(--height);
-  height: var(--height);
-  font-size: var(--height);
+.icon {
+  width: 24px;
+  font-size: 15px;
+  text-align: center;
+  line-height: 24px;
+  cursor: default;
   color: black;
-  margin-left: 8px;
+  border-radius: 2px;
+  margin: 0px 4px;
+}
+
+.icon:hover {
+  color: blue;
+  background-color: #DDDDDD;
 }
 
 * {

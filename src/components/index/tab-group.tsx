@@ -26,7 +26,7 @@ export function TabGroup({ tabGroup }: { tabGroup: Storage.TabGroup }) {
     });
   }
 
-  async function getSelectedTab() {
+  function getSelectedTab() {
     return tabGroup.tabs.find(tab => tab.isSelected);
   }
 
