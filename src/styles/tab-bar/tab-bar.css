@@ -20,7 +20,7 @@
   overflow: hidden;
 }
 
-.tabs-list div:first-child {
+.tabs-list .tab:first-child {
   border-radius: 4px 0px 0px 4px;
 }
 

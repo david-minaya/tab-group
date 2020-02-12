@@ -10,6 +10,7 @@ export function TabBar() {
 
   const [tabGroup, setTabGroup] = React.useState(Storage.TabGroup.emptyTabGroup);
   const storage = new Storage.Storage(new Storage.LocalStorage());
+  const [isLoading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     chrome.runtime.onMessage.addListener(updateTab);
@@ -104,6 +105,7 @@ export function TabBar() {
     tab.url = arg.url;
     tab.favIconUrl = arg.favIconUrl;
     await storage.updateTab(tab);
+    setLoading(false);
     setTabGroup(tabGroup);
   }
 
@@ -123,6 +125,7 @@ export function TabBar() {
                 <Tab
                   key={tab.id}
                   tab={tab}
+                  isLoading={isLoading && tab.isSelected}
                   onUnselectTab={handleUnselectTab}
                   onCloseTab={handleCloseTab} />
               );
