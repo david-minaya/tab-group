@@ -13,10 +13,10 @@ export function TabBar() {
   const [isLoading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    chrome.runtime.onMessage.addListener(updateTab);
+    chrome.runtime.onMessage.addListener(menssageListener);
     updateTabGroup();
     return () => {
-      chrome.runtime.onMessage.removeListener(updateTab);
+      chrome.runtime.onMessage.removeListener(menssageListener);
     };
   }, []);
 
@@ -97,13 +97,22 @@ export function TabBar() {
     return tabGroup.tabs.find(tab => tab.isSelected);
   }
 
-  async function updateTab({ type, arg }: Message, sender: any, sendResponse: any) {
-    if (type !== MessageType.UPDATE_TAB) return;
-    const tabGroup = await storage.getTabGroupByTabId(arg.tabId);
+  async function menssageListener({ type, arg }: Message, sender: any, sendResponse: any) {
+    switch (type) {
+      case MessageType.UPDATE_TAB:
+        await updateTab(arg);
+        break;
+    }
+  }
+
+  async function updateTab({ tabId, title, url, favIconUrl, isTitleUpdate }: any) {
+    const tabGroup = await storage.getTabGroupByTabId(tabId);
     const tab = tabGroup.tabs.find(tab => tab.isSelected);
-    tab.name = arg.title;
-    tab.url = arg.url;
-    tab.favIconUrl = arg.favIconUrl;
+    tab.name = title;
+    if (!isTitleUpdate) {
+      tab.url = url;
+      tab.favIconUrl = favIconUrl;
+    }
     await storage.updateTab(tab);
     setLoading(false);
     setTabGroup(tabGroup);

@@ -30,7 +30,10 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, { title, url, favIco
   if (changeInfo.status === 'complete') {
     const tabGroup = await storage.getTabGroupByTabId(tabId);
     if (tabGroup) {
-      chrome.tabs.sendMessage(tabId, { type: MessageType.UPDATE_TAB, arg: { title, url, tabId, favIconUrl } });
+      chrome.tabs.sendMessage(tabId, {
+        type: MessageType.UPDATE_TAB, 
+        arg: { tabId, title, url, favIconUrl, isTitleUpdate: false } 
+      });
     }
   }
 });
