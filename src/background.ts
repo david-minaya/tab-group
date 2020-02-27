@@ -25,6 +25,19 @@ chrome.webNavigation.onCommitted.addListener(async details => {
   }
 });
 
+// Update the title and url of the selected tab when the browser tab is complete loaded
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, { title, url, favIconUrl }) => {
+  if (changeInfo.status === 'complete') {
+    const tabGroup = await storage.getTabGroupByTabId(tabId);
+    if (tabGroup) {
+      chrome.tabs.sendMessage(tabId, {
+        type: MessageType.UPDATE_TAB, 
+        arg: { tabId, title, url, favIconUrl, isTitleUpdate: false } 
+      });
+    }
+  }
+});
+
 // Detach the tab bar from the browser tab when it is closed
 chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
   const isAttach = await storage.isBrowserTabAttached(tabId);

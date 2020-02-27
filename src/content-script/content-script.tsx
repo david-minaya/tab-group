@@ -1,6 +1,5 @@
 import './content-script.css';
 import TitlePrefixer from './TitlePrefixer';
-import getFaviconUrl from './getFaviconUrl';
 import insertTabBar from './insertTabBar';
 import getBrowserTabId from '../utils/getBrowserTabId';
 import { MessageType } from '../enums/message-type';
@@ -10,17 +9,15 @@ insertTabBar();
 
 window.onload = async () => {
 
-  const url = window.location.href;
   const storage = new Storage(new LocalStorage());
   const tabId = await getBrowserTabId();
   const tabGroup = await storage.getTabGroupByTabId(tabId);
-  const favIconUrl = getFaviconUrl();
   const titleElement = document.querySelector('title');
   
   const titleUpdateListener = (title: string) => {
     chrome.runtime.sendMessage({ 
       type: MessageType.UPDATE_TAB, 
-      arg: { title, url, tabId, favIconUrl } 
+      arg: { tabId, title, isTitleUpdate: true } 
     });
   };
 
