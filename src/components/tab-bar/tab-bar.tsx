@@ -6,26 +6,44 @@ import * as Storage from '../../storage';
 import { Icon } from 'office-ui-fabric-react';
 import { Message } from '../../message';
 
-export function TabBar() {
+interface props {
+  tabGroup: Storage.TabGroup;
+}
 
-  const [tabGroup, setTabGroup] = React.useState(Storage.TabGroup.emptyTabGroup);
-  const storage = new Storage.Storage(new Storage.LocalStorage());
+const storage = new Storage.Storage(new Storage.LocalStorage());
+
+export function TabBar({ tabGroup: initialTabGroup }: props) {
+
+  const [tabGroup, setTabGroup] = React.useState(initialTabGroup);
   const [isLoading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     chrome.runtime.onMessage.addListener(menssageListener);
-    updateTabGroup();
     return () => {
       chrome.runtime.onMessage.removeListener(menssageListener);
     };
   }, []);
 
-  function getTabId(): Promise<number> {
-    return new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage({ type: MessageType.GET_TAB_ID }, tabId => {
-        resolve(tabId);
-      });
-    });
+  async function menssageListener({ type, arg }: Message, sender: any, sendResponse: any) {
+    
+    const isUpdateTab = type === MessageType.UPDATE_TAB;
+    const isItTabGroup = arg.tabId === tabGroup.tabId;
+    
+    if (isUpdateTab && isItTabGroup) {
+    
+      const tab = getSelectedTab();
+    
+      tab.name = arg.title;
+    
+      if (!arg.isTitleUpdate) {
+        tab.url = arg.url;
+        tab.favIconUrl = arg.favIconUrl;
+      }
+    
+      await storage.updateTab(tab);
+      await updateTabGroup();
+      setLoading(false);
+    }
   }
 
   async function handleAddTab() {
@@ -40,9 +58,7 @@ export function TabBar() {
   }
 
   async function handleCloseTabBar() {
-    await storage.detachBrowserTab(tabGroup.tabId);
-    const tab = getSelectedTab();
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
+    await detachTabGroup();
   }
 
   async function handleUnselectTab() {
@@ -52,76 +68,57 @@ export function TabBar() {
 
   async function handleCloseTab(tab: Storage.Tab) {
     await storage.deleteTab(tab);
-    await selectTab(tab);
-  }
-
-  async function selectTab(closedTab: Storage.Tab) {
-
-    const { tabs } = tabGroup;
-    const isLastTab = tabs[tabs.length - 1].id === closedTab.id;
-    const isOnlyTab = tabs.length === 1;
-
-    if (!closedTab.isSelected) {
-      await updateTabGroup();
-    } else if (isLastTab && !isOnlyTab) {
-      await selectBeforeTab();
-    } else if (!isOnlyTab) {
-      await selectNextTab(closedTab);
-    } else {
-      await detachTabGroup(closedTab);
-    }
-  }
-
-  async function selectBeforeTab() {
-    const { tabs } = tabGroup;
-    const beforeIndex = tabs.length - 2;
-    const tab = tabs[beforeIndex];
-    await storage.selectTab(tab, true);
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
-  }
-
-  async function selectNextTab(closedTab: Storage.Tab) {
-    const { tabs } = tabGroup;
-    const nextIndex = tabs.findIndex(tab => tab.id === closedTab.id) + 1;
-    const tab = tabs[nextIndex];
-    await storage.selectTab(tab, true);
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
-  }
-
-  async function detachTabGroup(closedTab: Storage.Tab) {
-    await storage.detachBrowserTab(tabGroup.tabId);
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab: closedTab } });
+    await selectNewTab(tab);
   }
 
   function getSelectedTab() {
     return tabGroup.tabs.find(tab => tab.isSelected);
   }
 
-  async function menssageListener({ type, arg }: Message, sender: any, sendResponse: any) {
-    switch (type) {
-      case MessageType.UPDATE_TAB:
-        await updateTab(arg);
-        break;
-    }
-  }
-
-  async function updateTab({ tabId, title, url, favIconUrl, isTitleUpdate }: any) {
-    const tabGroup = await storage.getTabGroupByTabId(tabId);
-    const tab = tabGroup.tabs.find(tab => tab.isSelected);
-    tab.name = title;
-    if (!isTitleUpdate) {
-      tab.url = url;
-      tab.favIconUrl = favIconUrl;
-    }
-    await storage.updateTab(tab);
-    setLoading(false);
-    setTabGroup(tabGroup);
-  }
-
   async function updateTabGroup() {
-    const tabId = await getTabId();
-    const tabGroup = await storage.getTabGroupByTabId(tabId);
-    setTabGroup(tabGroup);
+    const updatedTabGroup = await storage.getTabGroupByTabId(tabGroup.tabId);
+    setTabGroup(updatedTabGroup);
+  }
+
+  async function selectNewTab(closedTab: Storage.Tab) {
+
+    const { tabs } = tabGroup;
+    const isLastTab = tabs[tabs.length - 1].id === closedTab.id;
+    const isOnlyTab = tabs.length === 1;
+
+    if (!closedTab.isSelected) {
+
+      await updateTabGroup();
+
+    } else if (isLastTab && !isOnlyTab) {
+
+      // Select the before tab
+      const beforeIndex = tabs.length - 2;
+      const tab = tabs[beforeIndex];
+      await selectTab(tab);
+
+    } else if (!isOnlyTab) {
+      
+      // Select the next tab
+      const nextIndex = tabs.findIndex(tab => tab.id === closedTab.id) + 1;
+      const tab = tabs[nextIndex];
+      await selectTab(tab);
+
+    } else {
+
+      await detachTabGroup();
+    }
+  }
+
+  async function selectTab(tab: Storage.Tab) {
+    await storage.selectTab(tab, true);
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
+  }
+
+  async function detachTabGroup() {
+    const tab = getSelectedTab();
+    await storage.detachBrowserTab(tabGroup.tabId);
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
   }
 
   return (
@@ -129,22 +126,20 @@ export function TabBar() {
       <div className='main-pane'>
         <div className='tabs-list'>
           {
-            tabGroup.tabs.map(tab => {
-              return (
-                <Tab
-                  key={tab.id}
-                  tab={tab}
-                  isLoading={isLoading && tab.isSelected}
-                  onUnselectTab={handleUnselectTab}
-                  onCloseTab={handleCloseTab} />
-              );
-            })
+            tabGroup.tabs.map(tab => (
+              <Tab
+                key={tab.id}
+                tab={tab}
+                isLoading={isLoading && tab.isSelected}
+                onUnselectTab={handleUnselectTab}
+                onCloseTab={handleCloseTab} />
+            ))
           }
         </div>
-        <Icon iconName='add' className='icon' onClick={handleAddTab}/>
+        <Icon iconName='add' className='icon' onClick={handleAddTab} />
       </div>
       <div className='options'>
-        <Icon iconName='cancel' className='icon' onClick={handleCloseTabBar}/>
+        <Icon iconName='cancel' className='icon' onClick={handleCloseTabBar} />
       </div>
     </div>
   );
