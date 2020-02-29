@@ -8,19 +8,6 @@ export function Popup() {
   const storage = new Storage(new LocalStorage());
   const [name, setName] = React.useState('');
 
-  React.useEffect(() => {
-    chrome.tabs.onUpdated.addListener(onUpdatedTab);
-    return () => {
-      chrome.tabs.onUpdated.removeListener(onUpdatedTab);
-    };
-  });
-
-  function onUpdatedTab(tabId: Number, changeInfo: any, tab: chrome.tabs.Tab) {
-    if (changeInfo.status === 'complete') {
-      chrome.tabs.executeScript({ file: 'content-script.js' });
-    }
-  }
-
   function handleInputChange(event: any) {
     setName(event.target.value);
   }
@@ -38,20 +25,19 @@ export function Popup() {
   }
 
   async function createTabGroup(browserTab: chrome.tabs.Tab) {
+    
     const isValidUrl = browserTab.url !== 'edge://newtab/';
     const url = isValidUrl ? browserTab.url : 'https://www.google.com.do';
+    
     const tab = new Tab(undefined, browserTab.title, url);
     const tabGroup = new TabGroup(name, browserTab.id, [tab]);
     await storage.addTabGroup(tabGroup);
-    insertTabBar(isValidUrl, url);
-  }
 
-  function insertTabBar(isValidUrl: boolean, url: string) {
-    if (isValidUrl) {
-      chrome.tabs.executeScript({ file: 'content-script.js' });
-    } else {
-      chrome.tabs.update({ url: 'https://www.google.com.do' });
-    }
+    // The tab bar is inserted from the background script when the listener
+    // chrome.webNavigation.onCommitted is triggered. This listener is triggered
+    // when the page is updating.
+    chrome.tabs.update({ url });
+    
     window.close();
   }
 
