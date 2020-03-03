@@ -1,0 +1,24 @@
+.option {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  margin: 4px auto;
+  padding: 4px 8px;
+  cursor: default;
+}
+
+.option:hover {
+  background-color: #F5F5F5;
+}
+
+.name {
+  font-size: 15px;
+}
+
+.icon {
+  width: 24px;
+  line-height: 24px;
+  font-size: 15px;
+  text-align: center;
+  cursor: default;
+  border-radius: 2px;
+}
