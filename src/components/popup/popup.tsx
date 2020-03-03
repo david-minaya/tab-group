@@ -1,6 +1,6 @@
 import * as React from 'react';
 import '../../styles/popup/popup.css';
-import { TextField, PrimaryButton } from 'office-ui-fabric-react';
+import { Option } from './option';
 import { Storage, LocalStorage, TabGroup, Tab } from '../../storage';
 
 export function Popup() {
@@ -54,10 +54,12 @@ export function Popup() {
 
   return (
     <div className='popup'>
-      <div className='title'>Crear nuevo grupo de pestañas</div>
-      <TextField className='text-field' placeholder='Nombre' value={name} onChange={handleInputChange} />
-      <PrimaryButton className='button' text='Crear grupo' onClick={handleButtonClick} />
-      <PrimaryButton className='button' text='Open page' onClick={handleOpenPageButtonClick} />
+      <div className='title'>Grupo de pestañas</div>
+      <div className='options'>
+        <Option icon="addin" title="Create tab group" />
+        <Option icon="openinnewtab" title="Open tab group page" onClick={handleOpenPageButtonClick}/>
+        <Option icon="pageadd" title="Add page to a tab group"/>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import * as ReactDom from 'react-dom';
 import getBrowserTabId from './utils/getBrowserTabId';
 import { initializeIcons } from '@uifabric/icons';
 import { TabBar } from './components/tab-bar/tab-bar';
-import { Storage, LocalStorage, TabGroup } from './storage';
+import { Storage, LocalStorage } from './storage';
 
 initializeIcons();
 
