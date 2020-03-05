@@ -1,9 +1,9 @@
-import './content-script.css';
+import './index.css';
 import TitlePrefixer from './TitlePrefixer';
 import insertTabBar from './insertTabBar';
-import getBrowserTabId from '../utils/getBrowserTabId';
-import { MessageType } from '../enums/message-type';
-import { Storage, LocalStorage } from '../storage';
+import getBrowserTabId from '../../utils/getBrowserTabId';
+import { MessageType } from '../../enums/message-type';
+import { Storage, LocalStorage } from '../../storage';
 
 insertTabBar();
 

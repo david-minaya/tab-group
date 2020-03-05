@@ -7,7 +7,7 @@ module.exports = {
   devtool: 'eval-source-map',
   entry: {
     background: './src/background.ts',
-    'content-script': './src/content-script/content-script.tsx',
+    'tab-bar': './src/content-scripts/tab-bar',
     'popup-root': './src/popup-root.tsx',
     'index-root': './src/index-root.tsx',
     'tab-bar-page': './src/tab-bar-page.tsx'
