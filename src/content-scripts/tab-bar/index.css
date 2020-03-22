@@ -1,8 +1,14 @@
-.iframe {
+.tab-bar-container {
   height: 56px;
   width: 100vw;
   position: fixed;
   bottom: 0px;
   z-index: 5000;
   border: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.tab-bar-container div, .tab-bar-container img {
+  background: initial;
+  line-height: initial;
 }

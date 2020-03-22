@@ -1,4 +1,4 @@
-.tab-bar {
+.tab-bar-container .tab-bar {
   --height: 32px;
   display: grid;
   height: var(--height);

@@ -1,30 +1,21 @@
+import * as React from 'react';
+import * as ReactDom from 'react-dom';
 import './index.css';
-import TitlePrefixer from './TitlePrefixer';
-import insertTabBar from './insertTabBar';
 import getBrowserTabId from '../../utils/getBrowserTabId';
-import { MessageType } from '../../enums/message-type';
-import { Storage, LocalStorage } from '../../storage';
+import { Storage, LocalStorage, TabGroup } from '../../storage';
+import { initializeIcons } from '@uifabric/icons';
+import { TabBar } from '../../components/tab-bar/tab-bar';
 
-insertTabBar();
-
-window.onload = async () => {
+(async () => {
+  
+  initializeIcons();
 
   const storage = new Storage(new LocalStorage());
   const tabId = await getBrowserTabId();
   const tabGroup = await storage.getTabGroupByTabId(tabId);
-  const titleElement = document.querySelector('title');
-  
-  const titleUpdateListener = (title: string) => {
-    chrome.runtime.sendMessage({ 
-      type: MessageType.UPDATE_TAB, 
-      arg: { tabId, title, isTitleUpdate: true } 
-    });
-  };
+  const root = document.createElement('div');
 
-  const titlePrefixer = new TitlePrefixer(tabGroup.name, titleUpdateListener);
-  titlePrefixer.prefixTitle();
-
-  const observer = new MutationObserver(() => titlePrefixer.prefixTitle()); // eslint-disable-line no-undef
-  const filter = { characterData: true, childList: true };
-  observer.observe(titleElement, filter);
-};
+  root.classList.add('tab-bar-container');
+  document.body.appendChild(root);
+  ReactDom.render(<TabBar tabGroup={tabGroup}/>, root);
+})();
