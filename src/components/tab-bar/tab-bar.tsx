@@ -1,6 +1,6 @@
 import * as React from 'react';
+import * as style from '../../styles/tab-bar/tab-bar.css';
 import { Tab } from './tab';
-import '../../styles/tab-bar/tab-bar.css';
 import { MessageType } from '../../enums/message-type';
 import * as Storage from '../../storage';
 import { Icon } from 'office-ui-fabric-react';
@@ -122,9 +122,9 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   }
 
   return (
-    <div className='tab-bar'>
-      <div className='main-pane'>
-        <div className='tabs-list'>
+    <div className={style.tabBar}>
+      <div className={style.mainPane}>
+        <div className={style.tabs}>
           {
             tabGroup.tabs.map(tab => (
               <Tab
@@ -136,10 +136,10 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
             ))
           }
         </div>
-        <Icon iconName='add' className='icon' onClick={handleAddTab} />
+        <Icon className={style.icon} iconName='add' onClick={handleAddTab} />
       </div>
-      <div className='options'>
-        <Icon iconName='cancel' className='icon' onClick={handleCloseTabBar} />
+      <div className={style.options}>
+        <Icon className={style.icon} iconName='cancel' onClick={handleCloseTabBar} />
       </div>
     </div>
   );

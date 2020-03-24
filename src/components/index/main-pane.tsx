@@ -1,5 +1,5 @@
 import * as React from 'react';
-import '../../styles/index/main-pane.css';
+import * as style from '../../styles/index/main-pane.css';
 import { TabGroup } from './tab-group';
 import * as Storage from '../../storage';
 
@@ -18,8 +18,8 @@ export function MainPane() {
   }
 
   return (
-    <div className='main-pane'>
-      <div className='tab-group-list'>
+    <div className={style.mainPane}>
+      <div className={style.list}>
         {
           tabsGroups.map(tabGroup => {
             return <TabGroup key={tabGroup.id} tabGroup={tabGroup} />;

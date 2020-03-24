@@ -1,5 +1,5 @@
 import * as React from 'react';
-import '../../styles/index/tab-group.css';
+import * as style from '../../styles/index/tab-group.css';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { Tab } from './tab';
 import * as Storage from '../../storage';
@@ -31,12 +31,12 @@ export function TabGroup({ tabGroup }: { tabGroup: Storage.TabGroup }) {
   }
 
   return (
-    <div className='tab-group'>
-      <div className='top-bar'>
-        <div className='title'>{tabGroup.name}</div>
-        <Icon iconName='OpenInNewTab' className='open-option' onClick={handleClick}></Icon>
+    <div className={style.tabGroup}>
+      <div className={style.topBar}>
+        <div className={style.title}>{tabGroup.name}</div>
+        <Icon className={style.openOption} iconName='OpenInNewTab' onClick={handleClick}></Icon>
       </div>
-      <div className='tab-list'>
+      <div className={style.list}>
         {
           tabGroup.tabs.map(tab => {
             return <Tab key={tab.id} tab={tab} />;

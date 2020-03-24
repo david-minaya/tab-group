@@ -1,5 +1,5 @@
 import * as React from 'react';
-import '../../styles/tab-bar/tab.css';
+import * as style from '../../styles/tab-bar/tab.css';
 import { MessageType } from '../../enums/message-type';
 import { Icon, Spinner, SpinnerSize, Shimmer } from 'office-ui-fabric-react';
 import * as Storage from '../../storage';
@@ -26,10 +26,10 @@ export function Tab({ tab, onUnselectTab, onCloseTab, isLoading }: props) {
     event.stopPropagation();
   }
 
-  const className = tab.isSelected ? 'tab selected-tab' : 'tab';
+  const tabStyle = tab.isSelected ? style.selectedTab : style.tab;
 
   return (
-    <div className={className} onClick={handleTabClick}>
+    <div className={tabStyle} onClick={handleTabClick}>
       { isLoading &&
         <React.Fragment>
           <Spinner size={SpinnerSize.small}/>
@@ -37,11 +37,11 @@ export function Tab({ tab, onUnselectTab, onCloseTab, isLoading }: props) {
         </React.Fragment>
       } { !isLoading && 
         <React.Fragment>
-          <img className='favicon' title={tab.name} src={tab.favIconUrl}/>
-          <div className='title' title={tab.name}>{tab.name}</div>
+          <img className={style.favicon} title={tab.name} src={tab.favIconUrl}/>
+          <div className={style.title} title={tab.name}>{tab.name}</div>
         </React.Fragment>
       }
-      <Icon iconName='cancel' className='close' onClick={handleCloseTab} />
+      <Icon className={style.close} iconName='cancel' onClick={handleCloseTab} />
     </div>
   );
 }
