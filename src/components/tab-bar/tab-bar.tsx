@@ -26,19 +26,12 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   async function menssageListener({ type, arg }: Message, sender: any, sendResponse: any) {
     
     const isUpdateTab = type === MessageType.UPDATE_TAB;
-    const isItTabGroup = arg.tabId === tabGroup.tabId;
+    const isThisTabGroup = arg.tabId === tabGroup.tabId;
     
-    if (isUpdateTab && isItTabGroup) {
-    
+    if (isUpdateTab && isThisTabGroup) {
       const tab = getSelectedTab();
-    
-      tab.name = arg.title;
-    
-      if (!arg.isTitleUpdate) {
-        tab.url = arg.url;
-        tab.favIconUrl = arg.favIconUrl;
-      }
-    
+      tab.url = arg.url;
+      tab.favIconUrl = arg.favIconUrl;
       await storage.updateTab(tab);
       await updateTabGroup();
       setLoading(false);
