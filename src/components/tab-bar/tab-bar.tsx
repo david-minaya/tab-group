@@ -5,11 +5,9 @@ import { MessageType } from '../../enums/message-type';
 import * as Storage from '../../storage';
 import { Icon } from 'office-ui-fabric-react';
 import { Message } from '../../message';
+import TitlePrefixer from '../../content-scripts/tab-bar/TitlePrefixer';
 
-interface props {
-  tabGroup: Storage.TabGroup;
-}
-
+interface props { tabGroup: Storage.TabGroup; }
 const storage = new Storage.Storage(new Storage.LocalStorage());
 
 export function TabBar({ tabGroup: initialTabGroup }: props) {
@@ -19,6 +17,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   React.useEffect(() => {
     chrome.runtime.onMessage.addListener(menssageListener);
+    prefixBrowserTabTitle();
     return () => {
       chrome.runtime.onMessage.removeListener(menssageListener);
     };
@@ -44,6 +43,25 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
       await updateTabGroup();
       setLoading(false);
     }
+  }
+
+  function prefixBrowserTabTitle() {
+    
+    const titleUpdateListener = async (title: string) => {
+      const tab = getSelectedTab();
+      tab.name = title;
+      await storage.updateTab(tab);
+      await updateTabGroup();
+      setLoading(false);
+    };
+    
+    const titlePrefixer = new TitlePrefixer(tabGroup.name, titleUpdateListener);
+    titlePrefixer.prefixTitle();
+    
+    const observer = new MutationObserver(() => titlePrefixer.prefixTitle()); // eslint-disable-line no-undef
+    const titleElement = document.querySelector('title');
+    const filter = { characterData: true, childList: true };
+    observer.observe(titleElement, filter);
   }
 
   async function handleAddTab() {
