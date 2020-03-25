@@ -1,10 +1,10 @@
-.main-pane {
+.mainPane {
     width: 75%;
     height: 100%;
     overflow-y: auto;
 }
 
-.tab-group-list {
+.list {
     width: 75%;
     margin: 54px auto;
 }

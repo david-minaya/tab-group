@@ -1,15 +1,13 @@
 import * as React from 'react';
+import * as style from '../../styles/tab-bar/tab-bar.css';
 import { Tab } from './tab';
-import '../../styles/tab-bar/tab-bar.css';
 import { MessageType } from '../../enums/message-type';
 import * as Storage from '../../storage';
 import { Icon } from 'office-ui-fabric-react';
 import { Message } from '../../message';
+import TitlePrefixer from '../../content-scripts/tab-bar/TitlePrefixer';
 
-interface props {
-  tabGroup: Storage.TabGroup;
-}
-
+interface props { tabGroup: Storage.TabGroup; }
 const storage = new Storage.Storage(new Storage.LocalStorage());
 
 export function TabBar({ tabGroup: initialTabGroup }: props) {
@@ -19,6 +17,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   React.useEffect(() => {
     chrome.runtime.onMessage.addListener(menssageListener);
+    prefixBrowserTabTitle();
     return () => {
       chrome.runtime.onMessage.removeListener(menssageListener);
     };
@@ -27,23 +26,35 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   async function menssageListener({ type, arg }: Message, sender: any, sendResponse: any) {
     
     const isUpdateTab = type === MessageType.UPDATE_TAB;
-    const isItTabGroup = arg.tabId === tabGroup.tabId;
+    const isThisTabGroup = arg.tabId === tabGroup.tabId;
     
-    if (isUpdateTab && isItTabGroup) {
-    
+    if (isUpdateTab && isThisTabGroup) {
       const tab = getSelectedTab();
-    
-      tab.name = arg.title;
-    
-      if (!arg.isTitleUpdate) {
-        tab.url = arg.url;
-        tab.favIconUrl = arg.favIconUrl;
-      }
-    
+      tab.url = arg.url;
+      tab.favIconUrl = arg.favIconUrl;
       await storage.updateTab(tab);
       await updateTabGroup();
       setLoading(false);
     }
+  }
+
+  function prefixBrowserTabTitle() {
+    
+    const titleUpdateListener = async (title: string) => {
+      const tab = getSelectedTab();
+      tab.name = title;
+      await storage.updateTab(tab);
+      await updateTabGroup();
+      setLoading(false);
+    };
+    
+    const titlePrefixer = new TitlePrefixer(tabGroup.name, titleUpdateListener);
+    titlePrefixer.prefixTitle();
+    
+    const observer = new MutationObserver(() => titlePrefixer.prefixTitle()); // eslint-disable-line no-undef
+    const titleElement = document.querySelector('title');
+    const filter = { characterData: true, childList: true };
+    observer.observe(titleElement, filter);
   }
 
   async function handleAddTab() {
@@ -122,9 +133,9 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   }
 
   return (
-    <div className='tab-bar'>
-      <div className='main-pane'>
-        <div className='tabs-list'>
+    <div className={style.tabBar}>
+      <div className={style.mainPane}>
+        <div className={style.tabs}>
           {
             tabGroup.tabs.map(tab => (
               <Tab
@@ -136,10 +147,10 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
             ))
           }
         </div>
-        <Icon iconName='add' className='icon' onClick={handleAddTab} />
+        <Icon className={style.icon} iconName='add' onClick={handleAddTab} />
       </div>
-      <div className='options'>
-        <Icon iconName='cancel' className='icon' onClick={handleCloseTabBar} />
+      <div className={style.options}>
+        <Icon className={style.icon} iconName='cancel' onClick={handleCloseTabBar} />
       </div>
     </div>
   );

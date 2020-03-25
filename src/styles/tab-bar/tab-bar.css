@@ -1,4 +1,4 @@
-.tab-bar {
+.tabBar {
   --height: 32px;
   display: grid;
   height: var(--height);
@@ -9,18 +9,18 @@
   box-shadow: 0px 1px 3px gray;
 }
 
-.main-pane {
+.mainPane {
   display: flex;
   align-items: center;
 }
 
-.tabs-list {
+.tabs {
   max-width: calc(100% - 32px);
   display: flex;
   overflow: hidden;
 }
 
-.tabs-list .tab:first-child {
+.tabs .tab:first-child {
   border-radius: 4px 0px 0px 4px;
 }
 
@@ -46,8 +46,4 @@
 .icon:hover {
   color: blue;
   background-color: #DDDDDD;
-}
-
-* {
-  box-sizing: border-box;
 }

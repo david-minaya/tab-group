@@ -1,5 +1,5 @@
 import * as React from 'react';
-import '../../styles/popup/popup.css';
+import * as style from '../../styles/popup/popup.css';
 import { Option } from './option';
 import { Storage, LocalStorage, TabGroup, Tab } from '../../storage';
 
@@ -53,9 +53,9 @@ export function Popup() {
   }
 
   return (
-    <div className='popup'>
-      <div className='title'>Grupo de pestañas</div>
-      <div className='options'>
+    <div className={style.popup}>
+      <div className={style.title}>Grupo de pestañas</div>
+      <div className={style.options}>
         <Option icon="addin" title="Create tab group" />
         <Option icon="openinnewtab" title="Open tab group page" onClick={handleOpenPageButtonClick}/>
         <Option icon="pageadd" title="Add page to a tab group"/>

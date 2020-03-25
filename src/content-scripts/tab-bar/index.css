@@ -1,0 +1,14 @@
+.reset, .reset * {
+  background: initial;
+  line-height: initial;
+  box-sizing: border-box;
+}
+
+.tabBarContainer {
+  height: 56px;
+  width: 100vw;
+  position: fixed;
+  bottom: 0px;
+  z-index: 5000;
+  border: none;
+}

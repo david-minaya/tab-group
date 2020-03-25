@@ -3,7 +3,6 @@ export default class TitlePrefixer {
   prefix: string;
   cb: (originalTitle: string) => void
   titleElement: HTMLElement;
-  oldTitle = '';
 
   constructor(prefix: string, cb: (originalTitle: string) => void) {
     this.prefix = prefix;
@@ -14,22 +13,15 @@ export default class TitlePrefixer {
   prefixTitle() {
 
     const title = this.titleElement.textContent;
-    const regex = new RegExp(`^(${this.prefix} | )`);
+    const regex = /^(.*\s\|\s)/;
     const isPrefixed = regex.test(title);
-    let newTitle = `${this.prefix} | `;
-
+    
     if (isPrefixed) {
       const extractedTitle = title.match(/^(?:.* \| )(.*)/)[1];
-      newTitle += extractedTitle;
+      this.cb(extractedTitle);
     } else {
-      newTitle += title;
-    }
-
-    if (newTitle !== this.oldTitle) {
-      this.titleElement.textContent = newTitle;
+      this.titleElement.textContent = `${this.prefix} | ` + title;
       this.cb(title);
     }
-
-    this.oldTitle = newTitle;
   }
 }
