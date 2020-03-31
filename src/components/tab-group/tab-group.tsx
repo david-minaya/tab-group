@@ -1,7 +1,7 @@
 import * as React from 'react';
-import * as style from '../../styles/index/tab-group.css';
+import * as style from './tab-group.css';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import { Tab } from './tab';
+import { TabItem } from '../tab-item';
 import * as Storage from '../../storage';
 
 export function TabGroup({ tabGroup }: { tabGroup: Storage.TabGroup }) {
@@ -39,7 +39,7 @@ export function TabGroup({ tabGroup }: { tabGroup: Storage.TabGroup }) {
       <div className={style.list}>
         {
           tabGroup.tabs.map(tab => {
-            return <Tab key={tab.id} tab={tab} />;
+            return <TabItem key={tab.id} tab={tab} />;
           })
         }
       </div>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from '../../styles/popup/option.css';
+import * as style from './option.css';
 import { Icon } from 'office-ui-fabric-react';
 
 interface props {

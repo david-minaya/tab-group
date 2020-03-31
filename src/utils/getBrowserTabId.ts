@@ -1,4 +1,4 @@
-import { MessageType } from '../enums/message-type';
+import { MessageType } from './message-type';
 
 export default function getTabId(): Promise<number> {
   return new Promise((resolve, reject) => {

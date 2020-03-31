@@ -1,6 +1,6 @@
 import * as React from 'react';
-import * as style from '../../styles/index/main-pane.css';
-import { TabGroup } from './tab-group';
+import * as style from './main-pane.css';
+import { TabGroup } from '../tab-group';
 import * as Storage from '../../storage';
 
 export function MainPane() {

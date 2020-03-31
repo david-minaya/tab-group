@@ -1,5 +1,5 @@
-import { MessageType } from './enums/message-type';
-import { Message } from './message';
+import { MessageType } from './utils/message-type';
+import { Message } from './utils/message';
 import { Storage, LocalStorage } from './storage';
 
 const storage = new Storage(new LocalStorage());

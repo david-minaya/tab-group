@@ -1,6 +1,6 @@
 import * as React from 'react';
-import * as style from '../../styles/popup/popup.css';
-import { Option } from './option';
+import * as style from './popup.css';
+import { Option } from '../option';
 import { Storage, LocalStorage, TabGroup, Tab } from '../../storage';
 
 export function Popup() {
@@ -49,7 +49,7 @@ export function Popup() {
   }
 
   function handleOpenPageButtonClick() {
-    window.open(chrome.runtime.getURL('index.html'));
+    window.open(chrome.runtime.getURL('tab-bar-page.html'));
   }
 
   return (

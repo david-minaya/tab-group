@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { initializeIcons } from '@uifabric/icons';
-import { Popup } from './components/popup/popup';
+import { Popup } from '../components/popup/popup';
 
 initializeIcons();
 
