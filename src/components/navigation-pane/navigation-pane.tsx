@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from '../../styles/index/navigation-pane.css';
+import * as style from './navigation-pane.css';
 
 export function NavigationPane() {
   return (

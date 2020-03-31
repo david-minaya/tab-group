@@ -6,11 +6,10 @@ module.exports = {
   mode: 'development',
   devtool: 'eval-source-map',
   entry: {
-    background: './src/background.ts',
+    'background': './src/background.ts',
     'tab-bar': './src/content-scripts/tab-bar',
-    'popup-root': './src/popup-root.tsx',
-    'index-root': './src/index-root.tsx',
-    'tab-bar-page': './src/tab-bar-page.tsx'
+    'popup': './src/scripts/popup.tsx',
+    'tab-bar-page': './src/scripts/tab-bar-page.tsx'
   },
   output: {
     filename: '[name].js'
@@ -27,16 +26,12 @@ module.exports = {
     ]),
     new HtmlWebpackPlugin({
       filename: 'popup.html',
-      chunks: ['popup-root']
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      chunks: ['index-root'],
-      title: 'Index'
+      chunks: ['popup']
     }),
     new HtmlWebpackPlugin({
       filename: 'tab-bar-page.html',
-      chunks: ['tab-bar-page']
+      chunks: ['tab-bar-page'],
+      title: 'Tab bar'
     })
   ],
   module: {

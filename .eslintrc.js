@@ -72,6 +72,9 @@ module.exports = {
     ],
     'require-await': [
       'error'
+    ],
+    'quote-props': [
+      'off'
     ]
   }
 }
