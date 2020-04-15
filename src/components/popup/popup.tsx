@@ -1,43 +1,12 @@
 import * as React from 'react';
 import * as style from './popup.css';
 import { Option } from '../option';
-import { Storage, LocalStorage, TabGroup, Tab } from '../../storage';
 
 export function Popup() {
 
-  const storage = new Storage(new LocalStorage());
-  const [name, setName] = React.useState('');
-
-  function handleInputChange(event: any) {
-    setName(event.target.value);
-  }
-
-  async function handleButtonClick() {
+  async function handleOpenAddModal() {
     const browserTab = await getBrowserTab();
-    if (!await canCreateTabGroup(browserTab)) return;
-    await createTabGroup(browserTab);
-  }
-
-  async function canCreateTabGroup(browserTab: chrome.tabs.Tab): Promise<boolean> {
-    const isNotAttached = !await storage.isBrowserTabAttached(browserTab.id);
-    const isValidName = name !== '';
-    return isNotAttached && isValidName;
-  }
-
-  async function createTabGroup(browserTab: chrome.tabs.Tab) {
-    
-    const isValidUrl = browserTab.url !== 'edge://newtab/';
-    const url = isValidUrl ? browserTab.url : 'https://www.google.com.do';
-    
-    const tab = new Tab(undefined, browserTab.title, url);
-    const tabGroup = new TabGroup(name, browserTab.id, [tab]);
-    await storage.addTabGroup(tabGroup);
-
-    // The tab bar is inserted from the background script when the listener
-    // chrome.webNavigation.onCommitted is triggered. This listener is triggered
-    // when the page is updating.
-    chrome.tabs.update({ url });
-    
+    chrome.tabs.executeScript(browserTab.id, { file: 'add-modal.js' });
     window.close();
   }
 
@@ -56,7 +25,7 @@ export function Popup() {
     <div className={style.popup}>
       <div className={style.title}>Grupo de pestañas</div>
       <div className={style.options}>
-        <Option icon="addin" title="Create tab group" />
+        <Option icon="addin" title="Create tab group" onClick={handleOpenAddModal}/>
         <Option icon="openinnewtab" title="Open tab group page" onClick={handleOpenPageButtonClick}/>
         <Option icon="pageadd" title="Add page to a tab group"/>
       </div>
