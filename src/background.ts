@@ -1,5 +1,4 @@
-import { MessageType } from './utils/message-type';
-import { Message } from './utils/message';
+import { Message, MessageType } from './utils';
 import { Storage, LocalStorage } from './storage';
 
 const storage = new Storage(new LocalStorage());
@@ -7,8 +6,8 @@ const storage = new Storage(new LocalStorage());
 // Receive messages from the UIs of the extension
 chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
   switch (message.type) {
-    case MessageType.GET_TAB_ID:
-      response(sender.tab.id);
+    case MessageType.GET_TAB:
+      response(sender.tab);
       break;
     case MessageType.NAVIGATE:
       chrome.tabs.update({ url: message.arg.tab.url });

@@ -8,6 +8,7 @@
   "scripts": {
     "watch": "webpack --watch",
     "build": "webpack",
+    "start": "webpack-dev-server --open",
     "test": "mocha"
   },
   "dependencies": {

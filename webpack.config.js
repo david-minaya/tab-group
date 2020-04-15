@@ -8,8 +8,10 @@ module.exports = {
   entry: {
     'background': './src/background.ts',
     'tab-bar': './src/content-scripts/tab-bar',
+    'add-modal': './src/content-scripts/add-modal',
     'popup': './src/scripts/popup.tsx',
-    'tab-bar-page': './src/scripts/tab-bar-page.tsx'
+    'tab-bar-page': './src/scripts/tab-bar-page.tsx',
+    'dev': './src/scripts/dev'
   },
   output: {
     filename: '[name].js'
@@ -30,8 +32,13 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       filename: 'tab-bar-page.html',
-      chunks: ['tab-bar-page'],
-      title: 'Tab bar'
+      title: 'Tab bar',
+      chunks: ['tab-bar-page']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'dev.html',
+      title: 'dev',
+      chunks: ['dev']      
     })
   ],
   module: {
