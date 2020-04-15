@@ -1,4 +1,4 @@
-export default class TitlePrefixer {
+export class TitlePrefixer {
 
   prefix: string;
   cb: (originalTitle: string) => void

@@ -1,5 +1,5 @@
 export enum MessageType {
-  GET_TAB_ID,
+  GET_TAB,
   NAVIGATE,
   UPDATE_TAB
 };

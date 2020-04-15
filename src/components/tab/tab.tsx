@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as style from './tab.css';
-import { MessageType } from '../../utils/message-type';
+import { MessageType } from '../../utils';
 import { Icon, Spinner, SpinnerSize, Shimmer } from 'office-ui-fabric-react';
 import * as Storage from '../../storage';
 

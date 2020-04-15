@@ -1,11 +1,9 @@
 import * as React from 'react';
 import * as style from './tab-bar.css';
 import { Tab } from '../tab/tab';
-import { MessageType } from '../../utils/message-type';
+import { MessageType, Message, TitlePrefixer } from '../../utils';
 import * as Storage from '../../storage';
 import { Icon } from 'office-ui-fabric-react';
-import { Message } from '../../utils/message';
-import TitlePrefixer from '../../utils/TitlePrefixer';
 
 interface props { tabGroup: Storage.TabGroup; }
 const storage = new Storage.Storage(new Storage.LocalStorage());
