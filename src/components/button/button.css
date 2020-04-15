@@ -1,0 +1,10 @@
+.button {
+  width: 108px;
+  height: 34px;
+  color: white;
+  font-family: 'Segoe UI';
+  font-weight: 500;
+  background-color: blue;
+  border: none;
+  outline: none;
+}
