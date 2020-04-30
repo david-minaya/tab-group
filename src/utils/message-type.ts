@@ -1,5 +1,7 @@
 export enum MessageType {
   GET_TAB,
   NAVIGATE,
-  UPDATE_TAB
+  ADD_TAB,
+  UPDATE_TAB,
+  TAB_BAR_ADDED
 };

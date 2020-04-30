@@ -1,3 +1,5 @@
+import * as uuid from 'uuid/v4';
+
 export class Tab {
 
   id: string;
@@ -8,7 +10,7 @@ export class Tab {
   favIconUrl: string;
 
   constructor(
-    id?: string, name?: string, url?: string, 
+    id: string = uuid(), name?: string, url?: string, 
     tabGroupId?: string, isSelected?: boolean, favIconUrl?: string
   ) {
     this.id = id;

@@ -14,30 +14,79 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   const [isLoading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
+
     chrome.runtime.onMessage.addListener(menssageListener);
     prefixBrowserTabTitle();
+
+    if (tabGroup.isTemp) {
+      updateSelectedTabTitle();
+    }
+
     return () => {
       chrome.runtime.onMessage.removeListener(menssageListener);
     };
   }, []);
 
   async function menssageListener({ type, arg }: Message, sender: any, sendResponse: any) {
-    
-    const isUpdateTab = type === MessageType.UPDATE_TAB;
+
     const isThisTabGroup = arg.tabId === tabGroup.tabId;
-    
-    if (isUpdateTab && isThisTabGroup) {
-      const tab = getSelectedTab();
-      tab.url = arg.url;
-      tab.favIconUrl = arg.favIconUrl;
-      await storage.updateTab(tab);
-      await updateTabGroup();
-      setLoading(false);
+
+    if (!isThisTabGroup) return;
+
+    switch (type) {
+
+      case MessageType.TAB_BAR_ADDED:
+        console.log('tab bar added');
+        await updateSelectedTabTitle();
+        break;
+
+      case MessageType.UPDATE_TAB:
+        await updateSelectedTab(arg);
+        break;
+
+      case MessageType.ADD_TAB:
+        await addTab(arg.tab);
+        break;
     }
+
+    await updateTabGroup();
+  }
+
+  async function updateSelectedTabTitle() {
+    const tab = getSelectedTab();
+    const title = searchUrlTitle(tab.url);
+    tab.name = title;
+    await storage.updateTab(tab);
+    await updateTabGroup();
+  }
+
+  async function updateSelectedTab(updatedTab: any) {
+    const tab = getSelectedTab();
+    tab.url = updatedTab.url;
+    tab.favIconUrl = updatedTab.favIconUrl;
+    await storage.updateTab(tab);
+    setLoading(false);
+  }
+
+  async function addTab(tab: Storage.Tab) {
+    const { favIconUrl } = getSelectedTab();
+    const title = searchUrlTitle(tab.url);
+    tab.name = title;
+    tab.favIconUrl = favIconUrl;
+    await storage.addTab(tab);
+  }
+
+  function searchUrlTitle(url: string) {
+    const splitUrl = /([^#]*)(#.*)?/;
+    const [, baseUrl, hash] = splitUrl.exec(url);
+    const [, basePageUrl] = splitUrl.exec(window.location.href);
+    const urlToSearch = baseUrl === basePageUrl && hash ? hash : url;
+    const { textContent } = document.querySelector(`a[href='${urlToSearch}']`);
+    return textContent;
   }
 
   function prefixBrowserTabTitle() {
-    
+
     const titleUpdateListener = async (title: string) => {
       const tab = getSelectedTab();
       tab.name = title;
@@ -45,10 +94,10 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
       await updateTabGroup();
       setLoading(false);
     };
-    
+
     const titlePrefixer = new TitlePrefixer(tabGroup.name, titleUpdateListener);
     titlePrefixer.prefixTitle();
-    
+
     const observer = new MutationObserver(() => titlePrefixer.prefixTitle()); // eslint-disable-line no-undef
     const titleElement = document.querySelector('title');
     const filter = { characterData: true, childList: true };
@@ -107,7 +156,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
       await selectTab(tab);
 
     } else if (!isOnlyTab) {
-      
+
       // Select the next tab
       const nextIndex = tabs.findIndex(tab => tab.id === closedTab.id) + 1;
       const tab = tabs[nextIndex];

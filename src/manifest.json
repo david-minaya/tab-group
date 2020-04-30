@@ -8,7 +8,8 @@
     "activeTab",
     "webNavigation",
     "<all_urls>",
-    "storage"
+    "storage",
+    "contextMenus"
   ],
   "browser_action": {
     "default_popup": "popup.html"

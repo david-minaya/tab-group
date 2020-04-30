@@ -41,7 +41,7 @@ export function AddModal({ onCloseModal }: props) {
     const isValidUrl = browserTab.url !== 'edge://newtab/';
     const url = isValidUrl ? browserTab.url : 'https://www.google.com.do';
     
-    const tab = new Tab(undefined, browserTab.title, url);
+    const tab = new Tab(undefined, browserTab.title, url, undefined, true);
     const tabGroup = new TabGroup(name, browserTab.id, [tab]);
     await storage.addTabGroup(tabGroup);
 

@@ -1,4 +1,3 @@
-import * as uuid from 'uuid/v4';
 import { TabGroup } from './tab-group';
 import { Tab } from './tab';
 import { StorageInterface } from './storage-interface';
@@ -12,19 +11,15 @@ export class Storage {
   }
 
   async addTabGroup(tabGroup: TabGroup) {
-    this.addTabGroupId(tabGroup);
-    this.settingDefaultTab(tabGroup.tabs[0]);
     const tabsGroup = await this.getTabsGroup();
     tabsGroup.push(tabGroup);
     await this.storage.setTabsGroup(tabsGroup);
   }
 
   async addTab(tab: Tab) {
-    this.settingDefaultTab(tab);
     const tabGroup = await this.getTabGroup(tab.tabGroupId);
     tabGroup.tabs.push(tab);
     await this.updateTabGroup(tabGroup);
-
   }
 
   getTabsGroup(): Promise<TabGroup[]> {
@@ -86,20 +81,6 @@ export class Storage {
 
   async clear() {
     await this.storage.clear();
-  }
-
-  private addTabGroupId(tabGroup: TabGroup) {
-    if (!tabGroup.id) {
-      tabGroup.id = uuid();
-    }
-    tabGroup.tabs[0].tabGroupId = tabGroup.id;
-  }
-
-  private settingDefaultTab(tab: Tab) {
-    if (tab) {
-      tab.id = !tab.id ? uuid() : tab.id;
-      tab.isSelected = true;
-    }
   }
 
   private async updateTabGroup(updatedTabGroup: TabGroup) {

@@ -1,7 +1,17 @@
 import { Message, MessageType } from './utils';
-import { Storage, LocalStorage } from './storage';
+import { Storage, LocalStorage, TabGroup, Tab } from './storage';
 
 const storage = new Storage(new LocalStorage());
+
+// Trigger when the extension is intalled
+chrome.runtime.onInstalled.addListener(() => {
+
+  // Add an option to the context menu of the browser
+  chrome.contextMenus.create({
+    title: 'Agregar a la barra de pestañas ',
+    contexts: ['link']
+  });
+});
 
 // Receive messages from the UIs of the extension
 chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
@@ -42,3 +52,39 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
     await storage.detachBrowserTab(tabId);
   }
 });
+
+
+// Listen when the context menu is clicked
+chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
+
+  const tabGroup = await storage.getTabGroupByTabId(browserTab.id);
+
+  if (tabGroup) {
+
+    const tab = new Tab(undefined, undefined, info.linkUrl, tabGroup.id, false);
+    sendAddTabMessage(browserTab.id, tab);
+
+  } else {
+
+    const tabGroup = new TabGroup('Temporal', browserTab.id, undefined, undefined, true);
+    const tab = new Tab(undefined, undefined, info.linkUrl, tabGroup.id, true, browserTab.favIconUrl);
+    await storage.addTabGroup(tabGroup);
+    await storage.addTab(tab);
+
+    chrome.tabs.executeScript(browserTab.id, { file: 'tab-bar.js' }, () => {
+      console.log('send tab bar added message');
+      console.log(Date.now());
+      chrome.tabs.sendMessage(browserTab.id, {
+        type: MessageType.TAB_BAR_ADDED,
+        arg: { tabId: browserTab.id }
+      });
+    });
+  }
+});
+
+function sendAddTabMessage(browserTabId: number, tab: Tab) {
+  chrome.tabs.sendMessage(browserTabId, {
+    type: MessageType.ADD_TAB,
+    arg: { tabId: browserTabId, tab }
+  });
+}
