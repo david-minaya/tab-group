@@ -1,7 +1,6 @@
 export enum MessageType {
   GET_TAB,
   NAVIGATE,
-  ADD_TAB,
-  UPDATE_TAB,
-  TAB_BAR_ADDED
+  TAB_ADDED,
+  UPDATING_BROWSER_TAB
 };

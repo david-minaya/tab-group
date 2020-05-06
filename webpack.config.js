@@ -38,7 +38,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: 'dev.html',
       title: 'dev',
-      chunks: ['dev']      
+      chunks: ['dev']
     })
   ],
   module: {
@@ -63,7 +63,7 @@ module.exports = {
         include: path.resolve(__dirname, 'src'),
         use: [
           { loader: 'style-loader' },
-          { 
+          {
             loader: 'css-loader',
             options: {
               modules: {
@@ -72,6 +72,12 @@ module.exports = {
               }
             }
           }
+        ]
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          'file-loader'
         ]
       }
     ]

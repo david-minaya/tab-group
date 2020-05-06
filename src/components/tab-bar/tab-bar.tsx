@@ -1,9 +1,10 @@
 import * as React from 'react';
 import * as style from './tab-bar.css';
+import * as Storage from '../../storage';
 import { Tab } from '../tab/tab';
 import { MessageType, Message, TitlePrefixer } from '../../utils';
-import * as Storage from '../../storage';
 import { Icon } from 'office-ui-fabric-react';
+import defaultFavicon from '../../images/default-favicon.svg';
 
 interface props { tabGroup: Storage.TabGroup; }
 const storage = new Storage.Storage(new Storage.LocalStorage());
@@ -13,14 +14,12 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   const [tabGroup, setTabGroup] = React.useState(initialTabGroup);
   const [isLoading, setLoading] = React.useState(true);
 
+  // TODO: get the selected tab here
+
   React.useEffect(() => {
 
     chrome.runtime.onMessage.addListener(menssageListener);
     prefixBrowserTabTitle();
-
-    if (tabGroup.isTemp) {
-      updateSelectedTabTitle();
-    }
 
     return () => {
       chrome.runtime.onMessage.removeListener(menssageListener);
@@ -35,60 +34,21 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
     switch (type) {
 
-      case MessageType.TAB_BAR_ADDED:
-        console.log('tab bar added');
-        await updateSelectedTabTitle();
+      case MessageType.UPDATING_BROWSER_TAB:
+        await updateTabGroup();
+        setLoading(false);
         break;
 
-      case MessageType.UPDATE_TAB:
-        await updateSelectedTab(arg);
-        break;
-
-      case MessageType.ADD_TAB:
-        await addTab(arg.tab);
+      case MessageType.TAB_ADDED:
+        await updateTabGroup();
         break;
     }
-
-    await updateTabGroup();
-  }
-
-  async function updateSelectedTabTitle() {
-    const tab = getSelectedTab();
-    const title = searchUrlTitle(tab.url);
-    tab.name = title;
-    await storage.updateTab(tab);
-    await updateTabGroup();
-  }
-
-  async function updateSelectedTab(updatedTab: any) {
-    const tab = getSelectedTab();
-    tab.url = updatedTab.url;
-    tab.favIconUrl = updatedTab.favIconUrl;
-    await storage.updateTab(tab);
-    setLoading(false);
-  }
-
-  async function addTab(tab: Storage.Tab) {
-    const { favIconUrl } = getSelectedTab();
-    const title = searchUrlTitle(tab.url);
-    tab.name = title;
-    tab.favIconUrl = favIconUrl;
-    await storage.addTab(tab);
-  }
-
-  function searchUrlTitle(url: string) {
-    const splitUrl = /([^#]*)(#.*)?/;
-    const [, baseUrl, hash] = splitUrl.exec(url);
-    const [, basePageUrl] = splitUrl.exec(window.location.href);
-    const urlToSearch = baseUrl === basePageUrl && hash ? hash : url;
-    const { textContent } = document.querySelector(`a[href='${urlToSearch}']`);
-    return textContent;
   }
 
   function prefixBrowserTabTitle() {
 
     const titleUpdateListener = async (title: string) => {
-      const tab = getSelectedTab();
+      const tab = getSelectedTab(); 
       tab.name = title;
       await storage.updateTab(tab);
       await updateTabGroup();
@@ -98,20 +58,23 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     const titlePrefixer = new TitlePrefixer(tabGroup.name, titleUpdateListener);
     titlePrefixer.prefixTitle();
 
-    const observer = new MutationObserver(() => titlePrefixer.prefixTitle()); // eslint-disable-line no-undef
+    const observer = new MutationObserver(() => titlePrefixer.prefixTitle());
     const titleElement = document.querySelector('title');
     const filter = { characterData: true, childList: true };
     observer.observe(titleElement, filter);
   }
 
   async function handleAddTab() {
+
     const tab = new Storage.Tab(
       undefined, 'Nueva pestaña', 'https://www.google.com',
-      tabGroup.id, true, 'https://www.google.com/favicon.ico'
+      tabGroup.id, true, chrome.runtime.getURL(defaultFavicon)
     );
+    
     await storage.addTab(tab);
     await handleUnselectTab();
     await updateTabGroup();
+    
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
   }
 
@@ -121,6 +84,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   async function handleUnselectTab() {
     const tab = getSelectedTab();
+    // TODO: unselect all tabs instead of unselect the last selected tab
     await storage.selectTab(tab, false);
   }
 
@@ -175,6 +139,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   async function detachTabGroup() {
     const tab = getSelectedTab();
+    // TODO: remove the tab group without refresh the page
     await storage.detachBrowserTab(tabGroup.tabId);
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
   }

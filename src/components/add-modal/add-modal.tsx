@@ -41,9 +41,10 @@ export function AddModal({ onCloseModal }: props) {
     const isValidUrl = browserTab.url !== 'edge://newtab/';
     const url = isValidUrl ? browserTab.url : 'https://www.google.com.do';
     
-    const tab = new Tab(undefined, browserTab.title, url, undefined, true);
-    const tabGroup = new TabGroup(name, browserTab.id, [tab]);
+    const tabGroup = new TabGroup(name, browserTab.id);
+    const tab = new Tab(undefined, browserTab.title, url, tabGroup.id, true);
     await storage.addTabGroup(tabGroup);
+    await storage.addTab(tab);
 
     // The tab bar is inserted from the background script when the listener
     // chrome.webNavigation.onCommitted is triggered. This listener is triggered

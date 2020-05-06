@@ -1,5 +1,6 @@
 import { Message, MessageType } from './utils';
 import { Storage, LocalStorage, TabGroup, Tab } from './storage';
+import defaultFavicon from './images/default-favicon.svg';
 
 const storage = new Storage(new LocalStorage());
 
@@ -34,13 +35,21 @@ chrome.webNavigation.onCommitted.addListener(async details => {
   }
 });
 
-// Update the title and url of the selected tab when the browser tab is complete loaded
+// Update the title and url of the selected tab when the browser tab is updating
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, { url, favIconUrl }) => {
+  
   const tabGroup = await storage.getTabGroupByTabId(tabId);
+  
   if (tabGroup) {
+
+    const selectedTab = tabGroup.tabs.find(tab => tab.isSelected);
+    selectedTab.url = url;
+    selectedTab.favIconUrl = favIconUrl;
+    await storage.updateTab(selectedTab);
+
     chrome.tabs.sendMessage(tabId, {
-      type: MessageType.UPDATE_TAB,
-      arg: { tabId, url, favIconUrl }
+      type: MessageType.UPDATING_BROWSER_TAB,
+      arg: { tabId }
     });
   }
 });
@@ -54,37 +63,88 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
 });
 
 
-// Listen when the context menu is clicked
+// Listen when the context menu option is clicked
 chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
 
   const tabGroup = await storage.getTabGroupByTabId(browserTab.id);
+  const pageInfo = await getPageInfo(info.linkUrl);
 
   if (tabGroup) {
 
-    const tab = new Tab(undefined, undefined, info.linkUrl, tabGroup.id, false);
-    sendAddTabMessage(browserTab.id, tab);
+    const tab = new Tab(undefined, pageInfo.title, info.linkUrl, tabGroup.id, false, pageInfo.favIconUrl);
+    await storage.addTab(tab);
+    
+    chrome.tabs.sendMessage(browserTab.id, {
+      type: MessageType.TAB_ADDED,
+      arg: { tabId: browserTab.id }
+    });
 
   } else {
 
     const tabGroup = new TabGroup('Temporal', browserTab.id, undefined, undefined, true);
-    const tab = new Tab(undefined, undefined, info.linkUrl, tabGroup.id, true, browserTab.favIconUrl);
+    const currentPageTab = new Tab(undefined, browserTab.title, browserTab.url, tabGroup.id, true, browserTab.favIconUrl);
+    const newTab = new Tab(undefined, pageInfo.title, info.linkUrl, tabGroup.id, false, pageInfo.favIconUrl);
+    
     await storage.addTabGroup(tabGroup);
-    await storage.addTab(tab);
+    await storage.addTab(currentPageTab);
+    await storage.addTab(newTab);
 
-    chrome.tabs.executeScript(browserTab.id, { file: 'tab-bar.js' }, () => {
-      console.log('send tab bar added message');
-      console.log(Date.now());
-      chrome.tabs.sendMessage(browserTab.id, {
-        type: MessageType.TAB_BAR_ADDED,
-        arg: { tabId: browserTab.id }
-      });
-    });
+    chrome.tabs.executeScript(browserTab.id, { file: 'tab-bar.js' });
   }
 });
 
-function sendAddTabMessage(browserTabId: number, tab: Tab) {
-  chrome.tabs.sendMessage(browserTabId, {
-    type: MessageType.ADD_TAB,
-    arg: { tabId: browserTabId, tab }
+function getPageInfo(url: string): Promise<{ title: string, favIconUrl: string }> {
+
+  return new Promise<{ title: string, favIconUrl: string }>((resolve, reject) => {
+
+    const xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = async () => {
+
+      if (XMLHttpRequest.DONE === xhr.readyState) {
+
+        if (xhr.status === 200) {
+
+          const document = xhr.responseXML;
+          const title = document.title;
+          const favIconUrl = await getFavIconUrl(document);
+          
+          resolve({ title, favIconUrl });
+        }
+      }
+    };
+
+    xhr.open('GET', url);
+    xhr.responseType = 'document';
+    xhr.send();
   });
+}
+
+async function getFavIconUrl(document: Document) {
+  
+  const urlParser = new URL(document.URL);
+  const url = urlParser.origin + '/favicon.ico';
+
+  const favIconRequest = await fetch(url);
+  const link = document.querySelector<HTMLLinkElement>('link[rel*="icon"]');
+
+  let favIconUrl: string;
+
+  if (link) {
+
+    // If the link element of the favicon exist in the html, use the url of the link element
+    favIconUrl = link.href;
+  
+  } else if (favIconRequest.status === 200) {
+
+    // If the favicon exist in the root of the project, use the url of the favicon
+    favIconUrl = url;
+
+  } else {
+
+    // If the favicon wasn't found use a default favicon
+    favIconUrl = chrome.runtime.getURL(defaultFavicon);
+  }
+
+  return favIconUrl;
 }

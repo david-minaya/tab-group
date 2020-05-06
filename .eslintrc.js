@@ -1,7 +1,9 @@
 module.exports = {
   env: {
     browser: true,
-    es6: true
+    es6: true,
+    mocha: true,
+    webextensions: true
   },
   extends: [
     'standard'
@@ -22,10 +24,6 @@ module.exports = {
     'react',
     '@typescript-eslint'
   ],
-  env: {
-    mocha: true,
-    webextensions: true
-  },
   rules: {
     'space-before-function-paren': [
       'off'
