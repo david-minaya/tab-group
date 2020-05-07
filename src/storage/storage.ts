@@ -79,6 +79,13 @@ export class Storage {
     await this.updateTabGroup(tabGroup);
   }
 
+  async deleteTabGroup(tabGroupId: string) {
+    const tabsGroups = await this.getTabsGroup();
+    const tabGroupIndex = tabsGroups.findIndex(tabGroup => tabGroup.id === tabGroupId);
+    tabsGroups.splice(tabGroupIndex, 1);
+    await this.storage.setTabsGroup(tabsGroups);
+  }
+
   async clear() {
     await this.storage.clear();
   }
