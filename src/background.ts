@@ -16,41 +16,38 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Receive messages from the UIs of the extension
 chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
+
   switch (message.type) {
+
     case MessageType.GET_TAB:
       response(sender.tab);
       break;
+
     case MessageType.NAVIGATE:
-      chrome.tabs.update({ url: message.arg.tab.url });
+      chrome.tabs.update({ url: message.arg.url });
       break;
   }
 });
 
 // Insert the tab bar in the page when the page is loading
 chrome.webNavigation.onCommitted.addListener(async details => {
-  if (details.frameId !== 0) return;
-  const tabGroup = await storage.getTabGroupByTabId(details.tabId);
-  if (tabGroup) {
-    chrome.tabs.executeScript(tabGroup.tabId, { file: 'tab-bar.js' });
-  }
-});
 
-// Update the title and url of the selected tab when the browser tab is updating
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, { url, favIconUrl }) => {
-  
-  const tabGroup = await storage.getTabGroupByTabId(tabId);
-  
+  if (details.frameId !== 0) return;
+
+  const tabGroup = await storage.getTabGroupByTabId(details.tabId);
+
   if (tabGroup) {
+
+    const urlParser = new URL(details.url);
+    const urlRegex = new RegExp(`${urlParser.origin + urlParser.pathname}(\\?[^#]*)?(${urlParser.hash})?`);
 
     const selectedTab = tabGroup.tabs.find(tab => tab.isSelected);
-    selectedTab.url = url;
-    selectedTab.favIconUrl = favIconUrl;
-    await storage.updateTab(selectedTab);
+    const tab = tabGroup.tabs.find(tab => urlRegex.test(tab.url));
 
-    chrome.tabs.sendMessage(tabId, {
-      type: MessageType.UPDATING_BROWSER_TAB,
-      arg: { tabId }
-    });
+    await storage.selectTab(selectedTab, false);
+    await storage.selectTab(tab, true);
+
+    chrome.tabs.executeScript(tabGroup.tabId, { file: 'tab-bar.js' });
   }
 });
 
@@ -73,7 +70,7 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
 
     const tab = new Tab(undefined, pageInfo.title, info.linkUrl, tabGroup.id, false, pageInfo.favIconUrl);
     await storage.addTab(tab);
-    
+
     chrome.tabs.sendMessage(browserTab.id, {
       type: MessageType.TAB_ADDED,
       arg: { tabId: browserTab.id }
@@ -84,7 +81,7 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
     const tabGroup = new TabGroup('Temporal', browserTab.id, undefined, undefined, true);
     const currentPageTab = new Tab(undefined, browserTab.title, browserTab.url, tabGroup.id, true, browserTab.favIconUrl);
     const newTab = new Tab(undefined, pageInfo.title, info.linkUrl, tabGroup.id, false, pageInfo.favIconUrl);
-    
+
     await storage.addTabGroup(tabGroup);
     await storage.addTab(currentPageTab);
     await storage.addTab(newTab);
@@ -108,7 +105,7 @@ function getPageInfo(url: string): Promise<{ title: string, favIconUrl: string }
           const document = xhr.responseXML;
           const title = document.title;
           const favIconUrl = await getFavIconUrl(document);
-          
+
           resolve({ title, favIconUrl });
         }
       }
@@ -121,7 +118,7 @@ function getPageInfo(url: string): Promise<{ title: string, favIconUrl: string }
 }
 
 async function getFavIconUrl(document: Document) {
-  
+
   const urlParser = new URL(document.URL);
   const url = urlParser.origin + '/favicon.ico';
 
@@ -134,7 +131,7 @@ async function getFavIconUrl(document: Document) {
 
     // If the link element of the favicon exist in the html, use the url of the link element
     favIconUrl = link.href;
-  
+
   } else if (favIconRequest.status === 200) {
 
     // If the favicon exist in the root of the project, use the url of the favicon

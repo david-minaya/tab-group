@@ -1,24 +1,18 @@
 import * as React from 'react';
 import * as style from './tab.css';
 import { MessageType } from '../../utils';
-import { Icon, Spinner, SpinnerSize, Shimmer } from 'office-ui-fabric-react';
+import { Icon } from 'office-ui-fabric-react';
 import * as Storage from '../../storage';
 
 interface props {
   tab: Storage.Tab;
-  isLoading: boolean;
-  onUnselectTab: () => void;
   onCloseTab: (tab: Storage.Tab) => void;
 }
 
-export function Tab({ tab, onUnselectTab, onCloseTab, isLoading }: props) {
+export function Tab({ tab, onCloseTab }: props) {
 
-  const storage = new Storage.Storage(new Storage.LocalStorage());
-
-  async function handleTabClick() {
-    await onUnselectTab();
-    await storage.selectTab(tab, true);
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
+  function handleTabClick() {
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: tab.url } });
   }
 
   function handleCloseTab(event: any) {
@@ -30,12 +24,7 @@ export function Tab({ tab, onUnselectTab, onCloseTab, isLoading }: props) {
 
   return (
     <div className={tabStyle} onClick={handleTabClick}>
-      { isLoading &&
-        <React.Fragment>
-          <Spinner size={SpinnerSize.small}/>
-          <Shimmer width='100px'/>
-        </React.Fragment>
-      } { !isLoading && 
+      { 
         <React.Fragment>
           <img className={style.favicon} title={tab.name} src={tab.favIconUrl}/>
           <div className={style.title} title={tab.name}>{tab.name}</div>

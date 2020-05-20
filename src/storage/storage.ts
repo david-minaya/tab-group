@@ -53,10 +53,15 @@ export class Storage {
   }
 
   async selectTab(tab: Tab, select: boolean) {
+    
+    if (!tab) return;
+    
     const tabsGroup = await this.getTabsGroup();
     const tabGroup = tabsGroup.find(tabGroup => tabGroup.id === tab.tabGroupId);
     const tabFound = tabGroup.tabs.find(currentTab => currentTab.id === tab.id);
+    
     tabFound.isSelected = select;
+    
     await this.updateTabGroup(tabGroup);
   }
 

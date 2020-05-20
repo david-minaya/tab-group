@@ -12,7 +12,6 @@ const storage = new Storage.Storage(new Storage.LocalStorage());
 export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   const [tabGroup, setTabGroup] = React.useState(initialTabGroup);
-  const [isLoading, setLoading] = React.useState(true);
 
   // TODO: get the selected tab here
 
@@ -34,11 +33,6 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
     switch (type) {
 
-      case MessageType.UPDATING_BROWSER_TAB:
-        await updateTabGroup();
-        setLoading(false);
-        break;
-
       case MessageType.TAB_ADDED:
         await updateTabGroup();
         break;
@@ -47,15 +41,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   function prefixBrowserTabTitle() {
 
-    const titleUpdateListener = async (title: string) => {
-      const tab = getSelectedTab(); 
-      tab.name = title;
-      await storage.updateTab(tab);
-      await updateTabGroup();
-      setLoading(false);
-    };
-
-    const titlePrefixer = new TitlePrefixer(tabGroup.name, titleUpdateListener);
+    const titlePrefixer = new TitlePrefixer(tabGroup.name, () => {});
     titlePrefixer.prefixTitle();
 
     const observer = new MutationObserver(() => titlePrefixer.prefixTitle());
@@ -66,26 +52,21 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   async function handleAddTab() {
 
+    const selectedTab = getSelectedTab();
     const tab = new Storage.Tab(
       undefined, 'Nueva pestaña', 'https://www.google.com',
       tabGroup.id, true, chrome.runtime.getURL(defaultFavicon)
     );
     
     await storage.addTab(tab);
-    await handleUnselectTab();
+    await storage.selectTab(selectedTab, false);
     await updateTabGroup();
     
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: tab.url } });
   }
 
   async function handleCloseTabBar() {
     await detachTabGroup();
-  }
-
-  async function handleUnselectTab() {
-    const tab = getSelectedTab();
-    // TODO: unselect all tabs instead of unselect the last selected tab
-    await storage.selectTab(tab, false);
   }
 
   async function handleCloseTab(tab: Storage.Tab) {
@@ -134,14 +115,15 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   async function selectTab(tab: Storage.Tab) {
     await storage.selectTab(tab, true);
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: tab.url } });
   }
 
   async function detachTabGroup() {
     const tab = getSelectedTab();
+    const url = tab ? tab.url : window.location.href;
     // TODO: remove the tab group without refresh the page
     await storage.detachBrowserTab(tabGroup.tabId);
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url } });
   }
 
   return (
@@ -153,8 +135,6 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
               <Tab
                 key={tab.id}
                 tab={tab}
-                isLoading={isLoading && tab.isSelected}
-                onUnselectTab={handleUnselectTab}
                 onCloseTab={handleCloseTab} />
             ))
           }

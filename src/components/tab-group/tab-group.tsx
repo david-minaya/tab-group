@@ -3,6 +3,7 @@ import * as style from './tab-group.css';
 import * as Storage from '../../storage';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { TabItem } from '../tab-item';
+import { MessageType } from '../../utils';
 
 const storage = new Storage.Storage(new Storage.LocalStorage());
 
@@ -10,17 +11,19 @@ export function TabGroup({ tabGroup }: { tabGroup: Storage.TabGroup }) {
 
   function handleOpenInNewTab() {
 
-    const selectedTab = tabGroup.tabs.find(tab => tab.isSelected);
+    const selectedTab = tabGroup.tabs.find(tab => tab.isSelected) || tabGroup.tabs[0];
     const createProperties = { url: selectedTab.url };
 
     chrome.tabs.create(createProperties, async browserTab => {
-      await storage.attachBrowserTab(tabGroup.id, browserTab.id);
-    });
 
-    // The tab bar is inserted in the new tab in the background script. 
-    // This script listen when a tab is loading the page, and if the id 
-    // of that tab is attached to one tab group, the tab bar is inserted. 
-    // See the onCommitted event in the background.js file.
+      await storage.attachBrowserTab(tabGroup.id, browserTab.id);
+
+      // The tab bar is inserted from the background script when the listener
+      // chrome.webNavigation.onCommitted is triggered. This listener is triggered
+      // when the page is updating. This line send a message to the background 
+      // script to update the page.
+      chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: selectedTab.url } });
+    });
   }
 
   async function handleDeleteTabBar() {
@@ -32,8 +35,8 @@ export function TabGroup({ tabGroup }: { tabGroup: Storage.TabGroup }) {
       <div className={style.topBar}>
         <div className={style.title}>{tabGroup.name}</div>
         <div className={style.options}>
-          <Icon className={style.option} iconName='OpenInNewTab' onClick={handleOpenInNewTab}/>
-          <Icon className={style.option} iconName='delete' onClick={handleDeleteTabBar}/>
+          <Icon className={style.option} iconName='OpenInNewTab' onClick={handleOpenInNewTab} />
+          <Icon className={style.option} iconName='delete' onClick={handleDeleteTabBar} />
         </div>
       </div>
       <div className={style.list}>

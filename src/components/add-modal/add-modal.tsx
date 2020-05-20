@@ -48,8 +48,9 @@ export function AddModal({ onCloseModal }: props) {
 
     // The tab bar is inserted from the background script when the listener
     // chrome.webNavigation.onCommitted is triggered. This listener is triggered
-    // when the page is updating.
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { tab } });
+    // when the page is updating. This line send a message to the background 
+    // script to update the page.
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url } });
   }
 
   return (
