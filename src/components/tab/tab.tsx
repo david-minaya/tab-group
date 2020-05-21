@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as style from './tab.css';
+import * as Storage from '../../storage';
 import { MessageType } from '../../utils';
 import { Icon } from 'office-ui-fabric-react';
-import * as Storage from '../../storage';
 
 interface props {
   tab: Storage.Tab;

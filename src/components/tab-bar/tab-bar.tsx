@@ -2,8 +2,8 @@ import * as React from 'react';
 import * as style from './tab-bar.css';
 import * as Storage from '../../storage';
 import { Tab } from '../tab/tab';
-import { MessageType, Message, TitlePrefixer } from '../../utils';
 import { Icon } from 'office-ui-fabric-react';
+import { MessageType, Message, TitlePrefixer } from '../../utils';
 import defaultFavicon from '../../images/default-favicon.svg';
 
 interface props { tabGroup: Storage.TabGroup; }
@@ -12,6 +12,7 @@ const storage = new Storage.Storage(new Storage.LocalStorage());
 export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   const [tabGroup, setTabGroup] = React.useState(initialTabGroup);
+  const [selectedTab, setSelectedTab] = React.useState(tabGroup.tabs.find(tab => tab.isSelected));
 
   // TODO: get the selected tab here
 
@@ -52,7 +53,6 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   async function handleAddTab() {
 
-    const selectedTab = getSelectedTab();
     const tab = new Storage.Tab(
       undefined, 'Nueva pestaña', 'https://www.google.com',
       tabGroup.id, true, chrome.runtime.getURL(defaultFavicon)
@@ -66,25 +66,16 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   }
 
   async function handleCloseTabBar() {
-    await detachTabGroup();
+    const url = selectedTab ? selectedTab.url : window.location.href;
+    // TODO: remove the tab group without refresh the page
+    await storage.detachBrowserTab(tabGroup.tabId);
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url } });
   }
 
-  async function handleCloseTab(tab: Storage.Tab) {
-    await storage.deleteTab(tab);
-    await selectNewTab(tab);
-  }
-
-  function getSelectedTab() {
-    return tabGroup.tabs.find(tab => tab.isSelected);
-  }
-
-  async function updateTabGroup() {
-    const updatedTabGroup = await storage.getTabGroupByTabId(tabGroup.tabId);
-    setTabGroup(updatedTabGroup);
-  }
-
-  async function selectNewTab(closedTab: Storage.Tab) {
-
+  async function handleCloseTab(closedTab: Storage.Tab) {
+    
+    await storage.deleteTab(closedTab);
+    
     const { tabs } = tabGroup;
     const isLastTab = tabs[tabs.length - 1].id === closedTab.id;
     const isOnlyTab = tabs.length === 1;
@@ -98,32 +89,30 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
       // Select the before tab
       const beforeIndex = tabs.length - 2;
       const tab = tabs[beforeIndex];
-      await selectTab(tab);
+      await selectNewTab(tab);
 
     } else if (!isOnlyTab) {
 
       // Select the next tab
       const nextIndex = tabs.findIndex(tab => tab.id === closedTab.id) + 1;
       const tab = tabs[nextIndex];
-      await selectTab(tab);
+      await selectNewTab(tab);
 
     } else {
 
-      await detachTabGroup();
+      await handleCloseTabBar();
     }
   }
 
-  async function selectTab(tab: Storage.Tab) {
-    await storage.selectTab(tab, true);
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: tab.url } });
+  async function updateTabGroup() {
+    const updatedTabGroup = await storage.getTabGroupByTabId(tabGroup.tabId);
+    setTabGroup(updatedTabGroup);
+    setSelectedTab(updatedTabGroup.tabs.find(tab => tab.isSelected));
   }
 
-  async function detachTabGroup() {
-    const tab = getSelectedTab();
-    const url = tab ? tab.url : window.location.href;
-    // TODO: remove the tab group without refresh the page
-    await storage.detachBrowserTab(tabGroup.tabId);
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url } });
+  async function selectNewTab(tab: Storage.Tab) {
+    await storage.selectTab(tab, true);
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: tab.url } });
   }
 
   return (
