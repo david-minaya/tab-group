@@ -1,3 +1,4 @@
+import { PageInfo } from './types';
 import { Message, MessageType } from './utils';
 import { Storage, LocalStorage, TabGroup, Tab } from './storage';
 import defaultFavicon from './images/default-favicon.svg';
@@ -68,7 +69,7 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
 
   if (tabGroup) {
 
-    const tab = new Tab(undefined, pageInfo.title, info.linkUrl, tabGroup.id, false, pageInfo.favIconUrl);
+    const tab = new Tab(undefined, pageInfo.title, pageInfo.url, tabGroup.id, false, pageInfo.favicon);
     await storage.addTab(tab);
 
     chrome.tabs.sendMessage(browserTab.id, {
@@ -80,7 +81,7 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
 
     const tabGroup = new TabGroup('Temporal', browserTab.id, undefined, undefined, true);
     const currentPageTab = new Tab(undefined, browserTab.title, browserTab.url, tabGroup.id, true, browserTab.favIconUrl);
-    const newTab = new Tab(undefined, pageInfo.title, info.linkUrl, tabGroup.id, false, pageInfo.favIconUrl);
+    const newTab = new Tab(undefined, pageInfo.title, pageInfo.url, tabGroup.id, false, pageInfo.favicon);
 
     await storage.addTabGroup(tabGroup);
     await storage.addTab(currentPageTab);
@@ -90,9 +91,9 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
   }
 });
 
-function getPageInfo(url: string): Promise<{ title: string, favIconUrl: string }> {
+function getPageInfo(url: string): Promise<PageInfo> {
 
-  return new Promise<{ title: string, favIconUrl: string }>((resolve, reject) => {
+  return new Promise<PageInfo>((resolve, reject) => {
 
     const xhr = new XMLHttpRequest();
 
@@ -103,10 +104,19 @@ function getPageInfo(url: string): Promise<{ title: string, favIconUrl: string }
         if (xhr.status === 200) {
 
           const document = xhr.responseXML;
-          const title = document.title;
-          const favIconUrl = await getFavIconUrl(document);
+          const metaRedirect = document.querySelector<HTMLMetaElement>('meta[http-equiv="Refresh"]');
 
-          resolve({ title, favIconUrl });
+          // if is a meta redirect, request the page info again with the redirect URL
+          if (metaRedirect) {
+            const [, url] = /url=(.*)/.exec(metaRedirect.content);
+            resolve(await getPageInfo(url));
+          }
+
+          const title = document.title;
+          const url = document.URL;
+          const favicon = await getFavIconUrl(document);
+
+          resolve({ title, url, favicon });
         }
       }
     };
