@@ -150,7 +150,7 @@ async function getFavIconUrl(document: Document) {
   } else {
 
     // If the favicon wasn't found use a default favicon
-    favIconUrl = chrome.runtime.getURL(defaultFavicon);
+    favIconUrl = defaultFavicon;
   }
 
   return favIconUrl;

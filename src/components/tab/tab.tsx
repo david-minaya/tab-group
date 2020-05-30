@@ -24,12 +24,8 @@ export function Tab({ tab, onCloseTab }: props) {
 
   return (
     <div className={tabStyle} onClick={handleTabClick}>
-      { 
-        <React.Fragment>
-          <img className={style.favicon} title={tab.name} src={tab.favIconUrl}/>
-          <div className={style.title} title={tab.name}>{tab.name}</div>
-        </React.Fragment>
-      }
+      <img className={style.favicon} title={tab.name} src={tab.favIconUrl} />
+      <div className={style.title} title={tab.name}>{tab.name}</div>
       <Icon className={style.close} iconName='cancel' onClick={handleCloseTab} />
     </div>
   );

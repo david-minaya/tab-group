@@ -52,6 +52,13 @@ export class Storage {
     await this.updateTabGroup(tabGroup);
   }
 
+  async updateTabGroup(updatedTabGroup: TabGroup) {
+    const tabsGroup = await this.getTabsGroup();
+    const index = tabsGroup.findIndex(tabGroup => tabGroup.id === updatedTabGroup.id);
+    tabsGroup[index] = updatedTabGroup;
+    await this.storage.setTabsGroup(tabsGroup);
+  }
+
   async selectTab(tab: Tab, select: boolean) {
     
     if (!tab) return;
@@ -93,12 +100,5 @@ export class Storage {
 
   async clear() {
     await this.storage.clear();
-  }
-
-  private async updateTabGroup(updatedTabGroup: TabGroup) {
-    const tabsGroup = await this.getTabsGroup();
-    const index = tabsGroup.findIndex(tabGroup => tabGroup.id === updatedTabGroup.id);
-    tabsGroup[index] = updatedTabGroup;
-    await this.storage.setTabsGroup(tabsGroup);
   }
 }

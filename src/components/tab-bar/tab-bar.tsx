@@ -3,6 +3,7 @@ import * as style from './tab-bar.css';
 import * as Storage from '../../storage';
 import { Tab } from '../tab/tab';
 import { Icon } from 'office-ui-fabric-react';
+import { SaveModal } from '../save-modal';
 import { MessageType, Message, TitlePrefixer } from '../../utils';
 import defaultFavicon from '../../images/default-favicon.svg';
 
@@ -13,8 +14,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   const [tabGroup, setTabGroup] = React.useState(initialTabGroup);
   const [selectedTab, setSelectedTab] = React.useState(tabGroup.tabs.find(tab => tab.isSelected));
-
-  // TODO: get the selected tab here
+  const [openSaveModal, setOpenSaveModal] = React.useState(false);
 
   React.useEffect(() => {
 
@@ -55,14 +55,20 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
     const tab = new Storage.Tab(
       undefined, 'Nueva pestaña', 'https://www.google.com',
-      tabGroup.id, true, chrome.runtime.getURL(defaultFavicon)
+      tabGroup.id, false, chrome.runtime.getURL(defaultFavicon)
     );
     
     await storage.addTab(tab);
     await storage.selectTab(selectedTab, false);
     await updateTabGroup();
     
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: tab.url } });
+    // chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: tab.url } });
+  }
+
+  function handleSaveTabBar(event: React.MouseEvent<HTMLElement, MouseEvent>) {
+    setOpenSaveModal(!openSaveModal);
+    event.stopPropagation();
+
   }
 
   async function handleCloseTabBar() {
@@ -116,7 +122,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   }
 
   return (
-    <div className={style.tabBar}>
+    <div className={tabGroup.isTemp ? style.tabBarWithSaveOption : style.tabBar}>
       <div className={style.mainPane}>
         <div className={style.tabs}>
           {
@@ -128,11 +134,19 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
             ))
           }
         </div>
-        <Icon className={style.icon} iconName='add' onClick={handleAddTab} />
+        <Icon className={style.addIcon} iconName='add' onClick={handleAddTab} />
       </div>
       <div className={style.options}>
+        { tabGroup.isTemp &&
+          <Icon className={style.saveIcon} iconName='save' onClick={handleSaveTabBar}/>
+        }
         <Icon className={style.icon} iconName='cancel' onClick={handleCloseTabBar} />
       </div>
+      <SaveModal 
+        isOpen={openSaveModal}
+        tabGroup={tabGroup} 
+        onCloseModal={() => setOpenSaveModal(false)}
+      />
     </div>
   );
 }
