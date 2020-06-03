@@ -42,7 +42,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   function prefixBrowserTabTitle() {
 
-    const titlePrefixer = new TitlePrefixer(tabGroup.name, () => {});
+    const titlePrefixer = new TitlePrefixer(tabGroup.name, () => { });
     titlePrefixer.prefixTitle();
 
     const observer = new MutationObserver(() => titlePrefixer.prefixTitle());
@@ -51,37 +51,21 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     observer.observe(titleElement, filter);
   }
 
-  async function handleAddTab() {
-
-    const tab = new Storage.Tab(
-      undefined, 'Nueva pestaña', 'https://www.google.com',
-      tabGroup.id, false, chrome.runtime.getURL(defaultFavicon)
-    );
-    
-    await storage.addTab(tab);
-    await storage.selectTab(selectedTab, false);
-    await updateTabGroup();
-    
-    // chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: tab.url } });
-  }
-
-  function handleSaveTabBar(event: React.MouseEvent<HTMLElement, MouseEvent>) {
+  function handleOpenCloseSaveModal(event: React.MouseEvent<HTMLElement, MouseEvent>) {
     setOpenSaveModal(!openSaveModal);
     event.stopPropagation();
-
   }
 
   async function handleCloseTabBar() {
     const url = selectedTab ? selectedTab.url : window.location.href;
-    // TODO: remove the tab group without refresh the page
-    await storage.detachBrowserTab(tabGroup.tabId);
+    await storage.detachBrowserTab(tabGroup.tabId); // TODO: remove the tab group without refresh the page
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url } });
   }
 
   async function handleCloseTab(closedTab: Storage.Tab) {
-    
+
     await storage.deleteTab(closedTab);
-    
+
     const { tabs } = tabGroup;
     const isLastTab = tabs[tabs.length - 1].id === closedTab.id;
     const isOnlyTab = tabs.length === 1;
@@ -123,28 +107,25 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   return (
     <div className={tabGroup.isTemp ? style.tabBarWithSaveOption : style.tabBar}>
-      <div className={style.mainPane}>
-        <div className={style.tabs}>
-          {
-            tabGroup.tabs.map(tab => (
-              <Tab
-                key={tab.id}
-                tab={tab}
-                onCloseTab={handleCloseTab} />
-            ))
-          }
-        </div>
-        <Icon className={style.addIcon} iconName='add' onClick={handleAddTab} />
+      <div className={style.tabs}>
+        {
+          tabGroup.tabs.map(tab => (
+            <Tab
+              key={tab.id}
+              tab={tab}
+              onCloseTab={handleCloseTab} />
+          ))
+        }
       </div>
       <div className={style.options}>
-        { tabGroup.isTemp &&
-          <Icon className={style.saveIcon} iconName='save' onClick={handleSaveTabBar}/>
+        {tabGroup.isTemp &&
+          <Icon className={style.saveIcon} iconName='save' onClick={handleOpenCloseSaveModal} />
         }
         <Icon className={style.icon} iconName='cancel' onClick={handleCloseTabBar} />
       </div>
-      <SaveModal 
+      <SaveModal
         isOpen={openSaveModal}
-        tabGroup={tabGroup} 
+        tabGroup={tabGroup}
         onCloseModal={() => setOpenSaveModal(false)}
       />
     </div>

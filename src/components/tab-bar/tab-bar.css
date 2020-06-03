@@ -14,13 +14,9 @@
   grid-template-columns: calc(100% - 72px) 72px;
 }
 
-.mainPane {
-  display: flex;
-  align-items: center;
-}
-
 .tabs {
-  max-width: calc(100% - 32px);
+  max-width: 100%;
+  justify-self: start;
   display: flex;
   overflow: hidden;
 }
@@ -45,11 +41,6 @@
   color: black;
   border-radius: 2px;
   margin: 0px 4px;
-}
-
-.addIcon {
-  composes: icon;
-  font-size: 15px;
 }
 
 .saveIcon {
