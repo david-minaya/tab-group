@@ -79,9 +79,19 @@ export class Storage {
   }
 
   async detachBrowserTab(browserTabId: number) {
+
     const tabGroup = await this.getTabGroupByTabId(browserTabId);
-    tabGroup.tabId = undefined;
-    await this.updateTabGroup(tabGroup);
+    
+    // If the tab group is temp delete it
+    if (tabGroup.isTemp) {
+
+      await this.deleteTabGroup(tabGroup.id);
+
+    } else {
+
+      tabGroup.tabId = undefined;
+      await this.updateTabGroup(tabGroup);
+    }
   }
 
   async deleteTab(tab: Tab) {

@@ -13,8 +13,10 @@ export function MainPane() {
   });
 
   async function getTabsGroups() {
-    const tabsGroup = await storage.getTabsGroup();
-    setTabsGroups(tabsGroup);
+    const tabsGroups = await storage.getTabsGroup();
+    const filteredTabsGroupd = tabsGroups.filter(tabGroup => !tabGroup.isTemp);
+    const tabsGroupsRevesed = filteredTabsGroupd.reverse();
+    setTabsGroups(tabsGroupsRevesed);
   }
 
   return (
