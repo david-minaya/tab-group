@@ -16,17 +16,22 @@ export function SaveModal({ isOpen = false, tabGroup, onCloseModal }: props) {
 
   const [name, setName] = React.useState('');
   const [isValidName, setIsValidName] = React.useState(true);
+  
+  const handleWindowClick = React.useCallback(() => onCloseModal(), []);
 
   React.useEffect(() => {
-    window.onclick = () => onCloseModal();
-  }, []);
 
-  React.useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+    
+      window.addEventListener('click', handleWindowClick);
+
+    } else {
+
       setName('');
       setIsValidName(true);
+      window.removeEventListener('click', handleWindowClick);
     }
-  });
+  }, [isOpen]);
 
   function handleTextBoxChange(event: React.FormEvent<HTMLInputElement>) {
     setName(event.currentTarget.value);

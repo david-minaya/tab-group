@@ -36,16 +36,17 @@
   justify-self: flex-start;
 }
 
-.close {
+.menu {
   width: 20px;
   font-size: 14px;
   text-align: center;
   line-height: 20px;
-  color: black;
+  color: #444444;
+  font-weight: 600;
   border-radius: 2px;
 }
 
-.close:hover {
+.menu:hover {
   color: blue;
   background-color: #DDDDDD;
 }

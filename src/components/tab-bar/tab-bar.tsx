@@ -5,7 +5,6 @@ import { Tab } from '../tab/tab';
 import { Icon } from 'office-ui-fabric-react';
 import { SaveModal } from '../save-modal';
 import { MessageType, Message, TitlePrefixer } from '../../utils';
-import defaultFavicon from '../../images/default-favicon.svg';
 
 interface props { tabGroup: Storage.TabGroup; }
 const storage = new Storage.Storage(new Storage.LocalStorage());
@@ -51,9 +50,12 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     observer.observe(titleElement, filter);
   }
 
-  function handleOpenCloseSaveModal(event: React.MouseEvent<HTMLElement, MouseEvent>) {
-    setOpenSaveModal(!openSaveModal);
-    event.stopPropagation();
+  function handleOpenSaveModal() {
+    setOpenSaveModal(true);
+  }
+
+  function handleCloseSaveModal() {
+    setOpenSaveModal(false);
   }
 
   async function handleCloseTabBar() {
@@ -113,21 +115,20 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
             <Tab
               key={tab.id}
               tab={tab}
-              onCloseTab={handleCloseTab} />
+              onCloseTab={handleCloseTab}/>
           ))
         }
       </div>
       <div className={style.options}>
         {tabGroup.isTemp &&
-          <Icon className={style.saveIcon} iconName='save' onClick={handleOpenCloseSaveModal} />
+          <Icon className={style.saveIcon} iconName='save' onClick={handleOpenSaveModal} />
         }
         <Icon className={style.icon} iconName='cancel' onClick={handleCloseTabBar} />
       </div>
       <SaveModal
         isOpen={openSaveModal}
         tabGroup={tabGroup}
-        onCloseModal={() => setOpenSaveModal(false)}
-      />
+        onCloseModal={handleCloseSaveModal}/>
     </div>
   );
 }
