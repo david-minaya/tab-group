@@ -4,6 +4,7 @@
   margin: 4px auto;
   padding: 4px 8px;
   cursor: default;
+  --font-size: 15px;
 }
 
 .option:hover {
@@ -11,14 +12,17 @@
 }
 
 .name {
-  font-size: 15px;
+  font-size: var(--font-size) !important;
+  color: black !important;
+  font-family: 'Segoe UI' !important;
 }
 
 .icon {
   width: 24px;
   line-height: 24px;
-  font-size: 15px;
+  font-size: 16px !important;
   text-align: center;
   cursor: default;
+  color: black !important;
   border-radius: 2px;
 }

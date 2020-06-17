@@ -64,15 +64,15 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url } });
   }
 
-  async function handleCloseTab(closedTab: Storage.Tab) {
+  async function handleDeleteTab(deleteTab: Storage.Tab) {
 
-    await storage.deleteTab(closedTab);
+    await storage.deleteTab(deleteTab);
 
     const { tabs } = tabGroup;
-    const isLastTab = tabs[tabs.length - 1].id === closedTab.id;
+    const isLastTab = tabs[tabs.length - 1].id === deleteTab.id;
     const isOnlyTab = tabs.length === 1;
 
-    if (!closedTab.isSelected) {
+    if (!deleteTab.isSelected) {
 
       await updateTabGroup();
 
@@ -86,7 +86,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     } else if (!isOnlyTab) {
 
       // Select the next tab
-      const nextIndex = tabs.findIndex(tab => tab.id === closedTab.id) + 1;
+      const nextIndex = tabs.findIndex(tab => tab.id === deleteTab.id) + 1;
       const tab = tabs[nextIndex];
       await selectNewTab(tab);
 
@@ -115,7 +115,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
             <Tab
               key={tab.id}
               tab={tab}
-              onCloseTab={handleCloseTab}/>
+              onDeleteTab={handleDeleteTab}/>
           ))
         }
       </div>

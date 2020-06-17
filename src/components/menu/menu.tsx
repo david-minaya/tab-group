@@ -1,12 +1,13 @@
 import * as React from 'react';
-import * as style from './menu.module.css'; 
+import * as style from './menu.css'; 
 
 interface props {
   isOpen: boolean;
+  children: React.ReactNode;
   onCloseMenu: () => void;
 }
 
-export function Menu({ isOpen, onCloseMenu }: props) {
+export function Menu({ isOpen, children, onCloseMenu }: props) {
 
   const menuRef = React.useRef<HTMLDivElement>();
   const handleWindowClick = React.useCallback(() => onCloseMenu(), []);
@@ -32,6 +33,11 @@ export function Menu({ isOpen, onCloseMenu }: props) {
       window.removeEventListener('click', handleWindowClick);
       window.removeEventListener('resize', updateMenuPosition);
     }
+
+    return () => {
+      window.removeEventListener('click', handleWindowClick);
+      window.removeEventListener('resize', updateMenuPosition);
+    };
   }, [isOpen]);
 
   function updateMenuPosition() {
@@ -57,7 +63,7 @@ export function Menu({ isOpen, onCloseMenu }: props) {
       className={style.menu} 
       ref={menuRef} 
       onClick={e => e.stopPropagation()}>
-      Options Menu
+      {children}
     </div>
   );
 };

@@ -50,3 +50,8 @@
   color: blue;
   background-color: #DDDDDD;
 }
+
+.option {
+  composes: option from '../option/option.css';
+  --font-size: 14px !important;
+}

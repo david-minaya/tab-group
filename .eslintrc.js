@@ -73,6 +73,9 @@ module.exports = {
     ],
     'quote-props': [
       'off'
+    ],
+    'quotes': [
+      'warn'
     ]
   }
 }
