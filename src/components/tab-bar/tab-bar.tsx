@@ -5,6 +5,8 @@ import { Tab } from '../tab/tab';
 import { Icon } from 'office-ui-fabric-react';
 import { SaveModal } from '../save-modal';
 import { MessageType, Message, TitlePrefixer } from '../../utils';
+import { Menu } from '../menu';
+import { Option } from '../option';
 
 interface props { tabGroup: Storage.TabGroup; }
 const storage = new Storage.Storage(new Storage.LocalStorage());
@@ -14,6 +16,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   const [tabGroup, setTabGroup] = React.useState(initialTabGroup);
   const [selectedTab, setSelectedTab] = React.useState(tabGroup.tabs.find(tab => tab.isSelected));
   const [openSaveModal, setOpenSaveModal] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
 
@@ -58,10 +61,23 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     setOpenSaveModal(false);
   }
 
-  async function handleCloseTabBar() {
-    const url = selectedTab ? selectedTab.url : window.location.href;
-    await storage.detachBrowserTab(tabGroup.tabId); // TODO: remove the tab group without refresh the page
-    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url } });
+  function handleOpenMenu() {
+    setIsMenuOpen(true);
+  }
+
+  function handleCloseMenu() {
+    setIsMenuOpen(false);
+  }
+
+  function handleOptionClick(tag: string) {
+
+    switch (tag) {
+      case 'close':
+        deleteTabBar();
+        break;
+    }
+
+    setIsMenuOpen(false);
   }
 
   async function handleDeleteTab(deleteTab: Storage.Tab) {
@@ -92,7 +108,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
     } else {
 
-      await handleCloseTabBar();
+      await deleteTabBar();
     }
   }
 
@@ -105,6 +121,12 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   async function selectNewTab(tab: Storage.Tab) {
     await storage.selectTab(tab, true);
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: tab.url } });
+  }
+
+  async function deleteTabBar() {
+    const url = selectedTab ? selectedTab.url : window.location.href;
+    await storage.detachBrowserTab(tabGroup.tabId); // TODO: remove the tab group without refresh the page
+    chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url } });
   }
 
   return (
@@ -123,12 +145,23 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
         {tabGroup.isTemp &&
           <Icon className={style.saveIcon} iconName='save' onClick={handleOpenSaveModal} />
         }
-        <Icon className={style.icon} iconName='cancel' onClick={handleCloseTabBar} />
+        <Icon className={style.icon} iconName='more' onClick={handleOpenMenu} />
       </div>
       <SaveModal
         isOpen={openSaveModal}
         tabGroup={tabGroup}
         onCloseModal={handleCloseSaveModal}/>
+      <Menu 
+        className={style.menu}
+        isOpen={isMenuOpen} 
+        onCloseMenu={handleCloseMenu}>
+        <Option 
+          className={style.option} 
+          tag='close' 
+          icon='cancel' 
+          title='Cerrar'
+          onClick={handleOptionClick}/>
+      </Menu>
     </div>
   );
 }

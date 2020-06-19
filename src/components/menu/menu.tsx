@@ -4,10 +4,11 @@ import * as style from './menu.css';
 interface props {
   isOpen: boolean;
   children: React.ReactNode;
+  className?: string;
   onCloseMenu: () => void;
 }
 
-export function Menu({ isOpen, children, onCloseMenu }: props) {
+export function Menu({ className = style.menu, isOpen, children, onCloseMenu }: props) {
 
   const menuRef = React.useRef<HTMLDivElement>();
   const handleWindowClick = React.useCallback(() => onCloseMenu(), []);
@@ -60,7 +61,7 @@ export function Menu({ isOpen, children, onCloseMenu }: props) {
 
   return (
     <div 
-      className={style.menu} 
+      className={className} 
       ref={menuRef} 
       onClick={e => e.stopPropagation()}>
       {children}

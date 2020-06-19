@@ -12,6 +12,7 @@
 }
 
 .name {
+  line-height: 24px;
   font-size: var(--font-size) !important;
   color: black !important;
   font-family: 'Segoe UI' !important;
