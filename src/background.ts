@@ -11,7 +11,7 @@ chrome.runtime.onInstalled.addListener(() => {
   // Add an option to the context menu of the browser
   chrome.contextMenus.create({
     title: 'Agregar a la barra de pestañas ',
-    contexts: ['link']
+    contexts: ['link', 'page']
   });
 });
 
@@ -65,10 +65,12 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
 chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
 
   const tabGroup = await storage.getTabGroupByTabId(browserTab.id);
-  const pageInfo = await getPageInfo(info.linkUrl);
+  const url = info.linkUrl ? info.linkUrl : info.pageUrl;
+  const enableMetaRedirect = Boolean(info.linkUrl);
+  const pageInfo = await getPageInfo(url, enableMetaRedirect);
 
   if (tabGroup) {
-
+    
     const tab = new Tab(undefined, pageInfo.title, pageInfo.url, tabGroup.id, false, pageInfo.favicon);
     await storage.addTab(tab);
 
@@ -80,18 +82,16 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
   } else {
 
     const tabGroup = new TabGroup('Temporal', browserTab.id, undefined, undefined, true);
-    const currentPageTab = new Tab(undefined, browserTab.title, browserTab.url, tabGroup.id, true, browserTab.favIconUrl);
-    const newTab = new Tab(undefined, pageInfo.title, pageInfo.url, tabGroup.id, false, pageInfo.favicon);
-
+    const tab = new Tab(undefined, pageInfo.title, pageInfo.url, tabGroup.id, false, pageInfo.favicon);
+    
     await storage.addTabGroup(tabGroup);
-    await storage.addTab(currentPageTab);
-    await storage.addTab(newTab);
+    await storage.addTab(tab);
 
     chrome.tabs.executeScript(browserTab.id, { file: 'tab-bar.js' });
   }
 });
 
-function getPageInfo(url: string): Promise<PageInfo> {
+function getPageInfo(url: string, enableMetaRedirect: boolean): Promise<PageInfo> {
 
   return new Promise<PageInfo>((resolve, reject) => {
 
@@ -107,9 +107,9 @@ function getPageInfo(url: string): Promise<PageInfo> {
           const metaRedirect = document.querySelector<HTMLMetaElement>('meta[http-equiv="Refresh"]');
 
           // if is a meta redirect, request the page info again with the redirect URL
-          if (metaRedirect) {
+          if (enableMetaRedirect && metaRedirect) {
             const [, url] = /url=(.*)/.exec(metaRedirect.content);
-            resolve(await getPageInfo(url));
+            resolve(await getPageInfo(url, true));
           }
 
           const title = document.title;
@@ -155,3 +155,10 @@ async function getFavIconUrl(document: Document) {
 
   return favIconUrl;
 }
+
+// TODO: Evitar que la pagina se cierre si la barra de pestañas no se ha guardado
+// TODO: Remover el prefijado de las pestañas del navegador DONE
+// TODO: Agregar la pagina de google como pestaña  DONE
+// TODO: Eliminar la 1ra y la 2da opcion del popup y agregar la opcion abrir barra de pestañas
+// TODO: Agregar el menu de opciones a los grupos de pestañas en la pagina de pestañas
+//       Con la opcion eliminar

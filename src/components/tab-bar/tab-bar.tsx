@@ -21,7 +21,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   React.useEffect(() => {
 
     chrome.runtime.onMessage.addListener(menssageListener);
-    prefixBrowserTabTitle();
+    // prefixBrowserTabTitle();
 
     return () => {
       chrome.runtime.onMessage.removeListener(menssageListener);
