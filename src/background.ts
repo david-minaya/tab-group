@@ -156,9 +156,9 @@ async function getFavIconUrl(document: Document) {
   return favIconUrl;
 }
 
-// TODO: Evitar que la pagina se cierre si la barra de pestañas no se ha guardado
-// TODO: Remover el prefijado de las pestañas del navegador DONE
-// TODO: Agregar la pagina de google como pestaña  DONE
-// TODO: Eliminar la 1ra y la 2da opcion del popup y agregar la opcion abrir barra de pestañas
+// TODO: Evitar que la pagina se cierre si la barra de pestañas no se ha guardado | DONE
+// TODO: Remover el prefijado de las pestañas del navegador | DONE
+// TODO: Agregar la pagina de google como pestaña  | DONE
+// TODO: Eliminar la 1ra y la 2da opcion del popup y agregar la opcion abrir barra de pestañas | DONE
 // TODO: Agregar el menu de opciones a los grupos de pestañas en la pagina de pestañas
 //       Con la opcion eliminar

@@ -73,7 +73,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
     switch (tag) {
       case 'close':
-        deleteTabBar();
+        closeTabBar();
         break;
     }
 
@@ -108,7 +108,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
     } else {
 
-      await deleteTabBar();
+      await closeTabBar();
     }
   }
 
@@ -123,7 +123,12 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: tab.url } });
   }
 
-  async function deleteTabBar() {
+  async function closeTabBar() {
+
+    if (tabGroup.isTemp) {
+      if (!confirm('Desea cerra la pagina sin guardar la barra de pestañas')) return;
+    }
+
     const url = selectedTab ? selectedTab.url : window.location.href;
     await storage.detachBrowserTab(tabGroup.tabId); // TODO: remove the tab group without refresh the page
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url } });

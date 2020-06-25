@@ -9,7 +9,6 @@ module.exports = {
   entry: {
     'background': './src/background.ts',
     'tab-bar': './src/content-scripts/tab-bar',
-    'add-modal': './src/content-scripts/add-modal',
     'popup': './src/scripts/popup.tsx',
     'tab-bar-page': './src/scripts/tab-bar-page.tsx',
     'dev': './src/scripts/dev'

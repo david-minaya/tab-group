@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import * as style from './tab-bar.css';
 import { getBrowserTab } from '../../utils';
-import { Storage, LocalStorage, TabGroup } from '../../storage';
+import { Storage, LocalStorage } from '../../storage';
 import { initializeIcons } from '@uifabric/icons';
 import { TabBar } from '../../components/tab-bar/tab-bar';
 
