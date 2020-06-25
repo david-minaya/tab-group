@@ -10,3 +10,25 @@ body {
     height: 100vh;
     display: flex;
 }
+
+.navigationPane {
+    width: 25%;
+    height: 100%;
+    padding: 25px;
+    box-shadow: 0px 0px 3px lightgray;
+}
+
+.title {
+    font-size: 28px;
+}
+
+.mainPane {
+    width: 75%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.list {
+    width: 75%;
+    margin: 54px auto;
+}
