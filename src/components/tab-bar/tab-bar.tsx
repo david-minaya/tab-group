@@ -2,11 +2,11 @@ import * as React from 'react';
 import * as style from './tab-bar.css';
 import * as Storage from '../../storage';
 import { Tab } from '../tab/tab';
-import { Icon } from 'office-ui-fabric-react';
 import { SaveModal } from '../save-modal';
 import { MessageType, Message, TitlePrefixer } from '../../utils';
 import { Menu } from '../menu';
 import { Option } from '../option';
+import { IconOption } from '../icon-option';
 
 interface props { tabGroup: Storage.TabGroup; }
 const storage = new Storage.Storage(new Storage.LocalStorage());
@@ -80,6 +80,19 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     setIsMenuOpen(false);
   }
 
+  function calculateMenuPosition(menu: HTMLDivElement, parentRect: DOMRect) {
+    
+    const menuRect = menu.getBoundingClientRect();
+    const bodyWidth = document.body.clientWidth;
+    const leftBoundary = menuRect.width + 12;
+
+    if (parentRect.right > leftBoundary) {
+      menu.style.right = `${bodyWidth - parentRect.right}px`;
+    } else {
+      menu.style.right = `${bodyWidth - leftBoundary}px`;
+    }
+  }
+
   async function handleDeleteTab(deleteTab: Storage.Tab) {
 
     await storage.deleteTab(deleteTab);
@@ -126,7 +139,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   async function closeTabBar() {
 
     if (tabGroup.isTemp) {
-      if (!confirm('Desea cerra la pagina sin guardar la barra de pestañas')) return;
+      if (!confirm('Desea cerra la barra de pestañas sin guardarla')) return;
     }
 
     const url = selectedTab ? selectedTab.url : window.location.href;
@@ -148,9 +161,14 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
       </div>
       <div className={style.options}>
         {tabGroup.isTemp &&
-          <Icon className={style.saveIcon} iconName='save' onClick={handleOpenSaveModal} />
+          <IconOption 
+            className={style.saveIcon} 
+            iconName='save' 
+            onClick={handleOpenSaveModal} />
         }
-        <Icon className={style.icon} iconName='more' onClick={handleOpenMenu} />
+        <IconOption 
+          iconName='more' 
+          onClick={handleOpenMenu} />
       </div>
       <SaveModal
         isOpen={openSaveModal}
@@ -158,7 +176,8 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
         onCloseModal={handleCloseSaveModal}/>
       <Menu 
         className={style.menu}
-        isOpen={isMenuOpen} 
+        isOpen={isMenuOpen}
+        calculateMenuPosition={calculateMenuPosition} 
         onCloseMenu={handleCloseMenu}>
         <Option 
           className={style.option} 

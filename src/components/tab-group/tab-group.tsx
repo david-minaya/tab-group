@@ -1,13 +1,21 @@
 import * as React from 'react';
 import * as style from './tab-group.css';
 import * as Storage from '../../storage';
-import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { TabItem } from '../tab-item';
 import { MessageType } from '../../utils';
+import { Menu } from '../menu';
+import { Option } from '../option';
+import { IconOption } from '../icon-option';
 
-const storage = new Storage.Storage(new Storage.LocalStorage());
+interface props {
+  tabGroup: Storage.TabGroup;
+  onUpdate: () => void;
+}
 
-export function TabGroup({ tabGroup }: { tabGroup: Storage.TabGroup }) {
+export function TabGroup({ tabGroup, onUpdate }: props) {
+  
+  const storage = React.useMemo(() => new Storage.Storage(new Storage.LocalStorage()), []);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   function handleOpenInNewTab() {
 
@@ -26,8 +34,24 @@ export function TabGroup({ tabGroup }: { tabGroup: Storage.TabGroup }) {
     });
   }
 
-  async function handleDeleteTabBar() {
-    await storage.deleteTabGroup(tabGroup.id);
+  function handleOpenMenu() {
+    setIsMenuOpen(true);
+  }
+
+  function handleCloseMenu() {
+    setIsMenuOpen(false);
+  }
+
+  async function handleOptionClick(tag: string) {
+
+    switch (tag) {
+      case 'delete':
+        await storage.deleteTabGroup(tabGroup.id);
+        onUpdate();
+        break;
+    }
+
+    setIsMenuOpen(false);
   }
 
   return (
@@ -35,8 +59,8 @@ export function TabGroup({ tabGroup }: { tabGroup: Storage.TabGroup }) {
       <div className={style.topBar}>
         <div className={style.title}>{tabGroup.name}</div>
         <div className={style.options}>
-          <Icon className={style.option} iconName='OpenInNewTab' onClick={handleOpenInNewTab} />
-          <Icon className={style.option} iconName='delete' onClick={handleDeleteTabBar} />
+          <IconOption iconName='OpenInNewTab' onClick={handleOpenInNewTab} />
+          <IconOption iconName='more' onClick={handleOpenMenu} />
         </div>
       </div>
       <div className={style.list}>
@@ -46,6 +70,16 @@ export function TabGroup({ tabGroup }: { tabGroup: Storage.TabGroup }) {
           })
         }
       </div>
+      <Menu 
+        className={style.menu}
+        isOpen={isMenuOpen}
+        onCloseMenu={handleCloseMenu}>
+        <Option
+          tag='delete' 
+          icon='delete' 
+          title='Borrar'
+          onClick={handleOptionClick}/>
+      </Menu>
     </div>
   );
 }

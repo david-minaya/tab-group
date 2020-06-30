@@ -27,6 +27,7 @@
 
 .menu {
   composes: menu from '../menu/menu.css';
+  bottom: 52px;
   padding: 0px;
 }
 
@@ -42,25 +43,9 @@
   --font-size: 14px !important;
 }
 
-.icon {
-  width: 24px;
-  font-size: 16px;
-  text-align: center;
-  line-height: 24px;
-  cursor: default;
-  color: black;
-  border-radius: 2px;
-  margin: 0px 4px;
-}
-
 .saveIcon {
-  composes: icon;
+  composes: iconOption from '../icon-option/icon-option.css';
   background-image: url('../../images/point.svg');
   background-repeat: no-repeat;
   background-position: right top;
-}
-
-.icon:hover {
-  color: blue;
-  background-color: #DDDDDD;
 }

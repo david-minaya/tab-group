@@ -1,10 +1,10 @@
 import * as React from 'react';
 import * as style from './tab.css';
 import * as Storage from '../../storage';
-import { Icon } from 'office-ui-fabric-react';
 import { MessageType, copy } from '../../utils';
 import { Menu } from '../menu';
 import { Option } from '../option';
+import { IconOption } from '../icon-option';
 
 interface props {
   tab: Storage.Tab;
@@ -15,17 +15,17 @@ export function Tab({ tab, onDeleteTab }: props) {
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  function handleTabClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+  function handleTabClick(event: React.MouseEvent<HTMLElement, MouseEvent>) {
     
     const clickedElement = event.target as HTMLElement;
     
-    // if the clicked element isn't the menu option
-    if (!clickedElement.classList.contains(style.menu)) {
-      chrome.runtime.sendMessage({ 
-        type: MessageType.NAVIGATE, 
-        arg: { url: tab.url } 
-      });
-    }
+    // if the clicked element is the menu option return
+    if (clickedElement.dataset.tag === 'icon-option') return;
+
+    chrome.runtime.sendMessage({ 
+      type: MessageType.NAVIGATE, 
+      arg: { url: tab.url } 
+    });
   }
 
   function handleOpenMenu() {
@@ -34,6 +34,19 @@ export function Tab({ tab, onDeleteTab }: props) {
 
   function handleCloseMenu() {
     setIsMenuOpen(false);
+  }
+
+  function calculateMenuPosition(menu: HTMLDivElement, parentRect: DOMRect) {
+    
+    const menuRect = menu.getBoundingClientRect();
+    const bodyWidth = document.body.clientWidth;
+    const leftBoundary = menuRect.width + 12;
+
+    if (parentRect.right > leftBoundary) {
+      menu.style.right = `${bodyWidth - parentRect.right}px`;
+    } else {
+      menu.style.right = `${bodyWidth - leftBoundary}px`;
+    }
   }
 
   function handleOptionClick(tag: string) {
@@ -61,9 +74,14 @@ export function Tab({ tab, onDeleteTab }: props) {
     <div className={tab.isSelected ? style.selectedTab : style.tab} onClick={handleTabClick}>
       <img className={style.favicon} title={tab.name} src={tab.favIconUrl}/>
       <div className={style.title} title={tab.name}>{tab.name}</div>
-      <Icon className={style.menu} iconName='more' onClick={handleOpenMenu}/>
+      <IconOption 
+        className={style.iconOption} 
+        iconName='more' 
+        onClick={handleOpenMenu}/>
       <Menu 
-        isOpen={isMenuOpen} 
+        className={style.menu}
+        isOpen={isMenuOpen}
+        calculateMenuPosition={calculateMenuPosition} 
         onCloseMenu={handleCloseMenu}>
         <Option 
           className={style.option} 

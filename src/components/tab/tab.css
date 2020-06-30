@@ -36,19 +36,19 @@
   justify-self: flex-start;
 }
 
-.menu {
+.iconOption {
+  composes: iconOption from '../icon-option/icon-option.css';
   width: 20px;
   font-size: 14px;
-  text-align: center;
   line-height: 20px;
   color: #444444;
   font-weight: 600;
-  border-radius: 2px;
+  margin: 0px;
 }
 
-.menu:hover {
-  color: blue;
-  background-color: #DDDDDD;
+.menu {
+  composes: menu from '../menu/menu.css';
+  bottom: 52px;
 }
 
 .option {

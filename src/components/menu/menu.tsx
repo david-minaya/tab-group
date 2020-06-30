@@ -5,10 +5,11 @@ interface props {
   isOpen: boolean;
   children: React.ReactNode;
   className?: string;
+  calculateMenuPosition?: (menu: HTMLDivElement, parentRect: DOMRect) => void;
   onCloseMenu: () => void;
 }
 
-export function Menu({ className = style.menu, isOpen, children, onCloseMenu }: props) {
+export function Menu({ className = style.menu, isOpen, children, calculateMenuPosition, onCloseMenu }: props) {
 
   const menuRef = React.useRef<HTMLDivElement>();
   const handleWindowClick = React.useCallback(() => onCloseMenu(), []);
@@ -44,18 +45,11 @@ export function Menu({ className = style.menu, isOpen, children, onCloseMenu }: 
   function updateMenuPosition() {
 
     const menuElement = menuRef.current;
-    const parentElement = menuElement.parentElement;
-    
-    const menuRect = menuElement.getBoundingClientRect();
+    const parentElement = menuElement.parentElement;    
     const parentRect = parentElement.getBoundingClientRect();
     
-    const bodyWidth = document.body.clientWidth;
-    const leftBoundary = menuRect.width + 12;
-
-    if (parentRect.right < leftBoundary) {
-      menuElement.style.right = `${bodyWidth - leftBoundary}px`;
-    } else {
-      menuElement.style.right = `${bodyWidth - parentRect.right}px`;
+    if (calculateMenuPosition) {
+      calculateMenuPosition(menuElement, parentRect);
     }
   }
 

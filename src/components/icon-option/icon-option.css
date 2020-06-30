@@ -1,0 +1,15 @@
+.iconOption {
+  width: 24px;
+  font-size: 16px;
+  text-align: center;
+  line-height: 24px;
+  cursor: default;
+  color: black;
+  border-radius: 2px;
+  margin: 0px 4px;
+}
+
+.iconOption:hover {
+  color: blue;
+  background-color: #DDDDDD;
+}

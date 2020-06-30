@@ -13,13 +13,17 @@ export function TabBarPage() {
 
   React.useEffect(() => {
     getTabsGroups();
-  });
+  }, []);
 
   async function getTabsGroups() {
     const tabsGroups = await storage.getTabsGroup();
     const filteredTabsGroupd = tabsGroups.filter(tabGroup => !tabGroup.isTemp);
     const tabsGroupsRevesed = filteredTabsGroupd.reverse();
     setTabsGroups(tabsGroupsRevesed);
+  }
+
+  async function handleUpdate() {
+    await getTabsGroups();
   }
 
   return (
@@ -31,7 +35,12 @@ export function TabBarPage() {
         <div className={style.list}>
           {
             tabsGroups.map(tabGroup => {
-              return <TabGroup key={tabGroup.id} tabGroup={tabGroup} />;
+              return (
+                <TabGroup 
+                  key={tabGroup.id} 
+                  tabGroup={tabGroup}
+                  onUpdate={handleUpdate}/>
+              );
             })
           }
         </div>
