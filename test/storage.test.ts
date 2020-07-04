@@ -1,4 +1,4 @@
-/*eslint-disable no-unused-expressions*/
+/* eslint-disable no-unused-expressions */
 import { expect } from 'chai';
 import TestStorage from './test-storage';
 import { Storage, TabGroup, Tab } from '../src/storage';
@@ -6,9 +6,9 @@ import { Storage, TabGroup, Tab } from '../src/storage';
 const storage = new Storage(new TestStorage());
 
 beforeEach(async () => {
-  await storage.addTabGroup(new TabGroup('Group 1', 1, [new Tab('id1', 'tab 1', 'url 1')], '1'));
-  await storage.addTabGroup(new TabGroup('Group 2', 2, [new Tab('id2', 'tab 2', 'url 2')], '2'));
-  await storage.addTabGroup(new TabGroup('Group 3', 3, [new Tab('id3', 'tab 3', 'url 3')], '3'));
+  await storage.addTabGroup(new TabGroup('Group 1', 1, [new Tab('id1', 'tab 1', 'url 1', '1')], '1'));
+  await storage.addTabGroup(new TabGroup('Group 2', 2, [new Tab('id2', 'tab 2', 'url 2', '2')], '2'));
+  await storage.addTabGroup(new TabGroup('Group 3', 3, [new Tab('id3', 'tab 3', 'url 3', '3')], '3'));
 });
 
 describe('add tab group', () => {
@@ -73,7 +73,7 @@ it('return true if found one tab group with the id of the browser tab', async ()
   expect(isBrowserTabAssigned).to.be.true;
 });
 
-it('select the tab passed as argument', async () => {
+it('select a tab', async () => {
   const { tabs } = await storage.getTabGroup('1');
   await storage.selectTab(tabs[0], true);
   {
@@ -112,8 +112,8 @@ it('update tab', async () => {
 it('delete tab', async() => {
   
   const tabs = [
-    new Tab('id1', 'tab 1', 'url 1'),
-    new Tab('id2', 'tab 2', 'url 2')
+    new Tab('id1', 'tab 1', 'url 1', '4'),
+    new Tab('id2', 'tab 2', 'url 2', '4')
   ];
 
   const tabGroup = new TabGroup('Group 4', 4, tabs, '4');
@@ -124,7 +124,7 @@ it('delete tab', async() => {
 
   const storedTabGroup = await storage.getTabGroup(tabGroup.id);
   const [storedTab] = storedTabGroup.tabs;
-  const expectedTab = new Tab('id2', 'tab 2', 'url 2');
+  const expectedTab = new Tab('id2', 'tab 2', 'url 2', '4');
 
   expect(storedTab).to.be.include(expectedTab);
 });
