@@ -4,8 +4,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const svgToMiniDataURI = require('mini-svg-data-uri');
 
 module.exports = {
-  mode: 'development',
-  devtool: 'eval-source-map',
   entry: {
     'background': './src/background.ts',
     'tab-bar': './src/content-scripts/tab-bar',
