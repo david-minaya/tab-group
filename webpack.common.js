@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const svgToMiniDataURI = require('mini-svg-data-uri');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -21,6 +22,7 @@ module.exports = {
     contentBase: './dist'
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       './src/manifest.json'
     ]),
