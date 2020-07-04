@@ -1,0 +1,30 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Develop
+on:
+  push:
+    branches: [ develop ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node
+      uses: actions/setup-node@v1
+    - name: Install dependecies
+      run: npm i
+    - name: Test
+      run: npm run test
+    - name: Build
+      run: npm run build
+    - name: Compress extension
+      run: zip -r tab-group.zip dist
+    - name: Publish in Chrome Store
+      uses: trmcnvn/chrome-addon@v2
+      with:
+        extension: dngafmcbilabgbccnbcfokhplkokhcad
+        zip: tab-group.zip
+        client-id: ${{ secrets.CHROME_EXTENSION_CLIENT_ID }}
+        client-secret: ${{ secrets.CHROME_EXTENSION_CLIENT_SECRET }}
+        refresh-token: ${{ secrets.CHROME_EXTENSION_REFRESH_TOKEN }}
