@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const svgToMiniDataURI = require('mini-svg-data-uri');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { transformManifest } = require('./src/utils/transform-manifest');
 
 module.exports = {
   entry: {
@@ -23,9 +24,11 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyWebpackPlugin([
-      './src/manifest.json'
-    ]),
+    new CopyWebpackPlugin([{
+      from: './src/manifest.json',
+      to: './manifest.json',
+      transform: transformManifest
+    }]),
     new HtmlWebpackPlugin({
       filename: 'popup.html',
       chunks: ['popup']

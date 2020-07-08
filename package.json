@@ -1,6 +1,6 @@
 {
   "name": "tab-group",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Group several tabs within only one tab",
   "main": "index.js",
   "author": "David Minaya <davidminaya04@gmail.com>",
