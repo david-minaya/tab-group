@@ -1,22 +1,22 @@
-import { TabGroup, StorageInterface } from '../src/storage';
+import { IStorage } from '../src/storage';
 
-export default class TestStorage implements StorageInterface {
+export default class TestStorage implements IStorage {
 
-  tabsGroup: TabGroup[];
+  tabsGroup: any[];
 
   constructor() {
     this.tabsGroup = [];
   }
 
-  getTabsGroup(key: string): Promise<TabGroup[]> {
+  get<T>(key: string): Promise<T[]> {
     return new Promise((resolve, reject) => {
       resolve(this.tabsGroup);
     });
   }  
   
-  setTabsGroup(tabsGroup: TabGroup[]): Promise<void> {
+  set<T>(key: string, data: T[]): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.tabsGroup = tabsGroup;
+      this.tabsGroup = data;
       resolve();
     });
   }

@@ -1,7 +1,7 @@
-import { StorageInterface } from './storage-interface';
-import { TabGroup } from './tab-group';
+import { IStorage } from './istorage';
+import { TabGroup } from '../models/tab-group';
 
-export class LocalStorage implements StorageInterface {
+export class LocalStorage implements IStorage {
 
   storage: chrome.storage.LocalStorageArea;
 
@@ -9,18 +9,18 @@ export class LocalStorage implements StorageInterface {
     this.storage = chrome.storage.local;
   }
 
-  getTabsGroup(key: string): Promise<TabGroup[]> {
+  get(key: string): Promise<[]> {
     return new Promise((resolve, reject) => {
       this.storage.get(key, result => {
-        const tabsGroup = result.tabsGroup || [];
-        resolve(tabsGroup);
+        const data = result[key] || [];
+        resolve(data);
       });
     });
   }  
   
-  setTabsGroup(tabsGroup: TabGroup[]): Promise<void> {
+  set(key: string, data: []): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.storage.set({ tabsGroup }, () => {
+      this.storage.set({ [key]: data }, () => {
         resolve();
       });
     });

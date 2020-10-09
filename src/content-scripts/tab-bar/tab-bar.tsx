@@ -5,18 +5,27 @@ import { getBrowserTab } from '../../utils';
 import { Storage, LocalStorage } from '../../storage';
 import { initializeIcons } from '@uifabric/icons';
 import { TabBar } from '../../components/tab-bar/tab-bar';
+import { Context } from '../../context';
+import { STORAGE_NAME } from '../../constants';
+
+initializeIcons();
 
 export async function insertTabBar() {
 
-  initializeIcons();
-
-  const storage = new Storage(new LocalStorage());
+  const storage = Storage.init(LocalStorage, STORAGE_NAME);
   const { id } = await getBrowserTab();
-  const tabGroup = await storage.getTabGroupByTabId(id);
+  const tabGroup = await storage.tabsGroups.getTabGroupByTabId(id);
   const root = document.createElement('div');
 
   root.classList.add(style.reset);
   root.classList.add(style.tabBarContainer);
   document.body.appendChild(root);
-  ReactDom.render(<TabBar tabGroup={tabGroup} />, root);
+
+  const component = (
+    <Context.Provider value={{ storage }}>
+      <TabBar tabGroup={tabGroup} /> 
+    </Context.Provider>
+  );
+
+  ReactDom.render(component, root);
 }

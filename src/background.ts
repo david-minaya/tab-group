@@ -1,9 +1,11 @@
+import defaultFavicon from './images/default-favicon.svg';
 import { PageInfo } from './types';
 import { Message, MessageType } from './utils';
-import { Storage, LocalStorage, TabGroup, Tab } from './storage';
-import defaultFavicon from './images/default-favicon.svg';
+import { Storage, LocalStorage } from './storage';
+import { TabGroup, Tab } from './models';
+import { STORAGE_NAME } from './constants';
 
-const storage = new Storage(new LocalStorage());
+const storage = Storage.init(LocalStorage, STORAGE_NAME);
 
 // Trigger when the extension is intalled
 chrome.runtime.onInstalled.addListener(() => {
@@ -35,7 +37,7 @@ chrome.webNavigation.onCommitted.addListener(async details => {
 
   if (details.frameId !== 0) return;
 
-  const tabGroup = await storage.getTabGroupByTabId(details.tabId);
+  const tabGroup = await storage.tabsGroups.getTabGroupByTabId(details.tabId);
 
   if (tabGroup) {
 
@@ -45,8 +47,8 @@ chrome.webNavigation.onCommitted.addListener(async details => {
     const selectedTab = tabGroup.tabs.find(tab => tab.isSelected);
     const tab = tabGroup.tabs.find(tab => urlRegex.test(tab.url));
 
-    await storage.selectTab(selectedTab, false);
-    await storage.selectTab(tab, true);
+    await storage.tabs.selectTab(selectedTab, false);
+    await storage.tabs.selectTab(tab, true);
 
     chrome.tabs.executeScript(tabGroup.tabId, { file: 'tab-bar.js' });
   }
@@ -54,9 +56,9 @@ chrome.webNavigation.onCommitted.addListener(async details => {
 
 // Detach the tab bar from the browser tab when it is closed
 chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
-  const isAttach = await storage.isBrowserTabAttached(tabId);
+  const isAttach = await storage.tabs.isBrowserTabAttached(tabId);
   if (isAttach) {
-    await storage.detachBrowserTab(tabId);
+    await storage.tabs.detachBrowserTab(tabId);
   }
 });
 
@@ -64,7 +66,7 @@ chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
 // Listen when the context menu option is clicked
 chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
 
-  const tabGroup = await storage.getTabGroupByTabId(browserTab.id);
+  const tabGroup = await storage.tabsGroups.getTabGroupByTabId(browserTab.id);
   const url = info.linkUrl ? info.linkUrl : info.pageUrl;
   const enableMetaRedirect = Boolean(info.linkUrl);
   const pageInfo = await getPageInfo(url, enableMetaRedirect);
@@ -72,7 +74,7 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
   if (tabGroup) {
     
     const tab = new Tab(undefined, pageInfo.title, pageInfo.url, tabGroup.id, false, pageInfo.favicon);
-    await storage.addTab(tab);
+    await storage.tabs.addTab(tab);
 
     chrome.tabs.sendMessage(browserTab.id, {
       type: MessageType.TAB_ADDED,
@@ -84,8 +86,8 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
     const tabGroup = new TabGroup('Temporal', browserTab.id, undefined, undefined, true);
     const tab = new Tab(undefined, pageInfo.title, pageInfo.url, tabGroup.id, false, pageInfo.favicon);
     
-    await storage.addTabGroup(tabGroup);
-    await storage.addTab(tab);
+    await storage.tabsGroups.addTabGroup(tabGroup);
+    await storage.tabs.addTab(tab);
 
     chrome.tabs.executeScript(browserTab.id, { file: 'tab-bar.js' });
   }

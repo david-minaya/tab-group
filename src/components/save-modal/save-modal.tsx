@@ -2,9 +2,9 @@ import * as React from 'react';
 import * as style from './save-modal.css';
 import { Button } from '../button';
 import { TextBox } from '../text-box';
-import { Storage, LocalStorage, TabGroup } from '../../storage';
-
-const storage = new Storage(new LocalStorage());
+import { Storage, LocalStorage } from '../../storage';
+import { TabGroup } from '../../models';
+import { STORAGE_NAME } from '../../constants';
 
 interface props {
   isOpen: boolean;
@@ -13,11 +13,12 @@ interface props {
 }
 
 export function SaveModal({ isOpen = false, tabGroup, onCloseModal }: props) {
+  
+  const storage = React.useMemo(() => Storage.init(LocalStorage, STORAGE_NAME), []); 
+  const handleWindowClick = React.useCallback(() => onCloseModal(), []);
 
   const [name, setName] = React.useState('');
   const [isValidName, setIsValidName] = React.useState(true);
-  
-  const handleWindowClick = React.useCallback(() => onCloseModal(), []);
 
   React.useEffect(() => {
 
@@ -45,7 +46,7 @@ export function SaveModal({ isOpen = false, tabGroup, onCloseModal }: props) {
     if (isValidName) {
       tabGroup.name = name;
       tabGroup.isTemp = false;
-      await storage.updateTabGroup(tabGroup);
+      await storage.tabsGroups.updateTabGroup(tabGroup);
       onCloseModal();
     } 
 

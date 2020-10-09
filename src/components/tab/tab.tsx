@@ -1,14 +1,14 @@
 import * as React from 'react';
 import * as style from './tab.css';
-import * as Storage from '../../storage';
+import * as Model from '../../models';
 import { MessageType, copy } from '../../utils';
 import { Menu } from '../menu';
 import { Option } from '../option';
 import { IconOption } from '../icon-option';
 
 interface props {
-  tab: Storage.Tab;
-  onDeleteTab: (tab: Storage.Tab) => void;
+  tab: Model.Tab;
+  onDeleteTab: (tab: Model.Tab) => void;
 }
 
 export function Tab({ tab, onDeleteTab }: props) {

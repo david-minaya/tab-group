@@ -1,17 +1,20 @@
 import * as React from 'react';
 import * as style from './tab-bar.css';
-import * as Storage from '../../storage';
-import { Tab } from '../tab/tab';
+import * as Models from '../../models';
+import { Storage } from '../../storage';
+import { Tab } from '../tab';
 import { SaveModal } from '../save-modal';
 import { MessageType, Message, TitlePrefixer } from '../../utils';
 import { Menu } from '../menu';
 import { Option } from '../option';
 import { IconOption } from '../icon-option';
+import { Context } from '../../context';
 
-interface props { tabGroup: Storage.TabGroup; }
-const storage = new Storage.Storage(new Storage.LocalStorage());
+interface props { tabGroup: Models.TabGroup; }
 
 export function TabBar({ tabGroup: initialTabGroup }: props) {
+
+  const { storage } = React.useContext<{ storage: Storage }>(Context);
 
   const [tabGroup, setTabGroup] = React.useState(initialTabGroup);
   const [selectedTab, setSelectedTab] = React.useState(tabGroup.tabs.find(tab => tab.isSelected));
@@ -93,9 +96,9 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     }
   }
 
-  async function handleDeleteTab(deleteTab: Storage.Tab) {
+  async function handleDeleteTab(deleteTab: Models.Tab) {
 
-    await storage.deleteTab(deleteTab);
+    await storage.tabs.deleteTab(deleteTab);
 
     const { tabs } = tabGroup;
     const isLastTab = tabs[tabs.length - 1].id === deleteTab.id;
@@ -126,13 +129,13 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   }
 
   async function updateTabGroup() {
-    const updatedTabGroup = await storage.getTabGroupByTabId(tabGroup.tabId);
+    const updatedTabGroup = await storage.tabsGroups.getTabGroupByTabId(tabGroup.tabId);
     setTabGroup(updatedTabGroup);
     setSelectedTab(updatedTabGroup.tabs.find(tab => tab.isSelected));
   }
 
-  async function selectNewTab(tab: Storage.Tab) {
-    await storage.selectTab(tab, true);
+  async function selectNewTab(tab: Models.Tab) {
+    await storage.tabs.selectTab(tab, true);
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url: tab.url } });
   }
 
@@ -143,7 +146,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     }
 
     const url = selectedTab ? selectedTab.url : window.location.href;
-    await storage.detachBrowserTab(tabGroup.tabId); // TODO: remove the tab group without refresh the page
+    await storage.tabs.detachBrowserTab(tabGroup.tabId); // TODO: remove the tab bar without refresh the page
     chrome.runtime.sendMessage({ type: MessageType.NAVIGATE, arg: { url } });
   }
 

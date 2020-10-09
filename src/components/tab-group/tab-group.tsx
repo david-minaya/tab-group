@@ -1,20 +1,22 @@
 import * as React from 'react';
 import * as style from './tab-group.css';
-import * as Storage from '../../storage';
+import * as Model from '../../models';
+import { Storage } from '../../storage';
 import { TabItem } from '../tab-item';
 import { MessageType } from '../../utils';
 import { Menu } from '../menu';
 import { Option } from '../option';
 import { IconOption } from '../icon-option';
+import { Context } from '../../context';
 
 interface props {
-  tabGroup: Storage.TabGroup;
+  tabGroup: Model.TabGroup;
   onUpdate: () => void;
 }
 
 export function TabGroup({ tabGroup, onUpdate }: props) {
   
-  const storage = React.useMemo(() => new Storage.Storage(new Storage.LocalStorage()), []);
+  const { storage } = React.useContext<{ storage: Storage }>(Context);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   function handleOpenInNewTab() {
@@ -24,7 +26,7 @@ export function TabGroup({ tabGroup, onUpdate }: props) {
 
     chrome.tabs.create(createProperties, async browserTab => {
 
-      await storage.attachBrowserTab(tabGroup.id, browserTab.id);
+      await storage.tabs.attachBrowserTab(tabGroup.id, browserTab.id);
 
       // The tab bar is inserted from the background script when the listener
       // chrome.webNavigation.onCommitted is triggered. This listener is triggered
@@ -46,7 +48,7 @@ export function TabGroup({ tabGroup, onUpdate }: props) {
 
     switch (tag) {
       case 'delete':
-        await storage.deleteTabGroup(tabGroup.id);
+        await storage.tabsGroups.deleteTabGroup(tabGroup.id);
         onUpdate();
         break;
     }

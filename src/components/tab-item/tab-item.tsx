@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as style from './tab-item.css';
-import * as storage from '../../storage';
+import { Tab } from '../../models';
 
-export function TabItem({ tab }: { tab: storage.Tab }) {
+export function TabItem({ tab }: { tab: Tab }) {
   return (
     <div className={style.tab}>
       <div className={style.title}>{tab.name}</div>
