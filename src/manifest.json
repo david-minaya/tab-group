@@ -12,7 +12,8 @@
     "contextMenus"
   ],
   "web_accessible_resources": [
-    "*.svg"
+    "*.svg",
+    "*.woff"
   ],
   "browser_action": {
     "default_popup": "popup.html"
@@ -22,4 +23,3 @@
     "persistent": true
   }
 }
- 

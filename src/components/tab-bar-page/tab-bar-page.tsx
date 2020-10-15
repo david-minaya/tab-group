@@ -1,12 +1,9 @@
 import * as React from 'react';
 import * as style from './tab-bar-page.css';
-import { initializeIcons } from '@uifabric/icons';
 import { Storage, LocalStorage } from '../../storage';
 import { TabGroup } from '../tab-group';
 import { Context } from '../../context';
 import { STORAGE_NAME } from '../../constants';
-
-initializeIcons();
 
 export function TabBarPage() {
 

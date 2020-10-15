@@ -1,0 +1,38 @@
+{
+  "fontName": "fabric-icons",
+  "fontFamilyName": "FabricMDL2Icons",
+  "excludeGlyphs": false,
+  "excludeThirdPartyIcons": false,
+  "chunkSubsets": false,
+  "hashFontFileName": false,
+  "glyphs": [
+    {
+      "name": "AddIn",
+      "unicode": "F775"
+    },
+    {
+      "name": "Cancel",
+      "unicode": "E711"
+    },
+    {
+      "name": "Copy",
+      "unicode": "E8C8"
+    },
+    {
+      "name": "Delete",
+      "unicode": "E74D"
+    },
+    {
+      "name": "OpenInNewTab",
+      "unicode": "F6AB"
+    },
+    {
+      "name": "More",
+      "unicode": "E712"
+    },
+    {
+      "name": "Save", 
+      "unicode": "E74E"
+    }
+  ]
+}

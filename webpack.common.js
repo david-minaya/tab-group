@@ -24,11 +24,17 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyWebpackPlugin([{
-      from: './src/manifest.json',
-      to: './manifest.json',
-      transform: transformManifest
-    }]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: './src/manifest.json',
+          transform: transformManifest
+        },
+        {
+          from: './src/icons/fabric-icons.woff'
+        }
+      ]
+    }),
     new HtmlWebpackPlugin({
       filename: 'popup.html',
       chunks: ['popup']
