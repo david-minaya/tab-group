@@ -8,7 +8,7 @@ import { TabBar } from '../../components/tab-bar/tab-bar';
 import { Context } from '../../context';
 import { STORAGE_NAME } from '../../constants';
 
-initializeIcons(chrome.runtime.getURL(''));
+initializeIcons(chrome.runtime.getURL('/'));
 
 export async function insertTabBar() {
 
