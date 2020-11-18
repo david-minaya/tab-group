@@ -13,7 +13,8 @@
   ],
   "web_accessible_resources": [
     "*.svg",
-    "*.woff"
+    "*.woff",
+    "*.css"
   ],
   "browser_action": {
     "default_popup": "popup.html"

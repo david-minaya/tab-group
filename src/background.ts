@@ -51,6 +51,7 @@ chrome.webNavigation.onCommitted.addListener(async details => {
     await storage.tabs.selectTab(tab, true);
 
     chrome.tabs.executeScript(tabGroup.tabId, { file: 'tab-bar.js' });
+    chrome.tabs.insertCSS(tabGroup.tabId, { file: 'font-icon.css' });
   }
 });
 

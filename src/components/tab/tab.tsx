@@ -4,6 +4,7 @@ import * as Model from '../../models';
 import { MessageType, copy } from '../../utils';
 import { Menu } from '../menu';
 import { Option } from '../option';
+import { Icons } from '../../constants';
 import { IconOption } from '../icon-option';
 
 interface props {
@@ -76,7 +77,7 @@ export function Tab({ tab, onDeleteTab }: props) {
       <div className={style.title} title={tab.name}>{tab.name}</div>
       <IconOption 
         className={style.iconOption} 
-        iconName='more' 
+        iconName={Icons.MORE} 
         onClick={handleOpenMenu}/>
       <Menu 
         className={style.menu}
@@ -86,25 +87,25 @@ export function Tab({ tab, onDeleteTab }: props) {
         <Option 
           className={style.option} 
           tag='openinnewtab' 
-          icon='openInNewTab' 
+          icon={Icons.OPEN_IN_NEW_TAB} 
           title='Abrir en nueva pestaña'
           onClick={handleOptionClick}/>
         <Option 
           className={style.option} 
           tag='copytitle' 
-          icon='copy' 
+          icon={Icons.COPY} 
           title='Copiar titulo'
           onClick={handleOptionClick}/>
         <Option 
           className={style.option} 
           tag='copylink' 
-          icon='copy' 
+          icon={Icons.COPY} 
           title='Copiar enlace'
           onClick={handleOptionClick}/>
         <Option 
           className={style.option} 
           tag='delete' 
-          icon='delete' 
+          icon={Icons.DELETE} 
           title='Eliminar'
           onClick={handleOptionClick}/>
       </Menu>

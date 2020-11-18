@@ -20,7 +20,7 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js']
   },
   devServer: {
-    contentBase: './dist'
+    contentBase: './dist/dev.html'
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -31,7 +31,7 @@ module.exports = {
           transform: transformManifest
         },
         {
-          from: './src/icons/fabric-icons.woff'
+          from: './src/res'
         }
       ]
     }),

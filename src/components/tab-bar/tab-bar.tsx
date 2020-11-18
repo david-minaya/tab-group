@@ -7,6 +7,7 @@ import { SaveModal } from '../save-modal';
 import { MessageType, Message, TitlePrefixer } from '../../utils';
 import { Menu } from '../menu';
 import { Option } from '../option';
+import { Icons } from '../../constants';
 import { IconOption } from '../icon-option';
 import { Context } from '../../context';
 
@@ -166,11 +167,11 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
         {tabGroup.isTemp &&
           <IconOption 
             className={style.saveIcon} 
-            iconName='save' 
+            iconName={Icons.SAVE} 
             onClick={handleOpenSaveModal} />
         }
         <IconOption 
-          iconName='more' 
+          iconName={Icons.MORE} 
           onClick={handleOpenMenu} />
       </div>
       <SaveModal
@@ -185,7 +186,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
         <Option 
           className={style.option} 
           tag='close' 
-          icon='cancel' 
+          icon={Icons.CANCEL} 
           title='Cerrar'
           onClick={handleOptionClick}/>
       </Menu>

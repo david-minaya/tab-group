@@ -6,6 +6,7 @@ import { TabItem } from '../tab-item';
 import { MessageType } from '../../utils';
 import { Menu } from '../menu';
 import { Option } from '../option';
+import { Icons } from '../../constants';
 import { IconOption } from '../icon-option';
 import { Context } from '../../context';
 
@@ -61,8 +62,8 @@ export function TabGroup({ tabGroup, onUpdate }: props) {
       <div className={style.topBar}>
         <div className={style.title}>{tabGroup.name}</div>
         <div className={style.options}>
-          <IconOption iconName='OpenInNewTab' onClick={handleOpenInNewTab} />
-          <IconOption iconName='more' onClick={handleOpenMenu} />
+          <IconOption iconName={Icons.OPEN_IN_NEW_TAB} onClick={handleOpenInNewTab} />
+          <IconOption iconName={Icons.MORE} onClick={handleOpenMenu} />
         </div>
       </div>
       <div className={style.list}>
@@ -78,7 +79,7 @@ export function TabGroup({ tabGroup, onUpdate }: props) {
         onCloseMenu={handleCloseMenu}>
         <Option
           tag='delete' 
-          icon='delete' 
+          icon={Icons.DELETE} 
           title='Borrar'
           onClick={handleOptionClick}/>
       </Menu>

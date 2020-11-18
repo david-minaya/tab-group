@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as style from './icon-option.css';
-import { Icon } from 'office-ui-fabric-react';
+import { Icon } from '../icon';
 
 interface props {
   className?: string;
@@ -12,8 +12,8 @@ export function IconOption({ className, iconName, onClick }: props) {
   return (
     <Icon
       className={className || style.iconOption}
-      iconName={iconName}
-      data-tag='icon-option'
+      icon={iconName}
+      tag='icon-option'
       onClick={onClick} />
   );
 }

@@ -1,6 +1,6 @@
 {
-  "fontName": "fabric-icons",
-  "fontFamilyName": "FabricMDL2Icons",
+  "fontName": "font-icon",
+  "fontFamilyName": "font-icon",
   "excludeGlyphs": false,
   "excludeThirdPartyIcons": false,
   "chunkSubsets": false,
@@ -15,6 +15,14 @@
       "unicode": "E711"
     },
     {
+      "name": "ChevronLeft",
+      "unicode": "E76B"
+    },
+    {
+      "name": "ChevronRight",
+      "unicode": "E76C"
+    },
+    {
       "name": "Copy",
       "unicode": "E8C8"
     },
@@ -23,15 +31,15 @@
       "unicode": "E74D"
     },
     {
-      "name": "OpenInNewTab",
-      "unicode": "F6AB"
-    },
-    {
       "name": "More",
       "unicode": "E712"
     },
     {
-      "name": "Save", 
+      "name": "OpenInNewTab",
+      "unicode": "F6AB"
+    },
+    {
+      "name": "Save",
       "unicode": "E74E"
     }
   ]

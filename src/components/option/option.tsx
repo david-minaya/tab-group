@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as style from './option.css';
-import { Icon } from 'office-ui-fabric-react';
+import { Icon } from '../icon';
 
 interface props {
   icon?: string;
@@ -18,7 +18,7 @@ export function Option({ icon, title, tag, className = style.option, onClick }: 
 
   return (
     <div className={className} onClick={handleClick}>
-      <Icon className={style.icon} iconName={icon}/>
+      <Icon className={style.icon} icon={icon}/>
       <div className={style.name}>{title}</div>
     </div>
   );
