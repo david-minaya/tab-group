@@ -6,7 +6,9 @@ module.exports = {
     webextensions: true
   },
   extends: [
-    'standard'
+    'standard',
+    // 'plugin:@typescript-eslint/recommended',
+    // 'plugin:react/recommended'
   ],
   globals: {
     Atomics: 'readonly',
@@ -76,6 +78,7 @@ module.exports = {
     ],
     'quotes': [
       'warn'
-    ]
+    ],
+    'no-case-declarations': 'off'
   }
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as style from './menu.css'; 
 
-interface props {
+interface Props {
   isOpen: boolean;
   children: React.ReactNode;
   className?: string;
@@ -9,7 +9,15 @@ interface props {
   onCloseMenu: () => void;
 }
 
-export function Menu({ className = style.menu, isOpen, children, calculateMenuPosition, onCloseMenu }: props) {
+export function Menu(props: Props) {
+
+  const { 
+    className = style.menu, 
+    isOpen, 
+    children, 
+    calculateMenuPosition, 
+    onCloseMenu 
+  } = props;
 
   const menuRef = React.useRef<HTMLDivElement>();
   const handleWindowClick = React.useCallback(() => onCloseMenu(), []);

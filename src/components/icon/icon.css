@@ -6,4 +6,6 @@
   font-style: normal;
   font-weight: normal;
   speak: none;
+  cursor: pointer;
+  user-select: none;
 }

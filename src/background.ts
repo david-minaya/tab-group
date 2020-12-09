@@ -29,6 +29,20 @@ chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
     case MessageType.NAVIGATE:
       chrome.tabs.update({ url: message.arg.url });
       break;
+
+    case MessageType.OPEN_IN_NEW_TAB:
+
+      const pageGroup = message.arg.pageGroup as TabGroup;
+      const selectedTab = pageGroup.tabs.find(tab => tab.isSelected) || pageGroup.tabs[0];
+      const createProperties = { url: selectedTab.url };
+
+      chrome.tabs.create(createProperties, async browserTab => {
+        await storage.tabs.attachBrowserTab(pageGroup.id, browserTab.id);
+        chrome.tabs.executeScript(browserTab.id, { file: 'tab-bar.js' });
+        chrome.tabs.insertCSS(browserTab.id, { file: 'font-icon.css' });
+      });
+      
+      break;
   }
 });
 
@@ -91,6 +105,7 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
     await storage.tabs.addTab(tab);
 
     chrome.tabs.executeScript(browserTab.id, { file: 'tab-bar.js' });
+    chrome.tabs.insertCSS(tabGroup.tabId, { file: 'font-icon.css' });
   }
 });
 

@@ -5,15 +5,17 @@ import { Icon } from '../icon';
 interface props {
   className?: string;
   iconName: string;
-  onClick: () => void;
+  isVisible?: boolean
+  onClick: (event: any) => void;
 }
 
-export function IconOption({ className, iconName, onClick }: props) {
+export function IconOption({ className, iconName, isVisible, onClick }: props) {
   return (
     <Icon
       className={className || style.iconOption}
       icon={iconName}
       tag='icon-option'
+      isVisible={isVisible}
       onClick={onClick} />
   );
 }

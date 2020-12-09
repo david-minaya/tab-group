@@ -1,24 +1,42 @@
 import * as React from 'react';
 import * as style from './popup.css';
-import { Option } from '../option';
+import { PageGroupItem } from '../page-group-item';
+import { Storage, LocalStorage } from '../../storage';
+import { TabGroup } from '../../models';
+import { STORAGE_NAME } from '../../constants';
 
 export function Popup() {
 
-  function handleOpenPageButtonClick() {
-    window.open(chrome.runtime.getURL('tab-bar-page.html'));
+  const storage = React.useMemo(() => Storage.init(LocalStorage, STORAGE_NAME), []);
+  const [pageGroups, setPageGroup] = React.useState<TabGroup[]>([]);
+  
+  React.useEffect(() => {
+    getPageGroups();
+  }, []);
+
+  async function getPageGroups() {
+    setPageGroup(await storage.tabsGroups.getTabsGroup());
+  }
+
+  async function handleDeletePageGroup(pageGroupId: string) {
+    await storage.tabsGroups.deleteTabGroup(pageGroupId);
+    await getPageGroups();
   }
 
   return (
     <div className={style.popup}>
-      <div className={style.title}>Grupo de pestañas</div>
-      <div className={style.options}>
-        <Option 
-          icon="addin" 
-          title="Abrir barra de pestañas"/>
-        <Option 
-          icon="openinnewtab" 
-          title="Abrir la página Grupo de pestañas" 
-          onClick={handleOpenPageButtonClick}/>
+      <div className={style.header}>
+        <div className={style.title}>Grupos de paginas</div>
+      </div>
+      <div className={style.pageGroups}>
+        {
+          pageGroups.map(pageGroup => (
+            <PageGroupItem 
+              key={pageGroup.id} 
+              pageGroup={pageGroup}
+              onDeletePageGroup={handleDeletePageGroup}/>
+          ))
+        }
       </div>
     </div>
   );

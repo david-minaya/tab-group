@@ -5,14 +5,16 @@ interface props {
   className?: string;
   icon: string;
   tag?: string;
-  onClick?: () => void;
+  isVisible?: boolean;
+  onClick?: (event?: any) => void;
 }
 
-export function Icon({ className, icon, tag, onClick }: props) {
+export function Icon({ className, icon, tag, isVisible = true, onClick }: props) {
   return (
     <div 
       className={className || style.icon}
       data-tag={tag}
+      style={{ visibility: isVisible ? 'visible' : 'hidden' }}
       onClick={onClick}>
       {icon}
     </div>
