@@ -1,6 +1,7 @@
+/* eslint-disable no-undef */
 const package = require('../../package.json');
 
-function transformManifest(content, path) {
+function transformManifest(content) {
 
   const isProd = process.env.NODE_ENV === 'production';
   const manifest = JSON.parse(content.toString());

@@ -1,5 +1,4 @@
 import { IStorage } from './istorage';
-import { TabGroup } from '../models/tab-group';
 
 export class LocalStorage implements IStorage {
 
@@ -10,7 +9,7 @@ export class LocalStorage implements IStorage {
   }
 
   get(key: string): Promise<[]> {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.storage.get(key, result => {
         const data = result[key] || [];
         resolve(data);
@@ -19,7 +18,7 @@ export class LocalStorage implements IStorage {
   }  
   
   set(key: string, data: []): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.storage.set({ [key]: data }, () => {
         resolve();
       });
@@ -27,7 +26,7 @@ export class LocalStorage implements IStorage {
   }
 
   clear(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       this.storage.clear(() => resolve());
     });
   }

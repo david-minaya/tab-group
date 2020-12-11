@@ -15,7 +15,7 @@ import {
 interface props {
   pageGroup: TabGroup;
   onDeletePageGroup: (pageGroupId: string) => void;
-};
+}
 
 export function PageGroupItem({ pageGroup, onDeletePageGroup }: props) {
 
@@ -84,7 +84,7 @@ export function PageGroupItem({ pageGroup, onDeletePageGroup }: props) {
   }
 
   function getBrowserTab(): Promise<chrome.tabs.Tab> {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const queryInfo = { windowId: chrome.windows.WINDOW_ID_CURRENT, highlighted: true };
       chrome.tabs.query(queryInfo, ([tab]) => resolve(tab));
     });

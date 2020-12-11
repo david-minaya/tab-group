@@ -4,4 +4,4 @@ export enum MessageType {
   TAB_ADDED,
   UPDATING_BROWSER_TAB,
   OPEN_IN_NEW_TAB
-};
+}

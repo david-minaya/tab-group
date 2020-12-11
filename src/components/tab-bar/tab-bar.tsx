@@ -40,7 +40,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     };
   }, []);
 
-  async function menssageListener({ type, arg }: Message, sender: any, sendResponse: any) {
+  async function menssageListener({ type, arg }: Message) {
 
     const isThisTabGroup = arg.tabId === tabGroup.tabId;
 

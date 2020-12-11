@@ -23,7 +23,7 @@ export class TabsGroups {
     const tabsGroups = await this.getTabsGroup();
     const tabGroup = tabsGroups.find(tabGroup => tabGroup.id === id);
     return tabGroup;
-  };
+  }
 
   async getTabGroupByTabId(tabId: number) {
     const tabsGroup = await this.getTabsGroup();

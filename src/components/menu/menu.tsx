@@ -69,4 +69,4 @@ export function Menu(props: Props) {
       {children}
     </div>
   );
-};
+}

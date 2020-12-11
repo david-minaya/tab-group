@@ -70,7 +70,7 @@ chrome.webNavigation.onCommitted.addListener(async details => {
 });
 
 // Detach the tab bar from the browser tab when it is closed
-chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
+chrome.tabs.onRemoved.addListener(async tabId => {
   const isAttach = await storage.tabs.isBrowserTabAttached(tabId);
   if (isAttach) {
     await storage.tabs.detachBrowserTab(tabId);
@@ -111,7 +111,7 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
 
 function getPageInfo(url: string, enableMetaRedirect: boolean): Promise<PageInfo> {
 
-  return new Promise<PageInfo>((resolve, reject) => {
+  return new Promise<PageInfo>(resolve => {
 
     const xhr = new XMLHttpRequest();
 

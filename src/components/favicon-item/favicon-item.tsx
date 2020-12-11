@@ -4,7 +4,7 @@ import { Tab } from '../../models';
 
 interface props {
   page: Tab;
-};
+}
 
 export function FaviconItem({ page }: props) {
 

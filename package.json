@@ -10,7 +10,7 @@
     "build": "webpack --config webpack.prod.js",
     "start": "webpack-dev-server --open --config webpack.dev.js",
     "test": "mocha",
-    "lint": "eslint src/ --ext .ts,.tsx"
+    "lint": "eslint ./src --ext .ts,.tsx"
   },
   "dependencies": {
     "office-ui-fabric-react": "^7.65.0",
