@@ -2,10 +2,13 @@ import * as React from 'react';
 import * as style from './tab.css';
 import * as Model from '../../models';
 import { MessageType, copy } from '../../utils';
-import { Menu } from '../menu';
-import { Option } from '../option';
 import { Icons } from '../../constants';
-import { IconOption } from '../icon-option';
+
+import { 
+  IconOption,
+  Menu,
+  Option 
+} from '../';
 
 interface props {
   tab: Model.Tab;

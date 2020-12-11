@@ -1,10 +1,9 @@
 import * as React from 'react';
 import * as style from './save-modal.css';
-import { Button } from '../button';
-import { TextBox } from '../text-box';
 import { Storage, LocalStorage } from '../../storage';
 import { TabGroup } from '../../models';
 import { STORAGE_NAME } from '../../constants';
+import { Button, TextBox } from '../';
 
 interface props {
   isOpen: boolean;

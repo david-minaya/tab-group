@@ -2,13 +2,16 @@ import * as React from 'react';
 import * as style from './tab-group.css';
 import * as Model from '../../models';
 import { Storage } from '../../storage';
-import { TabItem } from '../tab-item';
 import { MessageType } from '../../utils';
-import { Menu } from '../menu';
-import { Option } from '../option';
 import { Icons } from '../../constants';
-import { IconOption } from '../icon-option';
 import { Context } from '../../context';
+
+import { 
+  TabItem,
+  Menu,
+  Option,
+  IconOption
+} from '../';
 
 interface props {
   tabGroup: Model.TabGroup;

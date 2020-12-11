@@ -2,14 +2,22 @@ import * as React from 'react';
 import * as style from './tab-bar.css';
 import * as Models from '../../models';
 import { Storage } from '../../storage';
-import { Tab } from '../tab';
-import { SaveModal } from '../save-modal';
-import { MessageType, Message, TitlePrefixer } from '../../utils';
-import { Menu } from '../menu';
-import { Option } from '../option';
-import { Icons } from '../../constants';
-import { IconOption } from '../icon-option';
 import { Context } from '../../context';
+import { Icons } from '../../constants';
+
+import { 
+  MessageType, 
+  Message, 
+  TitlePrefixer 
+} from '../../utils';
+
+import { 
+  IconOption, 
+  Menu,
+  Option,
+  SaveModal,
+  Tab
+} from '../';
 
 interface props { tabGroup: Models.TabGroup; }
 

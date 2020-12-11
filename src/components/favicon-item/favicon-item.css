@@ -4,6 +4,7 @@
   height: var(--size);
   flex: 0 0 var(--size);
   margin: 0px 3px;
+  box-sizing: content-box;
 }
 
 .faviconItem:last-child {

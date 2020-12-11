@@ -1,13 +1,16 @@
 import * as React from 'react';
 import * as style from './page-group-item.css';
-import { FaviconItem } from '../favicon-item';
 import { TabGroup } from '../../models';
 import { Icons, STORAGE_NAME } from '../../constants';
-import { IconOption } from '../icon-option';
 import { Storage, LocalStorage } from '../../storage';
-import { Menu } from '../menu';
-import { Option } from '../option';
 import { MessageType } from '../../utils';
+
+import { 
+  FaviconItem,
+  IconOption,
+  Menu,
+  Option 
+} from '../';
 
 interface props {
   pageGroup: TabGroup;
