@@ -8,10 +8,11 @@ body {
     box-sizing: border-box;
 }
 
-.index {
+.tabBarPage {
     height: 100vh;
     display: grid;
     grid-template-columns: 25% 75%;
+    background-color: white;
 }
 
 .navigationPane {

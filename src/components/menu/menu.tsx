@@ -5,7 +5,7 @@ interface Props {
   isOpen: boolean;
   children: React.ReactNode;
   className?: string;
-  calculateMenuPosition?: (menu: HTMLDivElement, parentRect: DOMRect) => void;
+  updateMenuPosition?: (menu: HTMLDivElement) => void;
   onCloseMenu: () => void;
 }
 
@@ -15,7 +15,7 @@ export function Menu(props: Props) {
     className = style.menu, 
     isOpen, 
     children, 
-    calculateMenuPosition, 
+    updateMenuPosition, 
     onCloseMenu 
   } = props;
 
@@ -29,11 +29,11 @@ export function Menu(props: Props) {
     if (isOpen) {
     
       menuElement.style.display = 'block';
-      updateMenuPosition();
+      updatePosition();
       menuElement.style.visibility = 'visible';
 
       window.addEventListener('click', handleWindowClick);
-      window.addEventListener('resize', updateMenuPosition);
+      window.addEventListener('resize', updatePosition);
 
     } else {
 
@@ -41,23 +41,18 @@ export function Menu(props: Props) {
       menuElement.style.visibility = 'hidden';
     
       window.removeEventListener('click', handleWindowClick);
-      window.removeEventListener('resize', updateMenuPosition);
+      window.removeEventListener('resize', updatePosition);
     }
 
     return () => {
       window.removeEventListener('click', handleWindowClick);
-      window.removeEventListener('resize', updateMenuPosition);
+      window.removeEventListener('resize', updatePosition);
     };
   }, [isOpen]);
 
-  function updateMenuPosition() {
-
-    const menuElement = menuRef.current;
-    const parentElement = menuElement.parentElement;    
-    const parentRect = parentElement.getBoundingClientRect();
-    
-    if (calculateMenuPosition) {
-      calculateMenuPosition(menuElement, parentRect);
+  function updatePosition() {
+    if (updateMenuPosition) {
+      updateMenuPosition(menuRef.current);
     }
   }
 

@@ -27,7 +27,7 @@ export function TabBarPage() {
 
   return (
     <Context.Provider value={{ storage }}>
-      <div className={style.index}>
+      <div className={style.tabBarPage}>
         <div className={style.navigationPane}>
           <div className={style.title}>Tab Group</div>
         </div>

@@ -21,6 +21,7 @@ export function PageGroupItem({ pageGroup, onDeletePageGroup }: props) {
 
   const storage = React.useMemo(() => Storage.init(LocalStorage, STORAGE_NAME), []);
   const faviconItemsRef = React.useRef<HTMLDivElement>();
+  const pageGroupItemRef = React.useRef<HTMLDivElement>();
   const [disableLeftOption, setDisableLeftOption] = React.useState(true);
   const [disableRightOption, setDisableRightOption] = React.useState(false);
   const [isOpenMenu, setIsOpenMenu] = React.useState(false);
@@ -70,17 +71,19 @@ export function PageGroupItem({ pageGroup, onDeletePageGroup }: props) {
     }
   }
 
-  function calculateMenuPosition(menu: HTMLDivElement, parentRect: DOMRect) {
+  function updateMenuPosition(menu: HTMLDivElement) {
     
+    const pageGroupItemElement = pageGroupItemRef.current;
+    const pageGroupItemRect = pageGroupItemElement.getBoundingClientRect();
     const menuRect = menu.getBoundingClientRect();
     const bodyWidth = document.body.clientWidth;
     const bodyHeight = document.body.clientHeight;
-    const menuBottom = parentRect.top + menuRect.height + 12;
+    const menuBottom = pageGroupItemRect.top + menuRect.height + 12;
     
-    menu.style.right = `${bodyWidth - (parentRect.right - 52)}px`;
+    menu.style.right = `${bodyWidth - (pageGroupItemRect.right - 52)}px`;
     menu.style.top = menuBottom > bodyHeight 
-      ? `${parentRect.top - (menuRect.height - 34)}px`
-      : `${parentRect.top + 12}px`;
+      ? `${pageGroupItemRect.top - (menuRect.height - 34)}px`
+      : `${pageGroupItemRect.top + 12}px`;
   }
 
   function getBrowserTab(): Promise<chrome.tabs.Tab> {
@@ -94,6 +97,7 @@ export function PageGroupItem({ pageGroup, onDeletePageGroup }: props) {
     <React.Fragment>
       <div 
         className={style.pageGroupItem}
+        ref={pageGroupItemRef}
         onClick={handleOpenPageGroup}>
         <div className={style.title}>{pageGroup.name}</div>
         <div 
@@ -124,7 +128,7 @@ export function PageGroupItem({ pageGroup, onDeletePageGroup }: props) {
         <Menu
           className={style.menu}
           isOpen={isOpenMenu}
-          calculateMenuPosition={calculateMenuPosition}
+          updateMenuPosition={updateMenuPosition}
           onCloseMenu={handleCloseMenu}>
           <Option 
             className={style.option} 

@@ -17,6 +17,7 @@ interface props {
 
 export function Tab({ tab, onDeleteTab }: props) {
 
+  const tabRef = React.useRef<HTMLDivElement>();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   function handleTabClick(event: React.MouseEvent<HTMLElement, MouseEvent>) {
@@ -40,17 +41,16 @@ export function Tab({ tab, onDeleteTab }: props) {
     setIsMenuOpen(false);
   }
 
-  function calculateMenuPosition(menu: HTMLDivElement, parentRect: DOMRect) {
+  function updateMenuPosition(menu: HTMLDivElement) {
     
+    const tabRect = tabRef.current.getBoundingClientRect();
     const menuRect = menu.getBoundingClientRect();
     const bodyWidth = document.body.clientWidth;
     const leftBoundary = menuRect.width + 12;
 
-    if (parentRect.right > leftBoundary) {
-      menu.style.right = `${bodyWidth - parentRect.right}px`;
-    } else {
-      menu.style.right = `${bodyWidth - leftBoundary}px`;
-    }
+    menu.style.right = tabRect.right > leftBoundary
+      ? `${bodyWidth - tabRect.right}px`
+      : `${bodyWidth - leftBoundary}px`;
   }
 
   function handleOptionClick(tag: string) {
@@ -75,7 +75,10 @@ export function Tab({ tab, onDeleteTab }: props) {
   }
 
   return (
-    <div className={tab.isSelected ? style.selectedTab : style.tab} onClick={handleTabClick}>
+    <div 
+      className={tab.isSelected ? style.selectedTab : style.tab}
+      ref={tabRef} 
+      onClick={handleTabClick}>
       <img className={style.favicon} title={tab.name} src={tab.favIconUrl}/>
       <div className={style.title} title={tab.name}>{tab.name}</div>
       <IconOption 
@@ -85,7 +88,7 @@ export function Tab({ tab, onDeleteTab }: props) {
       <Menu 
         className={style.menu}
         isOpen={isMenuOpen}
-        calculateMenuPosition={calculateMenuPosition} 
+        updateMenuPosition={updateMenuPosition} 
         onCloseMenu={handleCloseMenu}>
         <Option 
           className={style.option} 

@@ -25,6 +25,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   const { storage } = React.useContext<{ storage: Storage }>(Context);
 
+  const tabBarRef = React.useRef<HTMLDivElement>();
   const [tabGroup, setTabGroup] = React.useState(initialTabGroup);
   const [selectedTab, setSelectedTab] = React.useState(tabGroup.tabs.find(tab => tab.isSelected));
   const [openSaveModal, setOpenSaveModal] = React.useState(false);
@@ -92,17 +93,16 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
     setIsMenuOpen(false);
   }
 
-  function calculateMenuPosition(menu: HTMLDivElement, parentRect: DOMRect) {
+  function updateMenuPosition(menu: HTMLDivElement) {
     
+    const tabBarRect = tabBarRef.current.getBoundingClientRect();
     const menuRect = menu.getBoundingClientRect();
     const bodyWidth = document.body.clientWidth;
     const leftBoundary = menuRect.width + 12;
 
-    if (parentRect.right > leftBoundary) {
-      menu.style.right = `${bodyWidth - parentRect.right}px`;
-    } else {
-      menu.style.right = `${bodyWidth - leftBoundary}px`;
-    }
+    menu.style.right = tabBarRect.right > leftBoundary
+      ? `${bodyWidth - tabBarRect.right}px`
+      : `${bodyWidth - leftBoundary}px`;
   }
 
   async function handleDeleteTab(deleteTab: Models.Tab) {
@@ -160,7 +160,9 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
   }
 
   return (
-    <div className={tabGroup.isTemp ? style.tabBarWithSaveOption : style.tabBar}>
+    <div 
+      className={tabGroup.isTemp ? style.tabBarWithSaveOption : style.tabBar}
+      ref={tabBarRef}>
       <div className={style.tabs}>
         {
           tabGroup.tabs.map(tab => (
@@ -189,7 +191,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
       <Menu 
         className={style.menu}
         isOpen={isMenuOpen}
-        calculateMenuPosition={calculateMenuPosition} 
+        updateMenuPosition={updateMenuPosition} 
         onCloseMenu={handleCloseMenu}>
         <Option 
           className={style.option} 

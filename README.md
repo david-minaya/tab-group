@@ -13,12 +13,12 @@
 11. Footer
 12. Limon
 
-## Todo list
+## TODO
 
-- [ ] Mejorar la funcion de actualiza la posicion del menu
+- [x] Mejorar la funcion de actualiza la posicion del menu
 - [ ] Cambiar el nombre de las pestañas
-- [ ] Mejorar la configuracion de eslint
-- [ ] Reestructurar el proyecto para no utilizar tantos archivos index
+- [x] Mejorar la configuracion de eslint
+- [x] Reestructurar el proyecto para no utilizar tantos archivos index
 - [ ] Cargar todo el estilo del proyecto en un archivo css
 - [ ] Mejorar como se aplican los estilos personalizados de los componentes
 - [ ] Cambiar el nombre de TabGroup a PageGroup en la base de datos
