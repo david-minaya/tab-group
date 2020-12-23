@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './popup.css';
+import style from './popup.css';
 import { Storage, LocalStorage } from '../../storage';
 import { TabGroup } from '../../models';
 import { STORAGE_NAME } from '../../constants';

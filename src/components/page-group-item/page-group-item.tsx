@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './page-group-item.css';
+import style from './page-group-item.css';
 import { TabGroup } from '../../models';
 import { Icons, STORAGE_NAME } from '../../constants';
 import { Storage, LocalStorage } from '../../storage';

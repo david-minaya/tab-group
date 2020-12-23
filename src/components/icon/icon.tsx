@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './icon.css';
+import style from './icon.css';
 
 interface props {
   className?: string;

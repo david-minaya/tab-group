@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './tab-item.css';
+import style from './tab-item.css';
 import { Tab } from '../../models';
 
 export function TabItem({ tab }: { tab: Tab }) {

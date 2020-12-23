@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './text-box.css';
+import style from './text-box.css';
 
 interface props {
   className?: string;

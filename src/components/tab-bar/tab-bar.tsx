@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './tab-bar.css';
+import style from './tab-bar.css';
 import * as Models from '../../models';
 import { Storage } from '../../storage';
 import { Context } from '../../context';
@@ -57,7 +57,7 @@ export function TabBar({ tabGroup: initialTabGroup }: props) {
 
   function prefixBrowserTabTitle() {
 
-    const titlePrefixer = new TitlePrefixer(tabGroup.name, () => { });
+    const titlePrefixer = new TitlePrefixer(tabGroup.name, undefined);
     titlePrefixer.prefixTitle();
 
     const observer = new MutationObserver(() => titlePrefixer.prefixTitle());

@@ -1,4 +1,7 @@
-@import url('/font-icon.css');
+@font-face {
+  font-family: 'font-icon';
+  src: url('../../res/font-icon.woff') format('woff');
+}
 
 body {
   margin: 0px;

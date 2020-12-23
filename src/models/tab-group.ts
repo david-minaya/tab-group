@@ -1,5 +1,5 @@
 import { Tab } from './tab';
-import * as uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 
 export class TabGroup {
 
@@ -13,7 +13,7 @@ export class TabGroup {
 
   constructor(
     name?: string, tabId?: number, tabs: Tab[] = [], 
-    id: string = uuid(), isTemp: boolean = false
+    id: string = uuid(), isTemp = false
   ) {
     this.id = id;
     this.name = name;

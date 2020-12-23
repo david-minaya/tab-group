@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import * as style from './tab-bar.css';
+import style from './tab-bar.css';
 import { getBrowserTab } from '../../utils';
 import { Storage, LocalStorage } from '../../storage';
 import { TabBar } from '../../components';

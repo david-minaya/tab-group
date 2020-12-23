@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './icon-option.css';
+import style from './icon-option.css';
 import { Icon } from '../';
 
 interface props {

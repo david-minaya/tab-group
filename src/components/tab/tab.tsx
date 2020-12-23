@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './tab.css';
+import style from './tab.css';
 import * as Model from '../../models';
 import { MessageType, copy } from '../../utils';
 import { Icons } from '../../constants';

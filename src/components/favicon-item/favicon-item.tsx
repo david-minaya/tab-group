@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './favicon-item.css';
+import style from './favicon-item.css';
 import { Tab } from '../../models';
 
 interface props {

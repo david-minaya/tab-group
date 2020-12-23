@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './tab-bar-page.css';
+import style from './tab-bar-page.css';
 import { Storage, LocalStorage } from '../../storage';
 import { Context } from '../../context';
 import { STORAGE_NAME } from '../../constants';

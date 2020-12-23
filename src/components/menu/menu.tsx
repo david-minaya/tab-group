@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './menu.css'; 
+import style from './menu.css'; 
 
 interface Props {
   isOpen: boolean;

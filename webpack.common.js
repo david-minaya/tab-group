@@ -14,7 +14,8 @@ module.exports = {
     'dev': './src/scripts/dev'
   },
   output: {
-    filename: '[name].js'
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dist')
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
@@ -56,11 +57,7 @@ module.exports = {
         test: /\.ts(x?)$/,
         exclude: /node_modules/,
         include: path.resolve(__dirname, 'src'),
-        use: [
-          {
-            loader: 'ts-loader'
-          }
-        ]
+        loader: 'ts-loader'
       },
       {
         enforce: 'pre',
@@ -71,7 +68,7 @@ module.exports = {
         test: /\.css$/,
         include: path.resolve(__dirname, 'src'),
         use: [
-          { loader: 'style-loader' },
+          'style-loader',
           {
             loader: 'css-loader',
             options: {
@@ -93,7 +90,11 @@ module.exports = {
             }
           }
         ]
-      }
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+      },
     ]
   }
 };

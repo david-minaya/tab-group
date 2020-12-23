@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as style from './tab-group.css';
+import style from './tab-group.css';
 import * as Model from '../../models';
 import { Storage } from '../../storage';
 import { MessageType } from '../../utils';

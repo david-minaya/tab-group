@@ -1,8 +1,8 @@
 import * as React from 'react';
-import * as style from './button.css';
+import style from './button.css';
 
 interface props {
-  className: any;
+  className: string;
   text: string;
   onClick?: (event: React.FormEvent<HTMLButtonElement>) => void;
 }
