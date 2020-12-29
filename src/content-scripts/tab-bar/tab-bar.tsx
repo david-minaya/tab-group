@@ -3,7 +3,7 @@ import * as ReactDom from 'react-dom';
 import style from './tab-bar.css';
 import { getBrowserTab } from '../../utils';
 import { Storage, LocalStorage } from '../../storage';
-import { TabBar } from '../../components';
+import { TabBar } from '../../components/tab-bar';
 import { Context } from '../../context';
 import { STORAGE_NAME } from '../../constants';
 

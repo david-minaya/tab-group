@@ -3,12 +3,9 @@ import style from './tab.css';
 import * as Model from '../../models';
 import { MessageType, copy } from '../../utils';
 import { Icons } from '../../constants';
-
-import { 
-  IconOption,
-  Menu,
-  Option 
-} from '../';
+import { IconOption } from '../icon-option';
+import { Menu } from '../menu';
+import { Option } from '../option';
 
 interface props {
   tab: Model.Tab;

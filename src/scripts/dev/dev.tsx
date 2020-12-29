@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import style from './dev.css';
-import { Popup } from '../../components';
+import { Popup } from '../../components/popup';
 
 export function insertDev() {
   const div = document.createElement('div');

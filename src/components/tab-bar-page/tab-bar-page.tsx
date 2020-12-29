@@ -3,7 +3,7 @@ import style from './tab-bar-page.css';
 import { Storage, LocalStorage } from '../../storage';
 import { Context } from '../../context';
 import { STORAGE_NAME } from '../../constants';
-import { TabGroup } from '../';
+import { TabGroup } from '../tab-group';
 
 export function TabBarPage() {
 

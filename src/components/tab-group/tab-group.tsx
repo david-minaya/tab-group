@@ -5,13 +5,10 @@ import { Storage } from '../../storage';
 import { MessageType } from '../../utils';
 import { Icons } from '../../constants';
 import { Context } from '../../context';
-
-import { 
-  TabItem,
-  Menu,
-  Option,
-  IconOption
-} from '../';
+import { TabItem } from '../tab-item';
+import { Menu } from '../menu';
+import { Option } from '../option';
+import { IconOption } from '../icon-option';
 
 interface props {
   tabGroup: Model.TabGroup;

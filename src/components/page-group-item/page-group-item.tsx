@@ -4,13 +4,10 @@ import { TabGroup } from '../../models';
 import { Icons, STORAGE_NAME } from '../../constants';
 import { Storage, LocalStorage } from '../../storage';
 import { MessageType } from '../../utils';
-
-import { 
-  FaviconItem,
-  IconOption,
-  Menu,
-  Option 
-} from '../';
+import { FaviconItem } from '../favicon-item';
+import { IconOption } from '../icon-option';
+import { Menu } from '../menu';
+import { Option } from '../option';
 
 interface props {
   pageGroup: TabGroup;

@@ -3,7 +3,8 @@ import style from './save-modal.css';
 import { Storage, LocalStorage } from '../../storage';
 import { TabGroup } from '../../models';
 import { STORAGE_NAME } from '../../constants';
-import { Button, TextBox } from '../';
+import { Button } from '../button';
+import { TextBox } from '../text-box';
 
 interface props {
   isOpen: boolean;

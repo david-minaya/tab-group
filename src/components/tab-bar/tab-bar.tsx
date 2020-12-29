@@ -4,20 +4,17 @@ import * as Models from '../../models';
 import { Storage } from '../../storage';
 import { Context } from '../../context';
 import { Icons } from '../../constants';
+import { IconOption } from '../icon-option';
+import { Menu } from '../menu';
+import { Option } from '../option';
+import { SaveModal } from '../save-modal';
+import { Tab } from '../tab';
 
 import { 
   MessageType, 
   Message, 
   TitlePrefixer 
 } from '../../utils';
-
-import { 
-  IconOption, 
-  Menu,
-  Option,
-  SaveModal,
-  Tab
-} from '../';
 
 interface props { tabGroup: Models.TabGroup; }
 

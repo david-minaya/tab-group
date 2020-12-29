@@ -3,7 +3,7 @@ import style from './popup.css';
 import { Storage, LocalStorage } from '../../storage';
 import { TabGroup } from '../../models';
 import { STORAGE_NAME } from '../../constants';
-import { PageGroupItem } from '../';
+import { PageGroupItem } from '../page-group-item';
 
 export function Popup() {
 

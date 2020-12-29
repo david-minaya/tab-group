@@ -1,6 +1,6 @@
 import * as React from 'react';
 import style from './option.css';
-import { Icon } from '../';
+import { Icon } from '../icon';
 
 interface props {
   icon?: string;
