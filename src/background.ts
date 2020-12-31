@@ -1,4 +1,3 @@
-import defaultFavicon from './images/default-favicon.svg';
 import { PageInfo } from './types';
 import { Message, MessageType } from './utils';
 import { Storage, LocalStorage } from './storage';
@@ -39,7 +38,7 @@ chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
       chrome.tabs.create(createProperties, async browserTab => {
         await storage.tabs.attachBrowserTab(pageGroup.id, browserTab.id);
         chrome.tabs.executeScript(browserTab.id, { file: 'tab-bar.js' });
-        chrome.tabs.insertCSS(browserTab.id, { file: 'font-icon.css' });
+        chrome.tabs.insertCSS(browserTab.id, { file: 'tab-bar.css' });
       });
       
       break;
@@ -65,7 +64,7 @@ chrome.webNavigation.onCommitted.addListener(async details => {
     await storage.tabs.selectTab(tab, true);
 
     chrome.tabs.executeScript(tabGroup.tabId, { file: 'tab-bar.js' });
-    chrome.tabs.insertCSS(tabGroup.tabId, { file: 'font-icon.css' });
+    chrome.tabs.insertCSS(tabGroup.tabId, { file: 'tab-bar.css' });
   }
 });
 
@@ -105,7 +104,7 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
     await storage.tabs.addTab(tab);
 
     chrome.tabs.executeScript(browserTab.id, { file: 'tab-bar.js' });
-    chrome.tabs.insertCSS(tabGroup.tabId, { file: 'font-icon.css' });
+    chrome.tabs.insertCSS(tabGroup.tabId, { file: 'tab-bar.css' });
   }
 });
 
@@ -168,7 +167,7 @@ async function getFavIconUrl(document: Document) {
   } else {
 
     // If the favicon wasn't found use a default favicon
-    favIconUrl = defaultFavicon;
+    favIconUrl = chrome.runtime.getURL('images/default-favicon.svg');
   }
 
   return favIconUrl;

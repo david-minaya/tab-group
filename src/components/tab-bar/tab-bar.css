@@ -45,7 +45,7 @@
 
 .saveIcon {
   composes: iconOption from '../icon-option/icon-option.css';
-  background-image: url('../../images/point.svg');
+  background-image: url('chrome-extension://__MSG_@@extension_id__/images/point.svg');
   background-repeat: no-repeat;
   background-position: right top;
 }

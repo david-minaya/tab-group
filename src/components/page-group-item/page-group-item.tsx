@@ -32,7 +32,7 @@ export function PageGroupItem({ pageGroup, onDeletePageGroup }: props) {
     const { id } = await getBrowserTab();
     await storage.tabs.attachBrowserTab(pageGroup.id, id);
     chrome.tabs.executeScript(id, { file: 'tab-bar.js' });
-    chrome.tabs.insertCSS(id, { file: 'font-icon.css' });
+    chrome.tabs.insertCSS(id, { file: 'tab-bar.css' });
     window.close();
   }
 

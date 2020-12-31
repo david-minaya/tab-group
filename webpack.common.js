@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const svgToMiniDataURI = require('mini-svg-data-uri');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { transformManifest } = require('./src/utils/transform-manifest');
 
@@ -15,7 +15,8 @@ module.exports = {
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: ''
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
@@ -24,18 +25,8 @@ module.exports = {
     contentBase: './dist/dev.html'
   },
   plugins: [
+    new MiniCssExtractPlugin(),
     new CleanWebpackPlugin(),
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: './src/manifest.json',
-          transform: transformManifest
-        },
-        {
-          from: './src/res'
-        }
-      ]
-    }),
     new HtmlWebpackPlugin({
       filename: 'popup.html',
       chunks: ['popup']
@@ -49,6 +40,12 @@ module.exports = {
       filename: 'dev.html',
       title: 'dev',
       chunks: ['dev']
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: './src/manifest.json', transform: transformManifest },
+        { from: './src/res' }
+      ]
     })
   ],
   module: {
@@ -68,33 +65,18 @@ module.exports = {
         test: /\.css$/,
         include: path.resolve(__dirname, 'src'),
         use: [
-          'style-loader',
+          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
               modules: {
                 mode: 'local',
                 localIdentName: '[local]--[hash:base64:5]'
-              }
+              } 
             }
           }
         ]
-      },
-      {
-        test: /\.svg$/i,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              generator: (content) => svgToMiniDataURI(content.toString())
-            }
-          }
-        ]
-      },
-      {
-        test: /\.(woff|woff2|eot|ttf|otf)$/i,
-        type: 'asset/resource',
-      },
+      }
     ]
   }
 };

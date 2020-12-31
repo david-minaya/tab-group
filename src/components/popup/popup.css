@@ -1,8 +1,3 @@
-@font-face {
-  font-family: 'font-icon';
-  src: url('../../res/font-icon.woff') format('woff');
-}
-
 body {
   margin: 0px;
   background-color: rgb(220, 220, 220);
@@ -50,7 +45,7 @@ body {
 }
 
 .pageGroups::-webkit-scrollbar-button:decrement {
-  background-image: url('../../images/up.svg');
+  background-image: url('chrome-extension://__MSG_@@extension_id__/images/up.svg');
   background-repeat: no-repeat;
   background-position-y: bottom;
   background-position-x: center;
@@ -58,7 +53,7 @@ body {
 }
 
 .pageGroups::-webkit-scrollbar-button:increment {
-  background-image: url('../../images/down.svg');
+  background-image: url('chrome-extension://__MSG_@@extension_id__/images/down.svg');
   background-repeat: no-repeat;
   background-position-y: top;
   background-position-x: center;

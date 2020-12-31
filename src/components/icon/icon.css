@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'font-icon';
+  src: url('chrome-extension://__MSG_@@extension_id__/fonts/font-icon.woff') format('woff');
+}
+
 .icon {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
