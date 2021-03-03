@@ -96,7 +96,7 @@ chrome.webNavigation.onCommitted.addListener(async details => {
     await storage.tabs.selectTab(selectedTab, false);
     await storage.tabs.selectTab(tab, true);
 
-    await insertTabBar(details.tabId);
+    insertTabBar(details.tabId);
   }
 });
 
