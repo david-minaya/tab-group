@@ -104,13 +104,12 @@ export function TabBar() {
   } 
 
   function openInAllTabs(): Promise<void> {
-    return new Promise((resolve) => {
-      const message = { 
+    return new Promise((resolve) =>
+      chrome.runtime.sendMessage({ 
         type: MessageType.OPEN_IN_ALL_TABS, 
         arg: { tabGroupId: tabGroup.id } 
-      };
-      chrome.runtime.sendMessage(message, resolve);
-    });
+      }, resolve)
+    );
   }
 
   async function closeTabBar() {
@@ -130,11 +129,6 @@ export function TabBar() {
       type: MessageType.CLOSE_TAB_BAR, 
       arg: { tabGroup } 
     });
-
-    // chrome.runtime.sendMessage({ 
-    //   type: MessageType.NAVIGATE, 
-    //   arg: { url: location.href } 
-    // });
   }
 
   return tabGroup === undefined ? null : (

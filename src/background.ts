@@ -61,27 +61,19 @@ chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
   
       case MessageType.TAB_DELETED: {
         const tabGroup = message.arg.tabGroup as TabGroup;
-        updateTabBar(tabGroup.browserTabsId);
+        sendMessage(tabGroup.browserTabsId, MessageType.UPDATE_TAB_BAR);
         break;
       }
   
       case MessageType.CLOSE_TAB_BAR: {
-   
-        console.log('CLOSE_TAB_BAR');
-  
         const tabGroup = message.arg.tabGroup as TabGroup;
-        updateTabBar(tabGroup.browserTabsId);
-  
-        // for (const browserTabId of tabGroup.browserTabsId) {
-        //   chrome.tabs.reload(browserTabId);
-        // }
-  
+        sendMessage(tabGroup.browserTabsId, MessageType.CLOSE_TAB_BAR);
         break;
       }
     } 
-  });
 
-  response();
+    response();
+  });
 
   return true;
 });
@@ -128,7 +120,7 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
     
     const tab = new Tab(undefined, pageInfo.title, pageInfo.url, tabGroup.id, false, pageInfo.favicon);
     await storage.tabs.addTab(tab);
-    updateTabBar(tabGroup.browserTabsId);
+    sendMessage(tabGroup.browserTabsId, MessageType.UPDATE_TAB_BAR);
 
   } else {
 
@@ -142,11 +134,9 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
   }
 });
 
-function updateTabBar(browserTabsId: number[]) {
+function sendMessage(browserTabsId: number[], type: MessageType) {
   for (const browserTabId of browserTabsId) {
-    chrome.tabs.sendMessage(browserTabId, { 
-      type: MessageType.UPDATE_TAB_BAR 
-    });
+    chrome.tabs.sendMessage(browserTabId, { type });
   }
 }
 
