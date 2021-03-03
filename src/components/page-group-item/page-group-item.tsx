@@ -1,39 +1,34 @@
 import * as React from 'react';
 import style from './page-group-item.css';
 import { TabGroup } from '../../models';
-import { Icons, STORAGE_NAME } from '../../constants';
-import { Storage, LocalStorage } from '../../storage';
-import { MessageType } from '../../utils';
+import { Icons } from '../../constants';
 import { FaviconItem } from '../favicon-item';
 import { IconOption } from '../icon-option';
 import { Menu } from '../menu';
 import { Option } from '../option';
 
-interface props {
+interface Props {
   pageGroup: TabGroup;
-  onDeletePageGroup: (pageGroupId: string) => void;
+  onClick: (pageGroup: TabGroup) => void;
+  onOptionsClick: (tag: string, tabGroup: TabGroup) => void;
 }
 
-export function PageGroupItem({ pageGroup, onDeletePageGroup }: props) {
+export function PageGroupItem({ pageGroup, onClick, onOptionsClick }: Props) {
 
-  const storage = React.useMemo(() => Storage.init(LocalStorage, STORAGE_NAME), []);
   const faviconItemsRef = React.useRef<HTMLDivElement>();
   const pageGroupItemRef = React.useRef<HTMLDivElement>();
   const [disableLeftOption, setDisableLeftOption] = React.useState(true);
   const [disableRightOption, setDisableRightOption] = React.useState(false);
   const [isOpenMenu, setIsOpenMenu] = React.useState(false);
 
-  async function handleOpenPageGroup(event: any) {
+  const handleOpenMenu = () => setIsOpenMenu(true);
+  const handleCloseMenu = () => setIsOpenMenu(false);
+  const handleOptionClick = (tag: string) => onOptionsClick(tag, pageGroup);
 
+  async function handleItemClick(event: any) {
     const clickedElement = event.target as HTMLElement;
-
     if (clickedElement.dataset.tag === 'icon-option') return;
-
-    const { id } = await getBrowserTab();
-    await storage.tabs.attachBrowserTab(pageGroup.id, id);
-    chrome.tabs.executeScript(id, { file: 'tab-bar.js' });
-    chrome.tabs.insertCSS(id, { file: 'tab-bar.css' });
-    window.close();
+    onClick(pageGroup);
   }
 
   function scrollTo(num: number) {
@@ -45,27 +40,6 @@ export function PageGroupItem({ pageGroup, onDeletePageGroup }: props) {
 
     setDisableLeftOption(left <= 0);
     setDisableRightOption(left >= (pageGroup.tabs.length - 5) * 24);
-  }
-
-  function handleOpenMenu() {
-    setIsOpenMenu(true);
-  }
-
-  function handleCloseMenu() {
-    setIsOpenMenu(false);
-  }
-
-  function handleOptionClick(tag: string) {
-
-    switch (tag) {
-
-      case 'open-in-new-tab':
-        chrome.runtime.sendMessage({ type: MessageType.OPEN_IN_NEW_TAB, arg: { pageGroup } });
-        break;
-      case 'delete':
-        onDeletePageGroup(pageGroup.id);
-        break;
-    }
   }
 
   function updateMenuPosition(menu: HTMLDivElement) {
@@ -83,19 +57,12 @@ export function PageGroupItem({ pageGroup, onDeletePageGroup }: props) {
       : `${pageGroupItemRect.top + 12}px`;
   }
 
-  function getBrowserTab(): Promise<chrome.tabs.Tab> {
-    return new Promise(resolve => {
-      const queryInfo = { windowId: chrome.windows.WINDOW_ID_CURRENT, highlighted: true };
-      chrome.tabs.query(queryInfo, ([tab]) => resolve(tab));
-    });
-  }
-
   return (
     <React.Fragment>
       <div 
         className={style.pageGroupItem}
         ref={pageGroupItemRef}
-        onClick={handleOpenPageGroup}>
+        onClick={handleItemClick}>
         <div className={style.title}>{pageGroup.name}</div>
         <div 
           className={style.faviconItemContainer}
@@ -132,6 +99,12 @@ export function PageGroupItem({ pageGroup, onDeletePageGroup }: props) {
             tag='open-in-new-tab' 
             icon={Icons.OPEN_IN_NEW_TAB} 
             title='Abrir en nueva pestaña'
+            onClick={handleOptionClick}/>
+          <Option 
+            className={style.option} 
+            tag='open_in_all_tabs' 
+            icon={Icons.TAB_CENTER} 
+            title='Abrir en todas las pestañas'
             onClick={handleOptionClick}/>
           <Option 
             className={style.option} 

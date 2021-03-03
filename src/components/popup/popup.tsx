@@ -1,9 +1,15 @@
 import * as React from 'react';
 import style from './popup.css';
-import { Storage, LocalStorage } from '../../storage';
 import { TabGroup } from '../../models';
 import { STORAGE_NAME } from '../../constants';
 import { PageGroupItem } from '../page-group-item';
+import { Storage, LocalStorage } from '../../storage';
+
+import { 
+  insertTabBar, 
+  MessageType, 
+  openInAllTabs 
+} from '../../utils';
 
 export function Popup() {
 
@@ -11,16 +17,55 @@ export function Popup() {
   const [pageGroups, setPageGroup] = React.useState<TabGroup[]>([]);
   
   React.useEffect(() => {
-    getPageGroups();
+    updatePageGroups();
   }, []);
 
-  async function getPageGroups() {
+  async function updatePageGroups() {
     setPageGroup(await storage.tabsGroups.getTabsGroup());
   }
 
-  async function handleDeletePageGroup(pageGroupId: string) {
-    await storage.tabsGroups.deleteTabGroup(pageGroupId);
-    await getPageGroups();
+  async function handlePageGroupItemClick(pageGroup: TabGroup) {
+    const tab = await getBrowserTab();
+    if (tab.url != undefined) {
+      console.log(tab);
+      await storage.tabsGroups.attachBrowserTab(pageGroup.id, tab.id);
+      insertTabBar(tab.id);
+      window.close();
+    }
+  }
+
+  async function handleOptionsClick(tag: string, tabGroup: TabGroup) {
+    switch (tag) {
+      case 'open-in-new-tab':
+        openInNewTab(tabGroup);
+        break;
+      case 'open_in_all_tabs':
+        await openInAllTabs(tabGroup.id);
+        window.close();
+        break;
+      case 'delete':
+        await deleteTabGroup(tabGroup);  
+        break;
+    }
+  }
+
+  function openInNewTab(tabGroup: TabGroup) {
+    chrome.runtime.sendMessage({ 
+      type: MessageType.OPEN_IN_NEW_TAB, 
+      arg: { tabGroup } 
+    });
+  }
+
+  async function deleteTabGroup(tabGroup: TabGroup) {
+    await storage.tabsGroups.delete(tabGroup.id);
+    await updatePageGroups();
+  }
+
+  function getBrowserTab(): Promise<chrome.tabs.Tab> {
+    return new Promise(resolve => {
+      const queryInfo = { windowId: chrome.windows.WINDOW_ID_CURRENT, highlighted: true };
+      chrome.tabs.query(queryInfo, ([tab]) => resolve(tab));
+    });
   }
 
   return (
@@ -34,7 +79,8 @@ export function Popup() {
             <PageGroupItem 
               key={pageGroup.id} 
               pageGroup={pageGroup}
-              onDeletePageGroup={handleDeletePageGroup}/>
+              onClick={handlePageGroupItemClick}
+              onOptionsClick={handleOptionsClick}/>
           ))
         }
       </div>

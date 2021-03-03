@@ -5,6 +5,7 @@
   "excludeThirdPartyIcons": false,
   "chunkSubsets": false,
   "hashFontFileName": false,
+  "page": "https://uifabricicons.azurewebsites.net/",
   "glyphs": [
     {
       "name": "AddIn",
@@ -41,6 +42,10 @@
     {
       "name": "Save",
       "unicode": "E74E"
+    },
+    {
+      "name": "TabCenter",
+      "unicode": "F100"
     }
   ]
 }

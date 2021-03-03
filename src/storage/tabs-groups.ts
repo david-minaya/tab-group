@@ -25,10 +25,32 @@ export class TabsGroups {
     return tabGroup;
   }
 
-  async getTabGroupByTabId(tabId: number) {
-    const tabsGroup = await this.getTabsGroup();
-    const tabGroup = tabsGroup.find(tabGroup => tabGroup.tabId === tabId);
+  async getByBrowserTabId(browserTabId: number) {
+    const tabGroups = await this.getTabsGroup();
+    const tabGroup = tabGroups.find(tabGroup => 
+      tabGroup.browserTabsId.includes(browserTabId)
+    );
     return tabGroup;
+  }
+
+  async isBrowserTabAttached(browserTabId: number) {
+    const tabGroup = await this.getByBrowserTabId(browserTabId);
+    return tabGroup != undefined;
+  }
+
+  async attachBrowserTab(id: string, browserTabId: number) {
+    const tabGroup = await this.getTabGroup(id);
+    if (!tabGroup.browserTabsId) {
+      tabGroup.browserTabsId = [];
+    }
+    tabGroup.browserTabsId.push(browserTabId);
+    await this.updateTabGroup(tabGroup);
+  }
+
+  async detachBrowserTab(browserTabId: number) {
+    const tabGroup = await this.getByBrowserTabId(browserTabId);
+    tabGroup.browserTabsId = [];
+    await this.updateTabGroup(tabGroup);
   }
 
   async updateTabGroup(updatedTabGroup: TabGroup) {
@@ -38,10 +60,10 @@ export class TabsGroups {
     await this.setTabsGroups(tabsGroups);
   }
 
-  async deleteTabGroup(tabGroupId: string) {
-    const tabsGroups = await this.getTabsGroup();
-    const tabGroupIndex = tabsGroups.findIndex(tabGroup => tabGroup.id === tabGroupId);
-    tabsGroups.splice(tabGroupIndex, 1);
-    await this.setTabsGroups(tabsGroups);
+  async delete(id: string) {
+    const tabGroups = await this.getTabsGroup();
+    const index = tabGroups.findIndex(tabGroup => tabGroup.id === id);
+    tabGroups.splice(index, 1);
+    await this.setTabsGroups(tabGroups);
   }
 }

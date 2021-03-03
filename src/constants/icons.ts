@@ -7,7 +7,8 @@ const Icons = {
   DELETE: '\ue74d',
   OPEN_IN_NEW_TAB: '\uf6ab',
   MORE: '\ue712',
-  SAVE: '\ue74e'
+  SAVE: '\ue74e',
+  TAB_CENTER: '\uf100'
 };
 
 export { Icons };

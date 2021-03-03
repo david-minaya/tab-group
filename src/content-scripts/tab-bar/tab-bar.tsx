@@ -1,28 +1,20 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import style from './tab-bar.css';
-import { getBrowserTab } from '../../utils';
-import { Storage, LocalStorage } from '../../storage';
 import { TabBar } from '../../components/tab-bar';
-import { Context } from '../../context';
-import { STORAGE_NAME } from '../../constants';
+import { Message, MessageType } from '../../utils';
 
 export async function insertTabBar() {
 
-  const storage = Storage.init(LocalStorage, STORAGE_NAME);
-  const { id } = await getBrowserTab();
-  const tabGroup = await storage.tabsGroups.getTabGroupByTabId(id);
   const root = document.createElement('div');
-
   root.classList.add(style.reset);
   root.classList.add(style.tabBarContainer);
   document.body.appendChild(root);
+  ReactDom.render(<TabBar/>, root);
 
-  const component = (
-    <Context.Provider value={{ storage }}>
-      <TabBar tabGroup={tabGroup} /> 
-    </Context.Provider>
-  );
-
-  ReactDom.render(component, root);
+  chrome.runtime.onMessage.addListener((message: Message) => {
+    if (message.type === MessageType.CLOSE_TAB_BAR) {
+      ReactDom.unmountComponentAtNode(root);
+    }
+  });
 }

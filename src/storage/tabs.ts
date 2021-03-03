@@ -11,12 +11,6 @@ export class Tabs {
     await this.tabsGroups.updateTabGroup(tabGroup);
   }
 
-  async isBrowserTabAttached(browserTabId: number) {
-    const tabsGroups = await this.tabsGroups.getTabsGroup();
-    const isAssigned = tabsGroups.some(tabGroup => tabGroup.tabId === browserTabId);
-    return isAssigned;
-  }
-
   async updateTab(updatedTab: Tab) {
     const tabGroup = await this.tabsGroups.getTabGroup(updatedTab.tabGroupId);
     const tabs = tabGroup.tabs;
@@ -36,28 +30,6 @@ export class Tabs {
     tabFound.isSelected = select;
     
     await this.tabsGroups.updateTabGroup(tabGroup);
-  }
-
-  async attachBrowserTab(tabId: string, browserTabId: number) {
-    const tabGroup = await this.tabsGroups.getTabGroup(tabId);
-    tabGroup.tabId = browserTabId;
-    await this.tabsGroups.updateTabGroup(tabGroup);
-  }
-
-  async detachBrowserTab(browserTabId: number) {
-
-    const tabGroup = await this.tabsGroups.getTabGroupByTabId(browserTabId);
-    
-    // If the tab group is temp delete it
-    if (tabGroup.isTemp) {
-
-      await this.tabsGroups.deleteTabGroup(tabGroup.id);
-
-    } else {
-
-      tabGroup.tabId = undefined;
-      await this.tabsGroups.updateTabGroup(tabGroup);
-    }
   }
 
   async deleteTab(tab: Tab) {

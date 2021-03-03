@@ -1,8 +1,14 @@
 import { PageInfo } from './types';
-import { Message, MessageType } from './utils';
 import { Storage, LocalStorage } from './storage';
 import { TabGroup, Tab } from './models';
 import { STORAGE_NAME } from './constants';
+
+import { 
+  insertTabBar, 
+  Message, 
+  MessageType, 
+  openInAllTabs 
+} from './utils';
 
 const storage = Storage.init(LocalStorage, STORAGE_NAME);
 
@@ -19,43 +25,78 @@ chrome.runtime.onInstalled.addListener(() => {
 // Receive messages from the UIs of the extension
 chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
 
-  switch (message.type) {
+  ((cb: () => void) => cb())(async () => {
 
-    case MessageType.GET_TAB:
-      response(sender.tab);
-      break;
+    switch (message.type) {
 
-    case MessageType.NAVIGATE:
-      chrome.tabs.update({ url: message.arg.url });
-      break;
+      case MessageType.GET_TAB: {
+        response(sender.tab);
+        break;
+      }
+  
+      case MessageType.NAVIGATE: {
+        chrome.tabs.update({ url: message.arg.url });
+        break;
+      }
+  
+      case MessageType.OPEN_IN_NEW_TAB: {
+  
+        const pageGroup = message.arg.pageGroup as TabGroup;
+        const selectedTab = pageGroup.tabs.find(tab => tab.isSelected) || pageGroup.tabs[0];
+        const createProperties = { url: selectedTab.url };
+  
+        chrome.tabs.create(createProperties, async browserTab => {
+          await storage.tabsGroups.attachBrowserTab(pageGroup.id, browserTab.id);
+          insertTabBar(browserTab.id);
+        });
+        
+        break;
+      }
+  
+      case MessageType.OPEN_IN_ALL_TABS: {
+        const tabGroupId = message.arg.tabGroupId as string;
+        await openInAllTabs(tabGroupId);
+        break;
+      }
+  
+      case MessageType.TAB_DELETED: {
+        const tabGroup = message.arg.tabGroup as TabGroup;
+        updateTabBar(tabGroup.browserTabsId);
+        break;
+      }
+  
+      case MessageType.CLOSE_TAB_BAR: {
+   
+        console.log('CLOSE_TAB_BAR');
+  
+        const tabGroup = message.arg.tabGroup as TabGroup;
+        updateTabBar(tabGroup.browserTabsId);
+  
+        // for (const browserTabId of tabGroup.browserTabsId) {
+        //   chrome.tabs.reload(browserTabId);
+        // }
+  
+        break;
+      }
+    } 
+  });
 
-    case MessageType.OPEN_IN_NEW_TAB:
+  response();
 
-      const pageGroup = message.arg.pageGroup as TabGroup;
-      const selectedTab = pageGroup.tabs.find(tab => tab.isSelected) || pageGroup.tabs[0];
-      const createProperties = { url: selectedTab.url };
-
-      chrome.tabs.create(createProperties, async browserTab => {
-        await storage.tabs.attachBrowserTab(pageGroup.id, browserTab.id);
-        chrome.tabs.executeScript(browserTab.id, { file: 'tab-bar.js' });
-        chrome.tabs.insertCSS(browserTab.id, { file: 'tab-bar.css' });
-      });
-      
-      break;
-  }
+  return true;
 });
 
 // Insert the tab bar in the page when the page is loading
 chrome.webNavigation.onCommitted.addListener(async details => {
 
-  if (details.frameId !== 0) return;
+  if (details.frameId !== 0 || details.url === undefined) return;
 
-  const tabGroup = await storage.tabsGroups.getTabGroupByTabId(details.tabId);
+  const tabGroup = await storage.tabsGroups.getByBrowserTabId(details.tabId);
 
   if (tabGroup) {
 
-    const urlParser = new URL(details.url);
-    const urlRegex = new RegExp(`${urlParser.origin + urlParser.pathname}(\\?[^#]*)?(${urlParser.hash})?`);
+    const { origin, pathname, hash } = new URL(details.url);
+    const urlRegex = new RegExp(`${origin + pathname}(\\?[^#]*)?(${hash})?`);
 
     const selectedTab = tabGroup.tabs.find(tab => tab.isSelected);
     const tab = tabGroup.tabs.find(tab => urlRegex.test(tab.url));
@@ -63,24 +104,22 @@ chrome.webNavigation.onCommitted.addListener(async details => {
     await storage.tabs.selectTab(selectedTab, false);
     await storage.tabs.selectTab(tab, true);
 
-    chrome.tabs.executeScript(tabGroup.tabId, { file: 'tab-bar.js' });
-    chrome.tabs.insertCSS(tabGroup.tabId, { file: 'tab-bar.css' });
+    await insertTabBar(details.tabId);
   }
 });
 
 // Detach the tab bar from the browser tab when it is closed
 chrome.tabs.onRemoved.addListener(async tabId => {
-  const isAttach = await storage.tabs.isBrowserTabAttached(tabId);
+  const isAttach = await storage.tabsGroups.isBrowserTabAttached(tabId);
   if (isAttach) {
-    await storage.tabs.detachBrowserTab(tabId);
+    await storage.tabsGroups.detachBrowserTab(tabId);
   }
 });
-
 
 // Listen when the context menu option is clicked
 chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
 
-  const tabGroup = await storage.tabsGroups.getTabGroupByTabId(browserTab.id);
+  const tabGroup = await storage.tabsGroups.getByBrowserTabId(browserTab.id);
   const url = info.linkUrl ? info.linkUrl : info.pageUrl;
   const enableMetaRedirect = Boolean(info.linkUrl);
   const pageInfo = await getPageInfo(url, enableMetaRedirect);
@@ -89,24 +128,27 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
     
     const tab = new Tab(undefined, pageInfo.title, pageInfo.url, tabGroup.id, false, pageInfo.favicon);
     await storage.tabs.addTab(tab);
-
-    chrome.tabs.sendMessage(browserTab.id, {
-      type: MessageType.TAB_ADDED,
-      arg: { tabId: browserTab.id }
-    });
+    updateTabBar(tabGroup.browserTabsId);
 
   } else {
 
-    const tabGroup = new TabGroup('Temporal', browserTab.id, undefined, undefined, true);
+    const tabGroup = new TabGroup(undefined, [browserTab.id], 'Temporal', undefined, true);
     const tab = new Tab(undefined, pageInfo.title, pageInfo.url, tabGroup.id, false, pageInfo.favicon);
     
     await storage.tabsGroups.addTabGroup(tabGroup);
     await storage.tabs.addTab(tab);
 
-    chrome.tabs.executeScript(browserTab.id, { file: 'tab-bar.js' });
-    chrome.tabs.insertCSS(tabGroup.tabId, { file: 'tab-bar.css' });
+    insertTabBar(browserTab.id);
   }
 });
+
+function updateTabBar(browserTabsId: number[]) {
+  for (const browserTabId of browserTabsId) {
+    chrome.tabs.sendMessage(browserTabId, { 
+      type: MessageType.UPDATE_TAB_BAR 
+    });
+  }
+}
 
 function getPageInfo(url: string, enableMetaRedirect: boolean): Promise<PageInfo> {
 
@@ -172,10 +214,3 @@ async function getFavIconUrl(document: Document) {
 
   return favIconUrl;
 }
-
-// TODO: Evitar que la pagina se cierre si la barra de pestañas no se ha guardado | DONE
-// TODO: Remover el prefijado de las pestañas del navegador | DONE
-// TODO: Agregar la pagina de google como pestaña  | DONE
-// TODO: Eliminar la 1ra y la 2da opcion del popup y agregar la opcion abrir barra de pestañas | DONE
-// TODO: Agregar el menu de opciones a los grupos de pestañas en la pagina de pestañas
-//       Con la opcion eliminar
