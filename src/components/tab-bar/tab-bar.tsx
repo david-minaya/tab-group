@@ -34,7 +34,7 @@ export function TabBar() {
   React.useEffect(() => {
     (async () => { 
       const { id } = await getBrowserTab();
-      const tabGroup = await storage.tabsGroups.getByBrowserTabId(id);
+      const tabGroup = await storage.tabGroups.getByBrowserTabId(id);
       setBrowserTabId(id);
       setTabGroup(tabGroup);
     })();
@@ -57,7 +57,7 @@ export function TabBar() {
   }
 
   async function updateTabGroup() {
-    const tabGroup2 = await storage.tabsGroups.getByBrowserTabId(browserTabId);
+    const tabGroup2 = await storage.tabGroups.getByBrowserTabId(browserTabId);
     setTabGroup(tabGroup2);
   }
 
@@ -118,11 +118,11 @@ export function TabBar() {
 
       const isConfirmed = confirm('Desea cerra la barra de pestañas sin guardarla');
       if (!isConfirmed) return;
-      await storage.tabsGroups.delete(tabGroup.id);
+      await storage.tabGroups.delete(tabGroup.id);
 
     } else {
 
-      await storage.tabsGroups.detachBrowserTab(browserTabId);
+      await storage.tabGroups.detachBrowserTab(browserTabId);
     }
 
     chrome.runtime.sendMessage({ 

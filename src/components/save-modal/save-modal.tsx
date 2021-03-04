@@ -46,7 +46,7 @@ export function SaveModal({ isOpen = false, tabGroup, onCloseModal }: props) {
     if (isValidName) {
       tabGroup.name = name;
       tabGroup.isTemp = false;
-      await storage.tabsGroups.updateTabGroup(tabGroup);
+      await storage.tabGroups.updateTabGroup(tabGroup);
       onCloseModal();
     } 
 

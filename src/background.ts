@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
         const createProperties = { url: selectedTab.url };
   
         chrome.tabs.create(createProperties, async browserTab => {
-          await storage.tabsGroups.attachBrowserTab(pageGroup.id, browserTab.id);
+          await storage.tabGroups.attachBrowserTab(pageGroup.id, browserTab.id);
           insertTabBar(browserTab.id);
         });
         
@@ -83,7 +83,7 @@ chrome.webNavigation.onCommitted.addListener(async details => {
 
   if (details.frameId !== 0 || details.url === undefined) return;
 
-  const tabGroup = await storage.tabsGroups.getByBrowserTabId(details.tabId);
+  const tabGroup = await storage.tabGroups.getByBrowserTabId(details.tabId);
 
   if (tabGroup) {
 
@@ -102,16 +102,16 @@ chrome.webNavigation.onCommitted.addListener(async details => {
 
 // Detach the tab bar from the browser tab when it is closed
 chrome.tabs.onRemoved.addListener(async tabId => {
-  const isAttach = await storage.tabsGroups.isBrowserTabAttached(tabId);
+  const isAttach = await storage.tabGroups.isBrowserTabAttached(tabId);
   if (isAttach) {
-    await storage.tabsGroups.detachBrowserTab(tabId);
+    await storage.tabGroups.detachBrowserTab(tabId);
   }
 });
 
 // Listen when the context menu option is clicked
 chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
 
-  const tabGroup = await storage.tabsGroups.getByBrowserTabId(browserTab.id);
+  const tabGroup = await storage.tabGroups.getByBrowserTabId(browserTab.id);
   const url = info.linkUrl ? info.linkUrl : info.pageUrl;
   const enableMetaRedirect = Boolean(info.linkUrl);
   const pageInfo = await getPageInfo(url, enableMetaRedirect);
@@ -127,7 +127,7 @@ chrome.contextMenus.onClicked.addListener(async (info, browserTab) => {
     const tabGroup = new TabGroup(undefined, [browserTab.id], 'Temporal', undefined, true);
     const tab = new Tab(undefined, pageInfo.title, pageInfo.url, tabGroup.id, false, pageInfo.favicon);
     
-    await storage.tabsGroups.addTabGroup(tabGroup);
+    await storage.tabGroups.addTabGroup(tabGroup);
     await storage.tabs.addTab(tab);
 
     insertTabBar(browserTab.id);

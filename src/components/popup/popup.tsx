@@ -21,14 +21,14 @@ export function Popup() {
   }, []);
 
   async function updatePageGroups() {
-    setPageGroup(await storage.tabsGroups.getTabsGroup());
+    setPageGroup(await storage.tabGroups.getTabGroups());
   }
 
   async function handlePageGroupItemClick(pageGroup: TabGroup) {
     const tab = await getBrowserTab();
     if (tab.url != undefined) {
       console.log(tab);
-      await storage.tabsGroups.attachBrowserTab(pageGroup.id, tab.id);
+      await storage.tabGroups.attachBrowserTab(pageGroup.id, tab.id);
       insertTabBar(tab.id);
       window.close();
     }
@@ -57,7 +57,7 @@ export function Popup() {
   }
 
   async function deleteTabGroup(tabGroup: TabGroup) {
-    await storage.tabsGroups.delete(tabGroup.id);
+    await storage.tabGroups.delete(tabGroup.id);
     await updatePageGroups();
   }
 

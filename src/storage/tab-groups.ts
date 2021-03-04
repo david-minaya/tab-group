@@ -1,32 +1,32 @@
 import { IStorage } from './istorage';
 import { TabGroup } from '../models';
 
-export class TabsGroups {
+export class TabGroups {
 
   constructor(private storage: IStorage, private name: string) {}
 
   async addTabGroup(tabGroup: TabGroup) {
-    const tabsGroup = await this.getTabsGroup();
-    tabsGroup.push(tabGroup);
-    await this.setTabsGroups(tabsGroup);
+    const tabGroups = await this.getTabGroups();
+    tabGroups.push(tabGroup);
+    await this.setTabsGroups(tabGroups);
   }
 
-  getTabsGroup(): Promise<TabGroup[]> {
+  getTabGroups(): Promise<TabGroup[]> {
     return this.storage.get(this.name);
   }
 
-  setTabsGroups(tabsGroups: TabGroup[]): Promise<void> {
-    return this.storage.set(this.name, tabsGroups);
+  setTabsGroups(tabGroups: TabGroup[]): Promise<void> {
+    return this.storage.set(this.name, tabGroups);
   }
 
   async getTabGroup(id: string) {
-    const tabsGroups = await this.getTabsGroup();
-    const tabGroup = tabsGroups.find(tabGroup => tabGroup.id === id);
+    const tabGroups = await this.getTabGroups();
+    const tabGroup = tabGroups.find(tabGroup => tabGroup.id === id);
     return tabGroup;
   }
 
   async getByBrowserTabId(browserTabId: number) {
-    const tabGroups = await this.getTabsGroup();
+    const tabGroups = await this.getTabGroups();
     const tabGroup = tabGroups.find(tabGroup => 
       tabGroup.browserTabsId.includes(browserTabId)
     );
@@ -54,14 +54,14 @@ export class TabsGroups {
   }
 
   async updateTabGroup(updatedTabGroup: TabGroup) {
-    const tabsGroups = await this.getTabsGroup();
-    const index = tabsGroups.findIndex(tabGroup => tabGroup.id === updatedTabGroup.id);
-    tabsGroups[index] = updatedTabGroup;
-    await this.setTabsGroups(tabsGroups);
+    const tabGroups = await this.getTabGroups();
+    const index = tabGroups.findIndex(tabGroup => tabGroup.id === updatedTabGroup.id);
+    tabGroups[index] = updatedTabGroup;
+    await this.setTabsGroups(tabGroups);
   }
 
   async delete(id: string) {
-    const tabGroups = await this.getTabsGroup();
+    const tabGroups = await this.getTabGroups();
     const index = tabGroups.findIndex(tabGroup => tabGroup.id === id);
     tabGroups.splice(index, 1);
     await this.setTabsGroups(tabGroups);

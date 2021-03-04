@@ -1,12 +1,12 @@
 import { IStorage } from './istorage';
-import { TabsGroups } from './tabs-groups';
+import { TabGroups } from './tab-groups';
 import { Tabs } from './tabs';
 
 export class Storage {
   
   private static instance: Storage;
   private storage: IStorage;
-  public tabsGroups: TabsGroups;
+  public tabGroups: TabGroups;
   public tabs: Tabs;
 
   static init<T extends IStorage>(Class: new () => T, name: string) {
@@ -18,8 +18,8 @@ export class Storage {
 
   private constructor(storage: IStorage, name: string) {
     this.storage = storage;
-    this.tabsGroups = new TabsGroups(storage, name);
-    this.tabs = new Tabs(this.tabsGroups);
+    this.tabGroups = new TabGroups(storage, name);
+    this.tabs = new Tabs(this.tabGroups);
   }
 
   async clear() {

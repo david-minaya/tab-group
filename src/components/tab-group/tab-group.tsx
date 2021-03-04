@@ -27,7 +27,7 @@ export function TabGroup({ tabGroup, onUpdate }: props) {
 
     chrome.tabs.create(createProperties, async browserTab => {
 
-      await storage.tabsGroups.attachBrowserTab(tabGroup.id, browserTab.id);
+      await storage.tabGroups.attachBrowserTab(tabGroup.id, browserTab.id);
 
       // The tab bar is inserted from the background script when the listener
       // chrome.webNavigation.onCommitted is triggered. This listener is triggered
@@ -49,7 +49,7 @@ export function TabGroup({ tabGroup, onUpdate }: props) {
 
     switch (tag) {
       case 'delete':
-        await storage.tabsGroups.delete(tabGroup.id);
+        await storage.tabGroups.delete(tabGroup.id);
         onUpdate();
         break;
     }

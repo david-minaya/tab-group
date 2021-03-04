@@ -15,7 +15,7 @@ export function TabBarPage() {
   }, []);
 
   async function getTabsGroups() {
-    const tabsGroups = await storage.tabsGroups.getTabsGroup();
+    const tabsGroups = await storage.tabGroups.getTabGroups();
     const filteredTabsGroupd = tabsGroups.filter(tabGroup => !tabGroup.isTemp);
     const tabsGroupsRevesed = filteredTabsGroupd.reverse();
     setTabsGroups(tabsGroupsRevesed);
