@@ -12,6 +12,8 @@ import {
 
 const storage = Storage.init(LocalStorage, STORAGE_NAME);
 
+storage.tabGroups.detachAllBrowserTabs();
+
 // Trigger when the extension is intalled
 chrome.runtime.onInstalled.addListener(() => {
 

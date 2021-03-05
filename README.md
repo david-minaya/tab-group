@@ -16,8 +16,16 @@
 ## TODO
 
 - [x] Mejorar la funcion de actualiza la posicion del menu
-- [ ] Cambiar el nombre de las pestañas
-- [x] Mejorar la configuracion de eslint
 - [x] Cargar todo el estilo del proyecto en un archivo css
+- [x] Mejorar la configuracion de eslint
+- [x] Desenlazar los grupos de pestañas de las pestañas del navegador, cuando este se abra
+- [ ] Cambiar el nombre de las pestañas
+- [ ] Cambiar el nombre de los grupos de pestañas
+- [ ] Mover las pestañas de posicion en la barra de pestañas
+- [ ] Agregar botones de desplazamiento en los bordes de la barra de pestañas
+- [ ] Mover la barra de pestañas a los bordes izquierdo, superior y derecho
+- [ ] Copiar los grupos de pestañas a texto plano para poder compartirlos
 - [ ] Mejorar como se aplican los estilos personalizados de los componentes
-- [ ] Cambiar el nombre de TabGroup a PageGroup en la base de datos
+- [ ] Crear un perfil de usuario
+- [ ] Crear una opcion de compartir los grupos de pestañas con otros usuarios
+- [ ] Agregar la funcionalidad de que varias personas puedan trabajar al mismo tiempo en un barra de pestañas

@@ -53,6 +53,16 @@ export class TabGroups {
     await this.updateTabGroup(tabGroup);
   }
 
+  async detachAllBrowserTabs() {
+    const tabGroups = await this.getTabGroups();
+    tabGroups.forEach(tabGroup => {
+      if (tabGroup.browserTabsId.length !== 0) {
+        tabGroup.browserTabsId = [];
+      }
+    });
+    await this.setTabsGroups(tabGroups);
+  }
+
   async updateTabGroup(updatedTabGroup: TabGroup) {
     const tabGroups = await this.getTabGroups();
     const index = tabGroups.findIndex(tabGroup => tabGroup.id === updatedTabGroup.id);
