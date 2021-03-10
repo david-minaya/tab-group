@@ -1,14 +1,8 @@
 import { PageInfo } from './types';
 import { Storage, LocalStorage } from './storage';
 import { TabGroup, Tab } from './models';
-import { STORAGE_NAME } from './constants';
-
-import { 
-  insertTabBar, 
-  Message, 
-  MessageType, 
-  openInAllTabs 
-} from './utils';
+import { MessageType, STORAGE_NAME } from './constants';
+import { insertTabBar, Message, openInAllTabs } from './utils';
 
 const storage = Storage.init(LocalStorage, STORAGE_NAME);
 
@@ -56,20 +50,17 @@ chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
       }
   
       case MessageType.OPEN_IN_ALL_TABS: {
-        const tabGroupId = message.arg.tabGroupId as string;
-        await openInAllTabs(tabGroupId);
+        await openInAllTabs(message.arg.tabGroupId);
         break;
       }
   
-      case MessageType.TAB_DELETED: {
-        const tabGroup = message.arg.tabGroup as TabGroup;
-        sendMessage(tabGroup.browserTabsId, MessageType.UPDATE_TAB_BAR);
+      case MessageType.UPDATE_TAB_BAR: {
+        sendMessage(message.arg.browserTabsId, MessageType.UPDATE_TAB_BAR);
         break;
       }
   
       case MessageType.CLOSE_TAB_BAR: {
-        const tabGroup = message.arg.tabGroup as TabGroup;
-        sendMessage(tabGroup.browserTabsId, MessageType.CLOSE_TAB_BAR);
+        sendMessage(message.arg.browserTabsId, MessageType.CLOSE_TAB_BAR);
         break;
       }
     } 

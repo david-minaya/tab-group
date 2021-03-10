@@ -51,7 +51,7 @@ export function FaviconItem({ page }: props) {
       <div 
         className={showText ? style.text : style.hideText}
         ref={textRef}>
-        <span>{page.name}</span>
+        <span>{page.title}</span>
       </div>
       <img className={style.icon} src={page.favIconUrl}/>
     </div>

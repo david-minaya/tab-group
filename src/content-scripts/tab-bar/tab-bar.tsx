@@ -2,7 +2,8 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import style from './tab-bar.css';
 import { TabBar } from '../../components/tab-bar';
-import { Message, MessageType } from '../../utils';
+import { Message } from '../../utils';
+import { MessageType } from '../../constants';
 
 export async function insertTabBar() {
 

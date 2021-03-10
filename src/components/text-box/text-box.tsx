@@ -1,40 +1,61 @@
 import * as React from 'react';
-import style from './text-box.css';
+import defaultStyle from './text-box.css';
 
-interface props {
-  className?: string;
-  placeholder: string;
+interface Props {
+  style?: string;
   value: string;
+  title?: string;
+  disabled?: boolean;
+  selectedText?: boolean;
+  placeholder?: string;
   autofocus?: boolean;
+  onClick?: (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => void;
   onChange: (event: React.FormEvent<HTMLInputElement>) => void;
-  onEnterPress?: () => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onBlur?: () => void;
 }
 
-export function TextBox({ 
-  className = style.textBox, 
-  placeholder, 
-  value, 
-  autofocus = false,
-  onChange, 
-  onEnterPress 
-}: props) {
+export function TextBox(props: Props) {
 
+  const { 
+    style = defaultStyle.textBox, 
+    value, 
+    title,
+    disabled,
+    selectedText = false,
+    placeholder, 
+    autofocus = false,
+    onClick,
+    onChange, 
+    onKeyDown,
+    onBlur
+  } = props;
 
-  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.keyCode === 13) {
-      onEnterPress();
+  const textBoxRef = React.useRef<HTMLInputElement>();
+
+  React.useEffect(() => {
+    if (selectedText) {
+      textBoxRef.current.select();
+      textBoxRef.current.focus();
+    } else {
+      textBoxRef.current.value = '';
+      textBoxRef.current.value = value;
     }
-  }
+  }, [selectedText]);
 
   return (
     <input 
-      className={className}
+      className={style}
       type='text' 
-      placeholder={placeholder}
       value={value} 
+      title={title}
+      disabled={disabled}
+      placeholder={placeholder}
       autoFocus={autofocus}
+      ref={textBoxRef}
+      onClick={onClick}
       onChange={onChange}
-      onKeyDown={handleKeyDown}
-    />
+      onKeyDown={onKeyDown}
+      onBlur={onBlur}/>
   );
 }

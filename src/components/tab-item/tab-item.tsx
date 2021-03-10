@@ -5,7 +5,7 @@ import { Tab } from '../../models';
 export function TabItem({ tab }: { tab: Tab }) {
   return (
     <div className={style.tab}>
-      <div className={style.title}>{tab.name}</div>
+      <div className={style.title}>{tab.title}</div>
       <a href={tab.url}>{tab.url}</a>
     </div>
   );

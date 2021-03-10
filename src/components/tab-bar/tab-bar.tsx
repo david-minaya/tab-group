@@ -1,25 +1,19 @@
 import * as React from 'react';
 import * as Models from '../../models';
 import style from './tab-bar.css';
-import { Icons } from '../../constants';
+import { MessageType, Icons } from '../../constants';
+import { useStorage, useEffectAsync } from '../../hooks';
+import { Message, getBrowserTab } from '../../utils';
 import { IconOption } from '../icon-option';
 import { Menu } from '../menu';
 import { Option } from '../option';
 import { SaveModal } from '../save-modal';
 import { Tab } from '../tab';
-import { LocalStorage, Storage } from '../../storage';
-import { STORAGE_NAME } from '../../constants';
 import { TabGroup } from '../../models';
-
-import { 
-  MessageType, 
-  Message, 
-  getBrowserTab
-} from '../../utils';
 
 export function TabBar() {
 
-  const storage = React.useMemo(() => Storage.init(LocalStorage, STORAGE_NAME), []);
+  const storage = useStorage();
   const tabBarRef = React.useRef<HTMLDivElement>();
   const [browserTabId, setBrowserTabId] = React.useState<number>();
   const [tabGroup, setTabGroup] = React.useState<undefined|TabGroup>();
@@ -31,13 +25,11 @@ export function TabBar() {
   const handleOpenSaveModal = () => setOpenSaveModal(true);
   const handleCloseSaveModal = () => setOpenSaveModal(false);
 
-  React.useEffect(() => {
-    (async () => { 
-      const { id } = await getBrowserTab();
-      const tabGroup = await storage.tabGroups.getByBrowserTabId(id);
-      setBrowserTabId(id);
-      setTabGroup(tabGroup);
-    })();
+  useEffectAsync(async () => {
+    const { id } = await getBrowserTab();
+    const tabGroup = await storage.tabGroups.getByBrowserTabId(id);
+    setBrowserTabId(id);
+    setTabGroup(tabGroup);
   }, []);
 
   React.useEffect(() => {
@@ -50,15 +42,14 @@ export function TabBar() {
   async function messageListener({ type }: Message) {
     switch (type) {
       case MessageType.UPDATE_TAB_BAR:
-        console.log('UPDATE_TAB_BAR');
         await updateTabGroup();
         break;
     }
   }
 
   async function updateTabGroup() {
-    const tabGroup2 = await storage.tabGroups.getByBrowserTabId(browserTabId);
-    setTabGroup(tabGroup2);
+    const tabGroup = await storage.tabGroups.getByBrowserTabId(browserTabId);
+    setTabGroup(tabGroup);
   }
 
   function updateMenuPosition(menu: HTMLDivElement) {
@@ -73,15 +64,15 @@ export function TabBar() {
       : `${bodyWidth - leftBoundary}px`;
   }
 
-  async function handleDeleteTab(deleteTab: Models.Tab) {
+  async function handleDeleteTab(tab: Models.Tab) {
     
-    await storage.tabs.deleteTab(deleteTab);
+    await storage.tabs.deleteTab(tab);
     
     if (tabGroup.tabs.length > 1) {
     
       chrome.runtime.sendMessage({ 
-        type: MessageType.TAB_DELETED, 
-        arg: { tabGroup } 
+        type: MessageType.UPDATE_TAB_BAR, 
+        arg: { browserTabsId: tabGroup.browserTabsId }
       });
     
     } else {
@@ -127,7 +118,7 @@ export function TabBar() {
 
     chrome.runtime.sendMessage({ 
       type: MessageType.CLOSE_TAB_BAR, 
-      arg: { tabGroup } 
+      arg: { browserTabsId: tabGroup.browserTabsId } 
     });
   }
 
@@ -150,11 +141,11 @@ export function TabBar() {
           <IconOption 
             className={style.saveIcon} 
             iconName={Icons.SAVE} 
-            onClick={handleOpenSaveModal} />
+            onClick={handleOpenSaveModal}/>
         }
         <IconOption 
           iconName={Icons.MORE} 
-          onClick={handleOpenMenu} />
+          onClick={handleOpenMenu}/>
       </div>
       <SaveModal
         isOpen={openSaveModal}

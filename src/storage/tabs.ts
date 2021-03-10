@@ -19,6 +19,14 @@ export class Tabs {
     await this.tabGroups.updateTabGroup(tabGroup);
   }
 
+  async rename(id: string, title: string) {
+    const tabGroup = await this.tabGroups.getByTabId(id);
+    tabGroup.tabs.forEach(tab => { 
+      if (tab.id === id) tab.title = title;
+    });
+    await this.tabGroups.updateTabGroup(tabGroup);
+  }
+
   async selectTab(tab: Tab, select: boolean) {
     
     if (!tab) return;

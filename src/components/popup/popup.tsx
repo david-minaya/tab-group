@@ -1,15 +1,10 @@
 import * as React from 'react';
 import style from './popup.css';
 import { TabGroup } from '../../models';
-import { STORAGE_NAME } from '../../constants';
+import { MessageType, STORAGE_NAME } from '../../constants';
 import { PageGroupItem } from '../page-group-item';
 import { Storage, LocalStorage } from '../../storage';
-
-import { 
-  insertTabBar, 
-  MessageType, 
-  openInAllTabs 
-} from '../../utils';
+import { insertTabBar, openInAllTabs } from '../../utils';
 
 export function Popup() {
 
@@ -27,7 +22,6 @@ export function Popup() {
   async function handlePageGroupItemClick(pageGroup: TabGroup) {
     const tab = await getBrowserTab();
     if (tab.url != undefined) {
-      console.log(tab);
       await storage.tabGroups.attachBrowserTab(pageGroup.id, tab.id);
       insertTabBar(tab.id);
       window.close();

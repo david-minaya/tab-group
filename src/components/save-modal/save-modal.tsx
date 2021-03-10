@@ -38,19 +38,22 @@ export function SaveModal({ isOpen = false, tabGroup, onCloseModal }: props) {
     setName(event.currentTarget.value);
   }
 
-  async function handleSaveTabBar() {
+  async function handleSaveTabBar(event: React.KeyboardEvent<HTMLInputElement>) {
 
-    // Isn't empty or white space
-    const isValidName = /\S+/.test(name);
-    
-    if (isValidName) {
-      tabGroup.name = name;
-      tabGroup.isTemp = false;
-      await storage.tabGroups.updateTabGroup(tabGroup);
-      onCloseModal();
-    } 
+    if (event.key === 'Enter') {
 
-    setIsValidName(isValidName);
+      // Isn't empty or white space
+      const isValidName = /\S+/.test(name);
+      
+      if (isValidName) {
+        tabGroup.name = name;
+        tabGroup.isTemp = false;
+        await storage.tabGroups.updateTabGroup(tabGroup);
+        onCloseModal();
+      } 
+
+      setIsValidName(isValidName);
+    }
   }
 
   if (!isOpen) return null;
@@ -60,12 +63,12 @@ export function SaveModal({ isOpen = false, tabGroup, onCloseModal }: props) {
       <div className={style.title}>Guardar barra de pestañas</div>
       <div className={style.content}>
         <TextBox
-          className={style.textBox}
+          style={style.textBox}
           placeholder='Nombre'
           value={name}
           autofocus={true}
           onChange={handleTextBoxChange} 
-          onEnterPress={handleSaveTabBar}/>
+          onKeyDown={handleSaveTabBar}/>
         { !isValidName &&
           <div className={style.invalidName}>
             Nombre invalido*

@@ -25,6 +25,13 @@ export class TabGroups {
     return tabGroup;
   }
 
+  async getByTabId(id: string) {
+    const tabGroups = await this.getTabGroups();
+    return tabGroups.find(tabGroup => 
+      tabGroup.tabs.some(tab => tab.id === id)
+    );
+  }
+
   async getByBrowserTabId(browserTabId: number) {
     const tabGroups = await this.getTabGroups();
     const tabGroup = tabGroups.find(tabGroup => 

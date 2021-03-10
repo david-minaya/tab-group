@@ -46,6 +46,10 @@
     {
       "name": "TabCenter",
       "unicode": "F100"
+    },
+    {
+      "name": "Rename",
+      "unicode": "E8AC"
     }
   ]
 }
