@@ -27,21 +27,14 @@
 }
 
 .title {
-  composes: textBox from '../text-box/text-box.css';
+  composes: title from '../editable-title/editable-title.css';
   width: 100%;
-  height: 16px;
   justify-self: flex-start;
-  color: black;
-  font-size: 12px;
-  font-family: 'Segoe UI' !important;
-  border: none;
-  overflow: hidden;
-  padding: 0px;
 }
 
 .editableTitle {
   composes: title;
-  background-color: #F5F5F5;
+  composes: editableTitle from '../editable-title/editable-title.css';
 }
 
 .iconOption {

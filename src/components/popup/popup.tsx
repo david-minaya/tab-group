@@ -1,65 +1,24 @@
 import * as React from 'react';
 import style from './popup.css';
-import { TabGroup } from '../../models';
-import { MessageType, STORAGE_NAME } from '../../constants';
+import { useStorage } from '../../hooks';
 import { PageGroupItem } from '../page-group-item';
-import { Storage, LocalStorage } from '../../storage';
-import { insertTabBar, openInAllTabs } from '../../utils';
 
 export function Popup() {
 
-  const storage = React.useMemo(() => Storage.init(LocalStorage, STORAGE_NAME), []);
-  const [pageGroups, setPageGroup] = React.useState<TabGroup[]>([]);
-  
+  const storage = useStorage();
+  const [pageGroups, setPageGroups] = React.useState([]);
+
   React.useEffect(() => {
     updatePageGroups();
   }, []);
 
+  React.useEffect(() => {
+    storage.tabGroups.addUpdateListener(updatePageGroups);
+    return () => storage.tabGroups.removeUpdateListener(updatePageGroups);
+  }, []);
+
   async function updatePageGroups() {
-    setPageGroup(await storage.tabGroups.getTabGroups());
-  }
-
-  async function handlePageGroupItemClick(pageGroup: TabGroup) {
-    const tab = await getBrowserTab();
-    if (tab.url != undefined) {
-      await storage.tabGroups.attachBrowserTab(pageGroup.id, tab.id);
-      insertTabBar(tab.id);
-      window.close();
-    }
-  }
-
-  async function handleOptionsClick(tag: string, tabGroup: TabGroup) {
-    switch (tag) {
-      case 'open-in-new-tab':
-        openInNewTab(tabGroup);
-        break;
-      case 'open_in_all_tabs':
-        await openInAllTabs(tabGroup.id);
-        window.close();
-        break;
-      case 'delete':
-        await deleteTabGroup(tabGroup);  
-        break;
-    }
-  }
-
-  function openInNewTab(tabGroup: TabGroup) {
-    chrome.runtime.sendMessage({ 
-      type: MessageType.OPEN_IN_NEW_TAB, 
-      arg: { tabGroup } 
-    });
-  }
-
-  async function deleteTabGroup(tabGroup: TabGroup) {
-    await storage.tabGroups.delete(tabGroup.id);
-    await updatePageGroups();
-  }
-
-  function getBrowserTab(): Promise<chrome.tabs.Tab> {
-    return new Promise(resolve => {
-      const queryInfo = { windowId: chrome.windows.WINDOW_ID_CURRENT, highlighted: true };
-      chrome.tabs.query(queryInfo, ([tab]) => resolve(tab));
-    });
+    setPageGroups(await storage.tabGroups.getTabGroups());
   }
 
   return (
@@ -70,11 +29,9 @@ export function Popup() {
       <div className={style.pageGroups}>
         {
           pageGroups.map(pageGroup => (
-            <PageGroupItem 
-              key={pageGroup.id} 
-              pageGroup={pageGroup}
-              onClick={handlePageGroupItemClick}
-              onOptionsClick={handleOptionsClick}/>
+            <PageGroupItem
+              key={pageGroup.id}
+              pageGroup={pageGroup}/>
           ))
         }
       </div>

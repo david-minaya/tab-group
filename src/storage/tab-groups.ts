@@ -1,9 +1,27 @@
 import { IStorage } from './istorage';
 import { TabGroup } from '../models';
 
+type Listener = () => void
+
 export class TabGroups {
 
+  listeners: Listener[] = [];
+
   constructor(private storage: IStorage, private name: string) {}
+
+  addUpdateListener(listener: Listener) {
+    this.listeners.push(listener);
+  }
+
+  removeUpdateListener(listener: Listener) {
+    this.listeners = this.listeners.filter(l => l != listener);
+  }
+
+  triggerListeners() {
+    this.listeners.forEach(listener => {
+      listener();
+    });
+  }
 
   async addTabGroup(tabGroup: TabGroup) {
     const tabGroups = await this.getTabGroups();
@@ -15,8 +33,9 @@ export class TabGroups {
     return this.storage.get(this.name);
   }
 
-  setTabsGroups(tabGroups: TabGroup[]): Promise<void> {
-    return this.storage.set(this.name, tabGroups);
+  async setTabsGroups(tabGroups: TabGroup[]) {
+    await this.storage.set(this.name, tabGroups);
+    this.triggerListeners();
   }
 
   async getTabGroup(id: string) {
@@ -75,6 +94,12 @@ export class TabGroups {
     const index = tabGroups.findIndex(tabGroup => tabGroup.id === updatedTabGroup.id);
     tabGroups[index] = updatedTabGroup;
     await this.setTabsGroups(tabGroups);
+  }
+
+  async rename(id: string, title: string) {
+    const tabGroup = await this.getTabGroup(id);
+    tabGroup.name = title;
+    await this.updateTabGroup(tabGroup);
   }
 
   async delete(id: string) {

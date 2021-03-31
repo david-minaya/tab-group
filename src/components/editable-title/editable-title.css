@@ -1,0 +1,17 @@
+.title {
+  composes: textBox from '../text-box/text-box.css';
+  width: auto;
+  height: 16px;
+  color: black;
+  font-size: 12px;
+  font-family: 'Segoe UI' !important;
+  border: none;
+  overflow: hidden;
+  background-color: transparent;
+  padding: 0px;
+}
+
+.editableTitle {
+  composes: title;
+  background-color: #F5F5F5;
+}

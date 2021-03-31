@@ -22,10 +22,16 @@
 }
 
 .title {
+  composes: title from '../editable-title/editable-title.css';
+  height: auto;
   font-size: 16px;
   white-space: nowrap;
-  overflow: hidden;
   user-select: none;
+}
+
+.editableTitle {
+  composes: title;
+  composes: editableTitle from '../editable-title/editable-title.css';
 }
 
 .faviconItemContainer {

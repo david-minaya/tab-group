@@ -6,7 +6,7 @@ import { MessageType, Icons } from '../../constants';
 import { IconOption } from '../icon-option';
 import { Menu } from '../menu';
 import { Option } from '../option';
-import { TextBox } from '../text-box';
+import { EditableTitle } from '../editable-title';
 import { useStorage } from '../../hooks';
 
 interface props {
@@ -19,13 +19,11 @@ export function Tab({ tab, onDeleteTab }: props) {
   const storage = useStorage();
   const tabRef = React.useRef<HTMLDivElement>();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [title, setTitle] = React.useState('');
   const [isTitleEditable, setTitleEditable] = React.useState(false);
-  const [selectTitleText, setSelectTitleText] = React.useState(false);
 
-  React.useEffect(() => setTitle(tab.title), [tab]);
   const handleOpenMenu = () => setIsMenuOpen(true);
   const handleCloseMenu = () => setIsMenuOpen(false);
+  const handleDisableTitle = () => setTitleEditable(false);
 
   function handleTabClick(event: React.MouseEvent<HTMLElement, MouseEvent>) {
     
@@ -61,7 +59,6 @@ export function Tab({ tab, onDeleteTab }: props) {
         break;
       case 'rename':
         setTitleEditable(true);
-        setSelectTitleText(true);
         break;
       case 'copytitle':
         copy(tab.title);
@@ -77,37 +74,17 @@ export function Tab({ tab, onDeleteTab }: props) {
     setIsMenuOpen(false);
   }
 
-  async function handleTextBoxKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-    switch (event.key) {
-      case 'Enter':
-        await renameTab();
-        break;
-      case 'Escape':
-        unSelectTitle();
-        break;
-    }
-  }
-
-  async function renameTab() {
-
-    if (title.trim() === '') return unSelectTitle();
+  async function handleTitleChange(title: string) {
 
     await storage.tabs.rename(tab.id, title);
     const tabGroup = await storage.tabGroups.getTabGroup(tab.tabGroupId);
   
     setTitleEditable(false);
-    setSelectTitleText(false);
 
     chrome.runtime.sendMessage({ 
       type: MessageType.UPDATE_TAB_BAR, 
       arg: { browserTabsId: tabGroup.browserTabsId } 
     });
-  }
-
-  function unSelectTitle() {
-    setTitle(tab.title);
-    setTitleEditable(false);
-    setSelectTitleText(false);
   }
 
   return (
@@ -116,16 +93,12 @@ export function Tab({ tab, onDeleteTab }: props) {
       ref={tabRef} 
       onClick={handleTabClick}>
       <img className={style.favicon} title={tab.title} src={tab.favIconUrl}/>
-      <TextBox 
-        style={isTitleEditable ? style.editableTitle : style.title} 
-        value={title}
-        title={!isTitleEditable && title}
-        disabled={!isTitleEditable} 
-        selectedText={selectTitleText}
-        onKeyDown={handleTextBoxKeyDown}
-        onClick={e => e.stopPropagation()}
-        onChange={e => setTitle(e.currentTarget.value)}
-        onBlur={unSelectTitle}/>
+      <EditableTitle
+        style={{ title: style.title, editableTitle: style.editableTitle }}
+        title={tab.title}
+        isEditable={isTitleEditable}
+        onTitleChange={handleTitleChange}
+        onDisableTitle={handleDisableTitle}/>
       <IconOption 
         className={style.iconOption} 
         iconName={Icons.MORE} 
