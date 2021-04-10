@@ -55,12 +55,15 @@ chrome.runtime.onMessage.addListener((message: Message, sender, response) => {
       }
   
       case MessageType.UPDATE_TAB_BAR: {
-        sendMessage(message.arg.browserTabsId, MessageType.UPDATE_TAB_BAR);
+        const { tabGroupId } = message.arg;
+        const { browserTabsId } = await storage.tabGroups.getTabGroup(tabGroupId);
+        sendMessage(browserTabsId, MessageType.UPDATE_TAB_BAR);
         break;
       }
   
       case MessageType.CLOSE_TAB_BAR: {
-        sendMessage(message.arg.browserTabsId, MessageType.CLOSE_TAB_BAR);
+        const { browserTabsId } = message.arg;
+        sendMessage(browserTabsId, message.type);
         break;
       }
     } 

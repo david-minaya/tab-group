@@ -20,8 +20,8 @@
 - [x] Mejorar la configuracion de eslint
 - [x] Desenlazar los grupos de pestañas de las pestañas del navegador, cuando este se abra
 - [ ] Evitar que todas las barras de pestañas se cierren cuando el usuario cierra una pestañas en el navegador
-- [ ] Cambiar el nombre de las pestañas
-- [ ] Cambiar el nombre de los grupos de pestañas
+- [x] Cambiar el nombre de las pestañas
+- [x] Cambiar el nombre de los grupos de pestañas
 - [ ] Ocultar la barra de pestañas
 - [ ] Animar el componente menu cuando se abre y se cierra
 - [ ] Mover las pestañas de posicion en la barra de pestañas

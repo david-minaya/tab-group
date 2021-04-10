@@ -1,9 +1,8 @@
 import * as React from 'react';
-import * as Models from '../../models';
 import style from './tab-bar.css';
 import { MessageType, Icons } from '../../constants';
-import { useStorage, useEffectAsync } from '../../hooks';
-import { Message, getBrowserTab } from '../../utils';
+import { useStorage, useEffectAsync, useMessageListener } from '../../hooks';
+import { getBrowserTab } from '../../utils';
 import { IconOption } from '../icon-option';
 import { Menu } from '../menu';
 import { Option } from '../option';
@@ -19,6 +18,7 @@ export function TabBar() {
   const [tabGroup, setTabGroup] = React.useState<undefined|TabGroup>();
   const [openSaveModal, setOpenSaveModal] = React.useState(false);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const messageListener = useMessageListener(tabGroup);
 
   const handleOpenMenu = () => setIsMenuOpen(true);
   const handleCloseMenu = () => setIsMenuOpen(false);
@@ -26,30 +26,20 @@ export function TabBar() {
   const handleCloseSaveModal = () => setOpenSaveModal(false);
 
   useEffectAsync(async () => {
-    const { id } = await getBrowserTab();
-    const tabGroup = await storage.tabGroups.getByBrowserTabId(id);
-    setBrowserTabId(id);
+    const browserTab = await getBrowserTab();
+    const tabGroup = await storage.tabGroups.getByBrowserTabId(browserTab.id);
+    setBrowserTabId(browserTab.id);
     setTabGroup(tabGroup);
   }, []);
 
-  React.useEffect(() => {
-    chrome.runtime.onMessage.addListener(messageListener);
-    return () => {
-      chrome.runtime.onMessage.removeListener(messageListener);
-    };
-  }, [browserTabId]);
-
-  async function messageListener({ type }: Message) {
-    switch (type) {
-      case MessageType.UPDATE_TAB_BAR:
-        await updateTabGroup();
-        break;
-    }
-  }
-
-  async function updateTabGroup() {
-    const tabGroup = await storage.tabGroups.getByBrowserTabId(browserTabId);
+  messageListener(MessageType.UPDATE_TAB_BAR, async () => {
+    const tabGroup = await getTabGroup();
     setTabGroup(tabGroup);
+    if (tabGroup.tabs.length < 1) closeTabBar();
+  });
+
+  async function getTabGroup() {
+    return await storage.tabGroups.getByBrowserTabId(browserTabId);
   }
 
   function updateMenuPosition(menu: HTMLDivElement) {
@@ -64,28 +54,11 @@ export function TabBar() {
       : `${bodyWidth - leftBoundary}px`;
   }
 
-  async function handleDeleteTab(tab: Models.Tab) {
-    
-    await storage.tabs.deleteTab(tab);
-    
-    if (tabGroup.tabs.length > 1) {
-    
-      chrome.runtime.sendMessage({ 
-        type: MessageType.UPDATE_TAB_BAR, 
-        arg: { browserTabsId: tabGroup.browserTabsId }
-      });
-    
-    } else {
-    
-      await closeTabBar();
-    }
-  }
-
   async function handleOptionClick(tag: string) {
     switch (tag) {
       case 'open_in_all_tabs':
         await openInAllTabs();
-        await updateTabGroup();
+        setTabGroup(await getTabGroup());
         break;
       case 'close':
         await closeTabBar();
@@ -122,17 +95,14 @@ export function TabBar() {
     });
   }
 
-  return tabGroup === undefined ? null : (
+  return !tabGroup ? null : (
     <div 
       className={tabGroup.isTemp ? style.tabBarWithSaveOption : style.tabBar}
       ref={tabBarRef}>
       <div className={style.tabs}>
         {
           tabGroup.tabs.map(tab => (
-            <Tab
-              key={tab.id}
-              tab={tab}
-              onDeleteTab={handleDeleteTab}/>
+            <Tab key={tab.id} tab={tab}/>
           ))
         }
       </div>

@@ -11,10 +11,9 @@ import { useStorage } from '../../hooks';
 
 interface props {
   tab: Model.Tab;
-  onDeleteTab: (tab: Model.Tab) => void;
 }
 
-export function Tab({ tab, onDeleteTab }: props) {
+export function Tab({ tab }: props) {
 
   const storage = useStorage();
   const tabRef = React.useRef<HTMLDivElement>();
@@ -53,7 +52,6 @@ export function Tab({ tab, onDeleteTab }: props) {
   function handleOptionClick(tag: string) {
 
     switch (tag) {
-
       case 'openinnewtab':
         window.open(tab.url, '_blank');
         break;
@@ -67,7 +65,7 @@ export function Tab({ tab, onDeleteTab }: props) {
         copy(tab.url);
         break;
       case 'delete':
-        onDeleteTab(tab);
+        deleteTab();
         break;
     }
 
@@ -76,14 +74,20 @@ export function Tab({ tab, onDeleteTab }: props) {
 
   async function handleTitleChange(title: string) {
 
-    await storage.tabs.rename(tab.id, title);
-    const tabGroup = await storage.tabGroups.getTabGroup(tab.tabGroupId);
-  
+    await storage.tabs.rename(tab.id, title);  
     setTitleEditable(false);
 
     chrome.runtime.sendMessage({ 
       type: MessageType.UPDATE_TAB_BAR, 
-      arg: { browserTabsId: tabGroup.browserTabsId } 
+      arg: { tabGroupId: tab.tabGroupId } 
+    });
+  }
+
+  async function deleteTab() {
+    await storage.tabs.deleteTab(tab);
+    chrome.runtime.sendMessage({ 
+      type: MessageType.UPDATE_TAB_BAR, 
+      arg: { tabGroupId: tab.tabGroupId }
     });
   }
 
